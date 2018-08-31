@@ -1,15 +1,16 @@
 
 public class Player 
 {
-	String playerNum;
+	String name;
+	String color
 	int armies;
 	int diceValue;
 	int countriesOccupied;
 	int continentsOccupied;
 	
-	Player(String playerNum, int armies, int diceValue, int territoriesOccupied, int continentsOccupied)
+	Player(String name, int armies, int diceValue, int territoriesOccupied, int continentsOccupied)
 	{
-		this.playerNum = playerNum;
+		this.name = name;
 		this.armies = armies;
 		this.diceValue = diceValue;
 		this.territoriesOccupied = countriesOccupied;
