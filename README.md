@@ -18,77 +18,76 @@
 ![alt text][riskmap]
 
 ## Risk Cards
-   42 Territory Cards, 2 ‘wild’ cards  
-      Each card has a type of either infantry, cavalry, or artillery and one of the   territories.  
-      Wild card has all three types and no territory  
-   **Card objective**: collect a set of 3 cards containing the following combinations.   “Trading in” the set of cards will reward the player with additional troops (described below).  
-      3 cards of the same type (infantry, artillery, or cavalry)  
-      1 card of each 3 types  
-      Or any 2 plus a “wild” card  
+42 Territory Cards, 2 ‘wild’ cards  
+- Each card has a type of either infantry, cavalry, or artillery and one of the   territories.  
+- Wild card has all three types and no territory  
+**Card objective**: collect a set of 3 cards containing the following combinations.   “Trading in” the set of cards will reward the player with additional troops. Accepted sets are as follows:
+- 3 cards of the same type (infantry, artillery, or cavalry)  
+- 1 card of each 3 types  
+- Or any 2 plus a “wild” card  
 
 ## Trading Cards In
 At the beginning of each player’s turn, if they have a set of cards that can be turned in, the player may turn in the 3 cards for for a number of armies as follows:  
-   1st set: 4 armies  
-   2nd set: 6 armies  
-   3rd set: 8 armies  
-   4th set: 10 armies  
-   5th set: 12 armies  
-   6th set: 15 armies  
-   7th set: 20 armies  
-   8th+ sets: 20 + (set# - 7) * 5  
-      8th set receives 25, 9th receives 30, 10th receives 35, …
+- 1st set: 4 armies  
+- 2nd set: 6 armies  
+- 3rd set: 8 armies  
+- 4th set: 10 armies  
+- 5th set: 12 armies  
+- 6th set: 15 armies  
+- 7th set: 20 armies  
+- 8th+ sets: 20 + (set# - 7) * 5  (8th set receives 25, 9th receives 30, 10th receives 35, …)
 If any of the 3 cards turned in has a territory the player is currently occupying, the player receives an additional 2 armies on that territory.
 
 ## Continents and Territories:
 [source](https://en.wikipedia.org/wiki/Risk_(game))
-    North America (5)
-        Alaska
-        Alberta (Western Canada)
-        Central America
-        Eastern United States
-        Greenland
-        Northwest Territory
-        Ontario (Central Canada)
-        Quebec (Eastern Canada)
-        Western United States
-    South America (2)
-        Argentina
-        Brazil
-        Peru
-        Venezuela
-    Europe (5)
-    Great Britain (Great Britain & Ireland)
-        Iceland
-        Northern Europe
-        Scandinavia
-        Southern Europe
-        Ukraine (Eastern Europe, Russia)
-        Western Europe
-    Africa (3)
-        Congo (Central Africa)
-        East Africa[note 1]
-        Egypt
-        Madagascar
-        North Africa
-        South Africa
-    Asia (7)
-        Afghanistan[note 2]
-        China
-        India (Hindustan)
-        Irkutsk
-        Japan
-        Kamchatka
-        Middle East[note 1]
-        Mongolia
-        Siam (Southeast Asia)
-        Siberia
-        Ural
-        Yakutsk
-    Australia (2)
-        Eastern Australia
-        Indonesia
-        New Guinea
-        Western Australia
+North America (5)
+- Alaska
+- Alberta (Western Canada)
+- Central America
+- Eastern United States
+- Greenland
+- Northwest Territory
+- Ontario (Central Canada)
+- Quebec (Eastern Canada)
+- Western United States
+South America (2)
+- Argentina
+- Brazil
+- Peru
+- Venezuela
+- Europe (5)
+Great Britain (Great Britain & Ireland)
+- Iceland
+- Northern Europe
+- Scandinavia
+- Southern Europe
+- Ukraine (Eastern Europe, Russia)
+- Western Europe
+Africa (3)
+- Congo (Central Africa)
+- East Africa[note 1]
+- Egypt
+- Madagascar
+- North Africa
+- South Africa
+Asia (7)
+- Afghanistan[note 2]
+- China
+- India (Hindustan)
+- Irkutsk
+- Japan
+- Kamchatka
+- Middle East[note 1]
+- Mongolia
+- Siam (Southeast Asia)
+- Siberia
+- Ural
+- Yakutsk
+Australia (2)
+- Eastern Australia
+- Indonesia
+- New Guinea
+- Western Australia
 
 ---------------
 
