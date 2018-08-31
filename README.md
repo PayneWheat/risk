@@ -22,9 +22,16 @@ thus it is important to implement the core functionality by the end of fourth we
 
 | Board |
 |-------------|
-Players\nTerritories\nContinents\nCardDeck
+Players  
+Territories  
+Continents  
+CardDeck  
 |-------------|
-Allow players to set up board\nAllow players to take turns,\nDistribute armies\nCheck for winner\nCreate deck of cards and shuffle
+Allow players to set up board  
+Allow players to take turns  
+Distribute armies  
+Check for winner  
+Create deck of cards and shuffle  
 
 --------------------------------
 
