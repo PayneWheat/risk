@@ -1,0 +1,145 @@
+RISK
+COSC 4353, Dr. Alipour
+Team members: Payne Wheat, Patricia Sieng, Haoxian Lin
+
+
+Risk Rules: https://www.hasbro.com/common/instruct/risk.pdf
+
+Description:
+    You will implement Risk game; 
+    description of the game is available at: (http://www.ultraboardgames.com/risk/index.php). 
+    Your program should support  N={2,3,4,5,6} players. 
+    Your program will prompt users to enter new actions. 
+    You will use Java programming language to implement the game. 
+    Please note that during the semester there will be assignments to add new features to your program, 
+    thus it is important to implement the core functionality by the end of fourth week of the class. 
+
+
+Object Models:
+
+---------------------------------
+|            Board              |
+--------------------------------|
+Players
+Territories
+Continents
+CardDeck
+--------------------------------
+Allow players to set up board
+Allow players to take turns,
+Distribute armies
+Check for winner 
+Create deck of cards and shuffle
+---------------------------------
+
+
+
+
+---------------------------------
+|           Player              |
+--------------------------------|
+Name
+Available army total (beginning of round)
+Cards
+--------------------------------
+Roll dice
+Turn in cards
+Attack adjacent territory
+Place armies
+Move armies
+--------------------------------
+
+
+
+
+---------------------------------
+|          Territory            |
+--------------------------------|
+Name
+Continent?
+Occupying Player
+Army total
+Adjacent territories
+--------------------------------
+Change occupying player
+Add adjacent territory
+--------------------------------
+
+
+
+
+---------------------------------
+|           Continent           |
+--------------------------------|
+Name
+Territories?
+---------------------------------
+Check if player has all territories
+in a continent
+--------------------------------
+
+
+
+
+---------------------------------
+|            Card               |
+--------------------------------|
+Territory name
+Type (infantry, artillery, or cavalry)
+--------------------------------
+
+--------------------------------
+
+
+
+Continents and Territories:
+[source]https://en.wikipedia.org/wiki/Risk_(game)
+
+North America (5)
+    Alaska
+    Alberta (Western Canada)
+    Central America
+    Eastern United States
+    Greenland
+    Northwest Territory
+    Ontario (Central Canada)
+    Quebec (Eastern Canada)
+    Western United States
+South America (2)
+    Argentina
+    Brazil
+    Peru
+    Venezuela
+Europe (5)
+Great Britain (Great Britain & Ireland)
+    Iceland
+    Northern Europe
+    Scandinavia
+    Southern Europe
+    Ukraine (Eastern Europe, Russia)
+    Western Europe
+Africa (3)
+    Congo (Central Africa)
+    East Africa[note 1]
+    Egypt
+    Madagascar
+    North Africa
+    South Africa
+Asia (7)
+    Afghanistan[note 2]
+    China
+    India (Hindustan)
+    Irkutsk
+    Japan
+    Kamchatka
+    Middle East[note 1]
+    Mongolia
+    Siam (Southeast Asia)
+    Siberia
+    Ural
+    Yakutsk
+Australia (2)
+    Eastern Australia
+    Indonesia
+    New Guinea
+    Western Australia
