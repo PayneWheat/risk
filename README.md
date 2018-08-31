@@ -33,62 +33,59 @@ Distribute armies
 Check for winner  
 Create deck of cards and shuffle  
 
---------------------------------
 
+### Player
 
----------------------------------
-|           Player              |
---------------------------------|
-Name
-Available army total (beginning of round)
-Cards
-Roll dice
-Turn in cards/check for set of risk cards
-Attack adjacent territory
-Place armies
-Move armies
---------------------------------
+    ---------------------------------
+    |           Player              |
+    ---------------------------------
+    Name
+    Available army total (beginning of round)
+    Cards
+    ---------------------------------
+    Roll dice
+    Turn in cards/check for set of risk cards
+    Attack adjacent territory
+    Place armies
+    Move armies
+    Maybe we don't need both continent and territory. 
+    We can just have a continent member variable in the territory class.
 
+----
+### Territory
 
-
-Maybe we don't need both continent and territory. 
-We can just have a continent member variable in the territory class.
----------------------------------
-|          Territory            |
---------------------------------|
-Name
-Continent?
-Occupying Player
-Army total
-Adjacent territories
---------------------------------
-Change occupying player
-Add adjacent territory
---------------------------------
-
-
-
----------------------------------
-|           Continent           |
---------------------------------|
-Name
-Territories?
----------------------------------
-Check if player has all territories
-in a continent
---------------------------------
+    ---------------------------------
+    |          Territory            |
+    ---------------------------------
+    Name
+    Continent?
+    Occupying Player
+    Army total
+    Adjacent territories
+    --------------------------------
+    Change occupying player
+    Add adjacent territory
 
 
 
+### Continent
+    ---------------------------------
+    |           Continent           |
+    ---------------------------------
+    Name
+    Territories?
+    ---------------------------------
+    Check if player has all territories
+    in a continent
 
----------------------------------
-|            Card               |
---------------------------------|
-Territory name
-Type (infantry, artillery, or cavalry)
---------------------------------
 
---------------------------------
+
+### Card
+    ---------------------------------
+    |            Card               |
+    --------------------------------|
+    Territory name
+    Type (infantry, artillery, or cavalry)
 
 
 
