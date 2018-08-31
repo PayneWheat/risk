@@ -16,6 +16,9 @@ public class Dice
 	
 	public int getDiceValue()
 	{
+		// might want to call roll() separately
+		// because we'll have to compare dice in a weird way
+		// where we'll need to check the value multiple times
 		roll();
 		return diceValue;
 	}
