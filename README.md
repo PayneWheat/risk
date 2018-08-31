@@ -17,20 +17,20 @@ Risk Rules: (https://www.hasbro.com/common/instruct/risk.pdf)
 
 ## Object Models:
 
----------------------------------
-|            Board              |
---------------------------------|
+
+| Board |
+|-------------|
 Players
 Territories
 Continents
 CardDeck
---------------------------------
+|-------------|
 Allow players to set up board
 Allow players to take turns,
 Distribute armies
 Check for winner 
 Create deck of cards and shuffle
----------------------------------
+|-------------|
 
 
 
