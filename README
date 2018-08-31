@@ -1,11 +1,11 @@
-RISK
-COSC 4353, Dr. Alipour
-Team members: Payne Wheat, Patricia Sieng, Haoxian Lin
+# RISK
+### COSC 4353, Dr. Alipour
+### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin
 
 
-Risk Rules: https://www.hasbro.com/common/instruct/risk.pdf
+Risk Rules: (https://www.hasbro.com/common/instruct/risk.pdf)
 
-Description:
+## Description:
     You will implement Risk game; 
     description of the game is available at: (http://www.ultraboardgames.com/risk/index.php). 
     Your program should support  N={2,3,4,5,6} players. 
@@ -15,7 +15,7 @@ Description:
     thus it is important to implement the core functionality by the end of fourth week of the class. 
 
 
-Object Models:
+## Object Models:
 
 ---------------------------------
 |            Board              |
@@ -43,7 +43,7 @@ Available army total (beginning of round)
 Cards
 --------------------------------
 Roll dice
-Turn in cards
+Turn in cards/check for set of risk cards
 Attack adjacent territory
 Place armies
 Move armies
@@ -51,7 +51,8 @@ Move armies
 
 
 
-
+Maybe we don't need both continent and territory. 
+We can just have a continent member variable in the territory class.
 ---------------------------------
 |          Territory            |
 --------------------------------|
@@ -64,7 +65,6 @@ Adjacent territories
 Change occupying player
 Add adjacent territory
 --------------------------------
-
 
 
 
@@ -92,8 +92,8 @@ Type (infantry, artillery, or cavalry)
 
 
 
-Continents and Territories:
-[source]https://en.wikipedia.org/wiki/Risk_(game)
+## Continents and Territories:
+[source](https://en.wikipedia.org/wiki/Risk_(game))
 
 North America (5)
     Alaska
@@ -143,3 +143,26 @@ Australia (2)
     Indonesia
     New Guinea
     Western Australia
+
+
+## Risk Cards
+    42 Territory Cards, 2 ‘wild’ cards
+        Each card has a type of either infantry, cavalry, or artillery and one of the territories.
+        Wild card has all three types and no territory
+    Card objective: collect a set of 3 cards containing the following combinations. “Trading in” the set of cards will reward the player with additional troops (described below).
+        3 cards of the same type (infantry, artillery, or cavalry)
+        1 card of each 3 types
+        Or any 2 plus a “wild” card
+
+## Trading Cards In
+    At the beginning of each player’s turn, if they have a set of cards that can be turned in, the player may turn in the 3 cards for for a number of armies as follows:
+        1st set: 4 armies
+        2nd set: 6 armies
+        3rd set: 8 armies
+        4th set: 10 armies
+        5th set: 12 armies
+        6th set: 15 armies
+        7th set: 20 armies
+        8th+ sets: 20 + (set# - 7) * 5
+            8th set receives 25, 9th receives 30, 10th receives 35, …
+    If any of the 3 cards turned in has a territory the player is currently occupying, the player receives an additional 2 armies on that territory.

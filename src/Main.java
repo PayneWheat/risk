@@ -38,7 +38,13 @@ public class Main {
 		
 		// Create board object
 		// Risk cards are generated and shuffled
+		
+		// Card Pilot:
 		Board board = new Board(territories);
+		for(int i = 0; i < 5; i++) {
+			Card tempCard = board.drawCard();
+			System.out.println(tempCard.territoryName + " " + tempCard.type);
+		}
 		
 		// Prompt for number of players (here in main or in board constructor/method?)
 		Dice d = new Dice(); 
@@ -74,18 +80,26 @@ public class Main {
 			String color = JOptionPane.showInputDialog("Please enter a color for player " + (i+1) + ":");
 			int diceValue = d.getDiceValue();
 			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
-			// just patched this to get things to run. remove when necessary.
+			// just patched this to get things to run. remove/edit as necessary.
 			players[i] = new Player(name, initialArmies, diceValue, 0, 0);
 		}
-		
+		// Sort players by descending dice value
+		// OR -- I believe in the game, the players sit in a circle around the board. 
+		// So, the player order is determined randomly, and the highest roller plays first.
 		
 		// Players begin initial army placement and continue until all armies have been placed
+			// Show map with each territory's occupying player and army count
+			// Display Player's available armies/turns remaining
+			// Player selects either an unoccupied territory (until all territories are occupied)
+			// 	or one of their territories to place ONE army (after all territories have been chosen)
+			// End turn and begin player to the left's turn. Continue until no remaining initial armies for any player.
 		
 		// Players take turns until one player controls the whole board
-		//	-- Each turn consists of three parts:
-		//	-- 1. Placing new troops
-		//	-- 2. Attacking
-		//	-- 3. Fortifying
+			// Should start with player that went first in the initial stage.
+			//	Each turn consists of three parts:
+			//	-- 1. Placing new troops
+			//	-- 2. Attacking
+			//	-- 3. Fortifying
 		
 	}
 }

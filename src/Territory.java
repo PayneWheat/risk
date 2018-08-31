@@ -4,6 +4,8 @@ public class Territory {
 	public String name;
 	public byte continentIndex;
 	ArrayList<Territory> adjacentTerritories = new ArrayList<Territory>();
+	Player occupyingPlayer;
+	int armyCount;
 	/*
 	 * 1: North America (5)
 	 * 2: South America (2)
@@ -14,6 +16,7 @@ public class Territory {
 	 */
 	public Territory(String name, byte continentIndex) {
 		this.name = name;
+		this.continentIndex = continentIndex;
 	}
 	public void setAdjacentTerritory(Territory territory) {
 		adjacentTerritories.add(territory);
