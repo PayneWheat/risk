@@ -3,36 +3,30 @@
 ### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin
 
 
-Risk Rules: (https://www.hasbro.com/common/instruct/risk.pdf)
+[Risk Rules](https://www.hasbro.com/common/instruct/risk.pdf)
 
 ## Description:
-    You will implement Risk game; 
-    description of the game is available at: (http://www.ultraboardgames.com/risk/index.php). 
-    Your program should support  N={2,3,4,5,6} players. 
-    Your program will prompt users to enter new actions. 
-    You will use Java programming language to implement the game. 
-    Please note that during the semester there will be assignments to add new features to your program, 
-    thus it is important to implement the core functionality by the end of fourth week of the class. 
+You will implement Risk game; 
+description of the game is available at: (http://www.ultraboardgames.com/risk/index.php). 
+Your program should support  N={2,3,4,5,6} players. 
+Your program will prompt users to enter new actions. 
+You will use Java programming language to implement the game. 
+Please note that during the semester there will be assignments to add new features to your program, 
+thus it is important to implement the core functionality by the end of fourth week of the class. 
 
+[riskmap]: https://static1.squarespace.com/static/563fc40de4b06686c7220979/t/5658b45ce4b05e0c71b95004/1448653925676/?format=1500w
+![alt text][riskmap]
 
 ## Object Models:
 
 
 | Board |
 |-------------|
-Players
-Territories
-Continents
-CardDeck
+Players\nTerritories\nContinents\nCardDeck
 |-------------|
-Allow players to set up board
-Allow players to take turns,
-Distribute armies
-Check for winner 
-Create deck of cards and shuffle
-|-------------|
+Allow players to set up board\nAllow players to take turns,\nDistribute armies\nCheck for winner\nCreate deck of cards and shuffle
 
-
+--------------------------------
 
 
 ---------------------------------
@@ -41,7 +35,6 @@ Create deck of cards and shuffle
 Name
 Available army total (beginning of round)
 Cards
---------------------------------
 Roll dice
 Turn in cards/check for set of risk cards
 Attack adjacent territory
