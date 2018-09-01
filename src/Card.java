@@ -6,4 +6,16 @@ public class Card {
 		this.territoryName = territoryName;
 		this.type = type;
 	}
+	public String getCardTypeName() {
+		if(type == (byte)1)
+			return "Infantry";
+		if(type == (byte)2)
+			return "Cavalry";
+		if(type == (byte)3)
+			return "Artillery";
+		if(type == (byte)4)
+			return "Wild";
+		else
+			return "Unknown";
+	}
 }

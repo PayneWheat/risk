@@ -46,6 +46,8 @@ If any of the 3 cards turned in has a territory the player is currently occupyin
 ## Continents and Territories:
 [source](https://en.wikipedia.org/wiki/Risk_(game))
 
+**Continent (Rewarded Armies)**
+
 **North America (5)**
 - Alaska
 - Alberta (Western Canada)
@@ -62,9 +64,9 @@ If any of the 3 cards turned in has a territory the player is currently occupyin
 - Brazil
 - Peru
 - Venezuela
-- Europe (5)
 
-**Great Britain (Great Britain & Ireland)**
+**Europe (5)**
+- Great Britain (Great Britain & Ireland)
 - Iceland
 - Northern Europe
 - Scandinavia
@@ -104,9 +106,9 @@ If any of the 3 cards turned in has a territory the player is currently occupyin
 
 ## Object Models:
 ### Board
-    |----------------|
+    ------------------
     |     Board      |
-    |----------------|
+    ------------------
     Players  
     Territories  
     Continents  
@@ -132,9 +134,10 @@ If any of the 3 cards turned in has a territory the player is currently occupyin
     Attack adjacent territory
     Place armies
     Move armies
-    Maybe we don't need both continent and territory. 
-    We can just have a continent member variable in the territory class.
 ----
+Maybe we don't need both continent and territory. 
+We can just have a continent member variable in the territory class.
+
 ### Territory
     ---------------------------------
     |          Territory            |
