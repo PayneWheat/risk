@@ -294,11 +294,25 @@ public class Main {
 			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
 			// just patched this to get things to run. remove/edit as necessary.
 			players[i] = new Player(name, initialArmies, diceValue, 0, 0);
+			System.out.println(name + " roll " + diceValue);
 		}
 		// Sort players by descending dice value
 		// OR -- I believe in the game, the players sit in a circle around the board. 
 		// So, the player order is determined randomly, and the highest roller plays first.
+		Player temp;
+		for(int i = 0; i < numOfPlayers; i++) {
+			for (int j = i; j > 0; j--) {
+				if (players[j].diceValue >  players[j - 1].diceValue) {
+					temp = players[j];
+					players[j] = players[j - 1];
+					players[j - 1] = temp;
+				}
+			}
+		}
 		
+		for(int i = 0; i < numOfPlayers; i++) {
+			System.out.println(" The order of players to play is " + players[i].getName());
+		}
 		// Players begin initial army placement and continue until all armies have been placed
 			// Show map with each territory's occupying player and army count
 			// Display Player's available armies/turns remaining
