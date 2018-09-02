@@ -17,68 +17,38 @@ public class Main {
 		board.printTerritories();
 		
 		// Prompt for number of players (here in main or in board constructor/method?)
-		Dice d = new Dice(); 
+		// Dice d = new Dice(); Changed this up, see Board class.
 		//Player[]players = new Player[6];
 		int numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
 		
 		Player[] players = new Player[numOfPlayers];
 		
 		// Initial number of armies for each player is determined (now included in Board class)
-		/*
-		int initialArmies = 0;
-		switch(numOfPlayers)
-		{
-			case 2:
-				initialArmies = 40;
-				break;
-			case 3:
-				initialArmies = 35;
-				break;
-			case 4:
-				initialArmies = 30;
-				break;
-			case 5 :
-				initialArmies = 25;
-				break;
-			case 6: 
-				initialArmies = 20;
-				break;
-		
-		}
-		*/
+
 		// Each player chooses their color and enters their name (here in main or in player constructor/method?)
 		
 		for(int i = 0; i < numOfPlayers; i++)
 		{
 			String name = JOptionPane.showInputDialog("Please enter the name of player " + (i+1) + ":");
 			String color = JOptionPane.showInputDialog("Please enter a color for player " + (i+1) + ":");
+
 			//int diceValue = d.getDiceValue();
 			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
-			// just patched this to get things to run. remove/edit as necessary.
+			/*
+			 * Changed this up a little, this initial roll is part 
+			 * of the setPlayers board method now.
+			 * See Board class
+			int diceValue = d.getDiceValue();
+			players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
+			*/
 			players[i] = new Player(name, color);
-			//System.out.println(name + " roll " + diceValue);
 		}
 		
 		// Sort players by descending dice value
 		// OR -- I believe in the game, the players sit in a circle around the board. 
 		// So, the player order is determined randomly, and the highest roller plays first.
-		/*
-		Player temp;
-		for(int i = 0; i < numOfPlayers; i++) {
-			for (int j = i; j > 0; j--) {
-				if (players[j].diceValue >  players[j - 1].diceValue) {
-					temp = players[j];
-					players[j] = players[j - 1];
-					players[j - 1] = temp;
-				}
-			}
-		}
 		
-		for(int i = 0; i < numOfPlayers; i++) {
-			System.out.println(" The order of players to play is " + players[i].getName());
-		}
-		*/
-		
+		// Put the sorting in setPlayers method for Board.
 		board.setPlayers(players, true);
 		
 		

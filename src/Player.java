@@ -27,9 +27,10 @@ public class Player
 		this.countriesOccupied = 0;
 		this.continentsOccupied = 0;
 	}
-	Player(String name, int armies, int diceValue, int territoriesOccupied, int continentsOccupied)
-	{
+	Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied){
+
 		this.name = name;
+		this.color = color;
 		this.armies = armies;
 		this.diceValue = diceValue;
 		this.territoriesOccupied = countriesOccupied;
@@ -39,19 +40,28 @@ public class Player
 	public String getName() {
 		return name;
 	}
-	
-	public int getArimes() {
+	public String getColor(){
+		return color;
+	}
+	public int getArmies(){
 		return armies;
 	}
-	
+	public int getDiceValue(){
+		return diceValue;
+	}
+	public int getTerritoriesOccupied(){
+		return territoriesOccupied;
+	}
+	public int continentsOccupied(){
+		return continentsOccupied;
+	}
 	public void increaseArmies(int numOfArmies) {
 		armies = armies + numOfArmies;
-		System.out.println(name + " increased " + numOfArmies + " Armies.");
+		System.out.println(name + " increased " + numOfArmies + " armies.");
 	}
-	
 	public void decreaseArmies(int numOfArmies) {
 		armies = armies - numOfArmies;
-		System.out.println(name + " losted " + numOfArmies + " Armies.");
+		System.out.println(name + " lost " + numOfArmies + " armies.");
 	}
 	
 }
