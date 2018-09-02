@@ -9,9 +9,10 @@ public class Player
 	int countriesOccupied;
 	int continentsOccupied;
 	
-	Player(String name, int armies, int diceValue, int territoriesOccupied, int continentsOccupied)
+	Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied)
 	{
 		this.name = name;
+		this.color = color;
 		this.armies = armies;
 		this.diceValue = diceValue;
 		this.territoriesOccupied = countriesOccupied;
