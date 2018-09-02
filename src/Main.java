@@ -291,7 +291,7 @@ public class Main {
 			String name = JOptionPane.showInputDialog("Please enter the name of player " + (i+1) + ":");
 			String color = JOptionPane.showInputDialog("Please enter a color for player " + (i+1) + ":");
 			int diceValue = d.getDiceValue();
-			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
+			players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
 			// just patched this to get things to run. remove/edit as necessary.
 			players[i] = new Player(name, initialArmies, diceValue, 0, 0);
 			System.out.println(name + " roll " + diceValue);
