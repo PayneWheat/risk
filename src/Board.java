@@ -1,17 +1,19 @@
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 public class Board {
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
 	private ArrayList<Card> cards = new ArrayList<Card>();
 	public ArrayList<Player> players = new ArrayList<Player>();
-	//public Player currentTurnsPlayer = new Player();
-	public int currentTurnsPlayer;
+	public int currentPlayerIndex;
 	public int initialArmies;
 	
 	public Board() {
 		this.territories = generateGraph();
 		this.cards = createCardDeck();
 	}
+	
 	private ArrayList<Card> createCardDeck() {
 		ArrayList<Card> deck = new ArrayList<Card>();
 		// This automatically generates the deck of cards
@@ -32,6 +34,7 @@ public class Board {
 		Collections.shuffle(deck);
 		return deck;
 	}
+	
 	public Card drawCard() {
 		// When a player has conquered at least one territory during their turn,
 		// they will draw a risk card.
@@ -39,19 +42,41 @@ public class Board {
 		cards.remove(0);
 		return tempCard;
 	}
+	
 	public int remainingCards() {
 		return cards.size();
 	}
-	public void printTerritories() {
-		for(int i = 0; i < this.territories.size(); i++) {
-			System.out.print("[" + i + "]" + territories.get(i).name + "->{ ");
-			ArrayList<Territory> adjs = territories.get(i).getAdjacentTerritories();
-			for(int j = 0; j < adjs.size(); j++) {
-				System.out.print(adjs.get(j).name + ", ");
+	
+	public void printTerritories(boolean onlyUnoccupied, boolean showAdjacent) {
+		
+		if(onlyUnoccupied == true) {
+			System.out.println("Available territories:");
+			for(int i = 0; i < this.territories.size(); i++) {
+				if(!this.territories.get(i).isOccupied()) {
+					System.out.print("[" + i + "]" + this.territories.get(i).name + ", ");
+				}
 			}
-			System.out.println("}");
+		} else {
+			for(int i = 0; i < this.territories.size(); i++) {
+				String playerName = ""; 
+				if(territories.get(i).isOccupied()) {
+					playerName = territories.get(i).getPlayer().getName();
+				} else {
+					playerName = "UNOCCUPIED";
+				}
+				System.out.print("[" + i + "]" + territories.get(i).getContinent() + ", " + territories.get(i).name + "(" + playerName +  ", " + territories.get(i).getArmyCount() + " armies)->{ ");
+				if(showAdjacent) {
+					ArrayList<Territory> adjs = territories.get(i).getAdjacentTerritories();
+					for(int j = 0; j < adjs.size(); j++) {
+						System.out.print(adjs.get(j).name + ", ");
+					}
+					System.out.print("}");
+				}
+				System.out.print("\n");				
+			}
 		}
 	}
+	
 	public void setPlayers(Player[] players, boolean sortByInitRoll) {
 		int numOfPlayers = players.length;
 		System.out.println("Number of players: " + numOfPlayers);
@@ -87,11 +112,12 @@ public class Board {
 				break;
 		
 		}
-		if(sortByInitRoll) {
+		if(sortByInitRoll == true) {
 			Player temp;
 			for(int i = 0; i < numOfPlayers; i++) {
 				for (int j = i; j > 0; j--) {
 					// changed the conditional statement below to work with the initRolls array
+					// how to tiebreak?
 					if (initRolls[j] >  initRolls[j - 1]) {
 						temp = players[j];
 						players[j] = players[j - 1];
@@ -99,10 +125,10 @@ public class Board {
 					}
 				}
 			}
-			currentTurnsPlayer = 0;
+			currentPlayerIndex = 0;
 		} else {
 			// return max from dice rolls
-			currentTurnsPlayer = maxIndex;
+			currentPlayerIndex = maxIndex;
 		}
 		this.players = new ArrayList<Player>(Arrays.asList(players));
 		for(int i = 0; i < numOfPlayers; i++) {
@@ -113,6 +139,83 @@ public class Board {
 			System.out.println(players[i].name + " (" + players[i].color + "):" + diceRoll);
 		}
 		*/
+	}
+	
+	public void initialPlacement() {
+		// Show map with each territory's occupying player and army count
+		// Display player's available armies/turns remaining
+		
+		// Disperse initial troops
+		for(int i = 0; i < players.size(); i++) {
+			players.get(i).increaseArmies(initialArmies);
+		}
+		
+		// Player selects either an unoccupied territory (until all territories are occupied)
+		// 	or one of their territories to place ONE army (after all territories have been chosen)
+		printTerritories(true, true);
+		//System.out.println(players.get(currentPlayerIndex).getName() + ", choose a territory index to place one army: ");
+		while(players.get(currentPlayerIndex).armies > 0) {
+			if(unoccupiedTerritoriesCount() > 0)
+				printTerritories(true, false);
+			else
+				printTerritories(false, false);
+			int ti = pickTerritory();
+			Territory tempTerritory = territories.get(ti);
+			tempTerritory.setOccupant(players.get(currentPlayerIndex));
+			tempTerritory.incrementArmy(1);
+			// End turn and begin player to the left's turn. Continue until no remaining initial armies for any player.
+			incrementCurrentPlayerIndex();
+		}
+		
+	}
+	
+	private int pickTerritory() {
+		String territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place one army");
+		int ti = -1;
+		try {
+			ti = Integer.parseInt(territoryIndex);
+		} catch(NumberFormatException e) {
+			// not an int
+			System.out.println("Could not parse number. Try again");
+			ti = pickTerritory();
+		} catch(Exception e) {
+			// not a territory index
+			System.out.println("Error: " + e + "\nTry again");
+			ti = pickTerritory();
+		}
+		if(ti > territories.size() - 1) {
+			System.out.println("Out of range. Try again");
+			ti = pickTerritory();
+		}
+		if(unoccupiedTerritoriesCount() > 0) {
+			if(territories.get(ti).isOccupied()) {
+				System.out.println("Territory already occupied. Try again");
+				ti = pickTerritory();
+			}
+		} else {
+			if(territories.get(ti).getPlayer() != players.get(currentPlayerIndex)) {
+				System.out.println("You do not control this territory. Try again");
+				ti = pickTerritory();
+			}
+		}
+		return ti;
+	}
+	
+	public void incrementCurrentPlayerIndex() {
+		if(currentPlayerIndex == players.size() - 1)
+			currentPlayerIndex = 0;
+		else
+			currentPlayerIndex++;
+	}
+	
+	public int unoccupiedTerritoriesCount() {
+		int count = 0;
+		for(int i = 0; i < territories.size(); i++) {
+			if(!territories.get(i).isOccupied()) {
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	public int armyReplenishment(Player currentPlayer) {
@@ -146,17 +249,17 @@ public class Board {
 		
 		String[] africa = {"Congo", "East Africa", "Egypt", "Madagascar", "North Africa", "South Africa"};
 		for(int i = 0; i < africa.length; i++) {
-			territories.add(new Territory(africa[i], (byte)3));
+			territories.add(new Territory(africa[i], (byte)4));
 		}
 		
 		String[] asia = {"Afghanistan", "China", "India", "Irkutsk", "Japan", "Kamchatka", "Middle East", "Mongolia", "Siam", "Siberia", "Ural", "Yakutsk"};
 		for(int i = 0; i < asia.length; i++) {
-			territories.add(new Territory(asia[i], (byte)3));
+			territories.add(new Territory(asia[i], (byte)5));
 		}
 				
 		String[] australia = {"Eastern Australia", "Indonesia", "New Guinea", "Western Australia"};
 		for(int i = 0; i < australia.length; i++) {
-			territories.add(new Territory(australia[i], (byte)3));
+			territories.add(new Territory(australia[i], (byte)6));
 		}		
 		
 		// link territory nodes... any better idea on how to do this?

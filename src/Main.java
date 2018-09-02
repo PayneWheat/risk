@@ -14,18 +14,19 @@ public class Main {
 			System.out.println(tempCard.territoryName + ", " + tempCard.getCardTypeName());
 		}
 		
-		board.printTerritories();
+		board.printTerritories(false, true);
 		
 		// Prompt for number of players (here in main or in board constructor/method?)
 		// Dice d = new Dice(); Changed this up, see Board class.
 		//Player[]players = new Player[6];
-		int numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
 		
+		int numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
 		Player[] players = new Player[numOfPlayers];
 		
-		// Initial number of armies for each player is determined (now included in Board class)
+		// Initial number of armies for each player is determined 
+		// (now included in Board class (setPlayers method)
 
-		// Each player chooses their color and enters their name (here in main or in player constructor/method?)
+		// Each player chooses their color and enters their name
 		
 		for(int i = 0; i < numOfPlayers; i++)
 		{
@@ -49,22 +50,23 @@ public class Main {
 		// So, the player order is determined randomly, and the highest roller plays first.
 		
 		// Put the sorting in setPlayers method for Board.
-		board.setPlayers(players, true);
+		board.setPlayers(players, false);
 		
 		
 		// Players begin initial army placement and continue until all armies have been placed
-			// Show map with each territory's occupying player and army count
-			// Display Player's available armies/turns remaining
-			// Player selects either an unoccupied territory (until all territories are occupied)
-			// 	or one of their territories to place ONE army (after all territories have been chosen)
-			// End turn and begin player to the left's turn. Continue until no remaining initial armies for any player.
-		
+		board.initialPlacement();
+
 		// Players take turns until one player controls the whole board
 			// Should start with player that went first in the initial stage.
 			//	Each turn consists of three parts:
 			//	-- 1. Placing new troops
 			//	-- 2. Attacking
 			//	-- 3. Fortifying
-		
+		/*
+		boolean gameOn = true;
+		while(gameOn) {
+			gameOn = board.currentPlayerTurn();
+		}
+		*/
 	}
 }

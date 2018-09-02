@@ -6,15 +6,8 @@ public class Territory {
 	ArrayList<Territory> adjacentTerritories = new ArrayList<Territory>();
 	Player occupyingPlayer;
 	private boolean hasPlayer;
-	int armyCount;
-	/*
-	 * 1: North America (5)
-	 * 2: South America (2)
-	 * 3. Europe (5)
-	 * 4. Africa (3)
-	 * 5. Asia (7)
-	 * 6. Australia (2)
-	 */
+	private int armyCount;
+
 	public Territory(String name, byte continentIndex) {
 		this.name = name;
 		this.continentIndex = continentIndex;
@@ -26,6 +19,42 @@ public class Territory {
 	}
 	public byte getcontinentIndex(){
 		return continentIndex;
+	}
+	public String getContinent() {
+		/*
+		 * 1: North America (5)
+		 * 2: South America (2)
+		 * 3. Europe (5)
+		 * 4. Africa (3)
+		 * 5. Asia (7)
+		 * 6. Australia (2)
+		 */
+		String continent;
+		switch((int)continentIndex)
+		{
+			case 1:
+				continent = "North America";
+				break;
+			case 2:
+				continent = "South America";
+				break;
+			case 3:
+				continent = "Europe";
+				break;
+			case 4:
+				continent = "Africa";
+				break;
+			case 5:
+				continent = "Asia";
+				break;
+			case 6:
+				continent = "Australia";
+				break;
+			default:
+				continent = "NONE";
+				break;
+		}
+		return continent;
 	}
 	public void setOccupant(Player occupyingPlayer){
 		hasPlayer = true;
@@ -45,6 +74,9 @@ public class Territory {
 	}
 	public void decrementArmy(int armies){
 		armyCount = armyCount - armies;
+	}
+	public int getArmyCount() {
+		return armyCount;
 	}
 	public void setAdjacentTerritory(Territory territory) {
 		adjacentTerritories.add(territory);
