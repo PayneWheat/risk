@@ -424,6 +424,27 @@ public class Board {
 		printTerritories(true, false);
 		System.out.println("Territories size: " + this.territories.size());
 		System.out.println(this.territories.get(0).getTerritoryName());
+		
+		//set each XY coordinates for each territories
+		territories.get(0).setX(55);
+		territories.get(0).setY(107);
+		territories.get(1).setX(116);
+		territories.get(1).setY(149);
+		territories.get(2).setX(128);
+		territories.get(2).setY(265);
+		territories.get(3).setX(179);
+		territories.get(3).setY(221);
+		territories.get(4).setX(268);
+		territories.get(4).setY(77);
+		territories.get(5).setX(126);
+		territories.get(5).setY(109);
+		territories.get(6).setX(169);
+		territories.get(6).setY(163);
+		territories.get(7).setX(222);
+		territories.get(7).setY(160);
+		territories.get(8).setX(124);
+		territories.get(8).setY(203);
+		
 		// link territory nodes... any better idea on how to do this?
 		// Alaska
 		this.territories.get(0).setAdjacentTerritory(this.territories.get(1));

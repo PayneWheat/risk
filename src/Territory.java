@@ -7,12 +7,14 @@ public class Territory {
 	Player occupyingPlayer;
 	private boolean hasPlayer;
 	private int armyCount;
+	private int x;
+	private int y;
 
 	public Territory(String name, byte continentIndex) {
 		this.name = name;
 		this.continentIndex = continentIndex;
 		hasPlayer = false;
-		armyCount = 0;
+		armyCount = 0;	
 	}
 	public String getTerritoryName(){
 		return name;
@@ -83,5 +85,17 @@ public class Territory {
 	}
 	public ArrayList<Territory> getAdjacentTerritories() {
 		return adjacentTerritories;
+	}
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
+	public void setX(int X) {
+		this.x = X;
+	}
+	public void setY(int Y) {
+		this.y = Y;
 	}
 }
