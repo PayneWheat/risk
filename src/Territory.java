@@ -32,22 +32,22 @@ public class Territory {
 		String continent;
 		switch((int)continentIndex)
 		{
-			case 1:
+			case 0:
 				continent = "North America";
 				break;
-			case 2:
+			case 1:
 				continent = "South America";
 				break;
-			case 3:
+			case 2:
 				continent = "Europe";
 				break;
-			case 4:
+			case 3:
 				continent = "Africa";
 				break;
-			case 5:
+			case 4:
 				continent = "Asia";
 				break;
-			case 6:
+			case 5:
 				continent = "Australia";
 				break;
 			default:
