@@ -55,7 +55,7 @@ public class Main {
 		
 		
 		// Players begin initial army placement and continue until all armies have been placed
-		board.initialPlacement();
+		board.initialPlacement(true);
 
 		// Players take turns until one player controls the whole board
 			// Should start with player that went first in the initial stage.

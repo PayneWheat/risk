@@ -79,7 +79,12 @@ public class Board {
 			}
 		}
 	}
-	
+	/**
+	 * 
+	 * @param players the array of players initialized in main
+	 * @param sortByInitRoll sorts player order by dice roll if true
+	 * otherwise, the players are ordered as they entered their names.
+	 */
 	public void setPlayers(Player[] players, boolean sortByInitRoll) {
 		int numOfPlayers = players.length;
 		System.out.println("Number of players: " + numOfPlayers);
@@ -143,8 +148,10 @@ public class Board {
 		}
 		*/
 	}
-	
-	public void initialPlacement() {
+	/**
+	 * @param automatic automatically places initial troops if true
+	 */
+	public void initialPlacement(boolean automatic) {
 		// Show map with each territory's occupying player and army count
 		// Display player's available armies/turns remaining
 		
@@ -157,12 +164,24 @@ public class Board {
 		// 	or one of their territories to place ONE army (after all territories have been chosen)
 		printTerritories(true, true);
 		//System.out.println(players.get(currentPlayerIndex).getName() + ", choose a territory index to place one army: ");
+		int i = 1;
 		while(players.get(currentPlayerIndex).armies > 0) {
-			if(unoccupiedTerritoriesCount() > 0)
-				printTerritories(true, false);
-			else
-				printTerritories(false, true);
-			int ti = pickTerritory(true);
+			int ti = -1;
+			if(!automatic) {
+				if(unoccupiedTerritoriesCount() > 0)
+					printTerritories(true, false);
+				else
+					printTerritories(false, true);
+				ti = pickTerritory(true);
+			} else {
+				ti = currentPlayerIndex * (territories.size() / players.size()) + (i / players.size());
+				if(ti == 42) {
+					i = 1;
+					continue;
+				}
+				System.out.println("Auto ti: " + ti + "\ni/players.size() value: " + i / players.size());
+				i++;
+			}
 			Territory tempTerritory = territories.get(ti);
 			tempTerritory.setOccupant(players.get(currentPlayerIndex));
 			tempTerritory.incrementArmy(1);
@@ -170,12 +189,16 @@ public class Board {
 			// End turn and begin player to the left's turn. Continue until no remaining initial armies for any player.
 			incrementCurrentPlayerIndex();
 		}
-		
+
 	}
 	
 	private int pickTerritory(boolean initialTurns) {
 		int ti = -1;
-		String territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place one army");
+		String territoryIndex = "";
+		if(initialTurns)
+			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place one army");
+		else
+			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place at least one army");
 		try {
 			ti = Integer.parseInt(territoryIndex);
 		} catch(NumberFormatException e) {
