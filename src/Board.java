@@ -79,6 +79,9 @@ public class Board {
 			}
 		}
 	}
+	
+	
+	
 	/**
 	 * 
 	 * @param players the array of players initialized in main
@@ -179,7 +182,6 @@ public class Board {
 					i = 1;
 					continue;
 				}
-				System.out.println("Auto ti: " + ti + "\ni/players.size() value: " + i / players.size());
 				i++;
 			}
 			Territory tempTerritory = territories.get(ti);
@@ -304,6 +306,158 @@ public class Board {
 		return armies;
 	}
 	
+	private Territory chooseAttackingTerritory() {
+		// The territory must have at least 2 troops, and needs to be
+		//	 adjacent to a territory occupied by an opponent. (i.e., if 
+		//	 a player's territory is completely surrounded by his own, other territories)
+		ArrayList<Territory> attackTerritories = new ArrayList<Territory>();
+		for(int i = 0; i < territories.size(); i++) {
+			if(territories.get(i).getPlayer() == players.get(currentPlayerIndex) && territories.get(i).getArmyCount() > 1) {
+				attackTerritories.add(territories.get(i));
+				System.out.println("[" + i + "]" + territories.get(i).getTerritoryName() + ": " + territories.get(i).getArmyCount() + " armies");
+			}
+		}
+		String attackingTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to attack from.");
+		int attackingTerritoryIndex = -1;
+		Territory tempTerritory = new Territory();
+		try {
+			attackingTerritoryIndex = Integer.parseInt(attackingTerritoryInput);
+			tempTerritory = territories.get(attackingTerritoryIndex);
+		} catch(NumberFormatException e) {
+			// not an int
+			System.out.println("Could not parse number. Try again");
+			tempTerritory = chooseAttackingTerritory();
+		} catch(Exception e) {
+			// not a territory index
+			System.out.println("Error: " + e + "\nTry again");
+			tempTerritory = chooseAttackingTerritory();
+		}
+		if(tempTerritory.getPlayer() != players.get(currentPlayerIndex)) {
+			System.out.println("You do not occupy supplied territory. Try again");
+			tempTerritory = chooseAttackingTerritory();
+		}
+		return tempTerritory;
+	}
+	private Territory chooseTerritoryToAttack(Territory attackingTerritory) {
+		// Display adjacent territories occupied by another player
+		// and prompt the user to select one
+		Territory tempTerritory = new Territory();
+		ArrayList<Territory> opposingAdjacents = attackingTerritory.getAdjacentTerritories(true);
+		String defendingTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose an opponent's territory to attack.");
+		int defendingTerritoryIndex = -1;
+		try {
+			defendingTerritoryIndex = Integer.parseInt(defendingTerritoryInput);
+			tempTerritory = territories.get(defendingTerritoryIndex);
+		} catch(NumberFormatException e) {
+			// not an int
+			System.out.println("Could not parse number. Try again");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory);
+		} catch(Exception e) {
+			// not a territory index
+			System.out.println("Error: " + e + "\nTry again");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory);
+		}
+		if(tempTerritory.getPlayer() == players.get(currentPlayerIndex)) {
+			System.out.println("You cannot attack your own territory. Try again");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory);
+		}
+		// search opposingAdjacents for territories.get(defendingTerritoryIndex); ensure it is adjacent
+		if(!opposingAdjacents.contains(tempTerritory)) {
+			System.out.println("That territory is not adjacent to the attacking territory you selected.\nTry again");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory);
+		}
+		// add option to cancel and go back to step before (choosing attacking territory).
+		return tempTerritory;
+	}
+	private boolean attack(Territory attackingTerritory, Territory defendingTerritory) {
+		boolean continueAttack = false;
+		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
+		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ")");
+		// Prompt player to roll dice, with the number of dice determined
+		// for both players by the total armies present on either territory.
+		// OR allow player to "retreat" -- or stop attack
+		boolean continueAttacking = true;
+		while(continueAttacking) {
+			// If attacker has 2 armies, they roll one die.
+			// If attacker has 3 armies, they roll two dice.
+			// If attacker has 4 or more armies, they roll three dice.
+			int attackingDiceTotal = 0;
+			if(attackingTerritory.getArmyCount() > 3) {
+				attackingDiceTotal = 3;
+			} else if (attackingTerritory.getArmyCount() == 3) {
+				attackingDiceTotal = 2;
+			} else if (attackingTerritory.getArmyCount() == 2) {
+				attackingDiceTotal = 1;
+			}
+			// If defender has 1 army, they roll one die.
+			// If defender has 2 or more armies, they roll two dice.
+			int defendingDiceTotal = 0;
+			if(defendingTerritory.getArmyCount() > 1) {
+				defendingDiceTotal = 2;
+			} else if(defendingTerritory.getArmyCount() == 1) {
+				defendingDiceTotal = 1;
+			}
+			System.out.println(attackingTerritory.getPlayer().getName() + " rolls " + attackingDiceTotal + " die/dice.");
+			System.out.println(defendingTerritory.getPlayer().getName() + " rolls " + defendingDiceTotal + " die/dice.");
+			
+			ArrayList<Dice> attackingDice = new ArrayList<Dice>();
+			for(int i = 0; i < attackingDiceTotal; i++) {
+				attackingDice.add(new Dice());
+				attackingDice.get(i).roll();
+			}
+			System.out.print(attackingTerritory.getPlayer().getName() + " rolled ");
+			for(int i = 0; i < attackingDiceTotal; i++) {
+				System.out.print(attackingDice.get(i).getCurrentValue() + " ");
+			}
+			System.out.println();
+			ArrayList<Dice> defendingDice = new ArrayList<Dice>();
+			for(int i = 0; i < defendingDiceTotal; i++) {
+				defendingDice.add(new Dice());
+				defendingDice.get(i).roll();
+			}
+			System.out.print(defendingTerritory.getPlayer().getName() + " rolled ");
+			for(int i = 0; i < defendingDiceTotal; i++) {
+				System.out.print(defendingDice.get(i).getCurrentValue() + " ");
+			}
+			System.out.println();
+			// Sort dice descending by value for both players. 
+			// E.g., if attacking player A rolls a 3, 6, and 2 
+			// the dice should be sorted 6, 3, 2
+			
+			// Find the minimum of number of dice rolled between the two players
+			// (it must either be 1 or 2), then compare each of the 1 or 2 dice
+			// to the opposing player's dice.
+			// If the defender's die is greater than or equal to the attacker's,
+			// the attacker loses an army
+			// Else if the defender's die is less than the attacker's, 
+			// the defender loses an army
+			// This is done with the dice sorted from high to low for both players
+			
+			// Display results
+			
+			// Repeat until:
+			// A) the attacking player retreats,
+			// B) has only 1 remaining army on their territory, or
+			// C) has wiped out the defending players armies on their territory.
+			String[] values = {"Yes", "No"};
+			Object selected = JOptionPane.showInputDialog(null, "Continue attacking " + attackingTerritory.getTerritoryName() + "?", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
+			if ( selected != null ) {//null if the user cancels. 
+			    String selectedString = selected.toString();
+			    //do something
+			} else {
+			    System.out.println("User cancelled");
+			}
+			if(selected == "No") {
+				continueAttacking = false;
+			}
+		}
+		// If case C, prompt user to choose how many armies to move into the
+		// newly acquired territory from the attacking territory.
+		
+		// Prompt the player either attack another territory
+		// or end the attack phase of their turn
+		return continueAttack;
+	}
 	public boolean currentPlayerTurn() {
 		boolean continueGame = false;
 		//	Each turn consists of three parts:
@@ -330,40 +484,19 @@ public class Board {
 			// Repeat until no armies remaining for player.
 		}
 		printTerritories(false, true);
+		
 		// 2. Attacking
 		// Prompt player to choose a territory to attack from
-		// 	 The territory must have at least 2 troops, and needs to be
-		//	 adjacent to a territory occupied by an opponent. (i.e., if 
-		//	 a player's territory is completely surrounded by his own, other territories)
-		
-		// Prompt player to roll dice, with the number of dice determined
-		// for both players by the total armies present on either territory.
-		// OR allow player to "retreat" -- or stop attack 
-		//	 If attacker has 2 armies, they roll one die.
-		//	 If attacker has 3 armies, they roll two dice.
-		//	 If attacker has 4 or more armies, they roll three dice.
-		//	 If defender has 1 army, they roll one die.
-		//	 If defender has 2 or more armies, they roll two dice.
-		
-		// Sort dice descending by value for both players. 
-		// E.g., if attacking player A rolls a 3, 6, and 2 
-		// the dice should be sorted 6, 3, 2
-		
-		// Find the minimum of number of dice rolled between the two players
-		// (it must either be 1 or 2), then compare each of the 1 or 2 dice
-		// to the opposing player's dice. The lower die loses an army on their territory. 
-		// This is done with the dice sorted from high to low for both players
-		
-		// Repeat until:
-		// A) the attacking player retreats,
-		// B) has only 1 remaining army on their territory, or
-		// C) has wiped out the defending players armies on their territory.
-		
-		// If case C, prompt user to choose how many armies to move into the
-		// newly acquired territory from the attacking territory.
-		
-		// Prompt the player either attack another territory
-		// or end the attack phase of their turn
+		Territory attackingTerritory = chooseAttackingTerritory();
+		System.out.println("Attacking from " + attackingTerritory.getTerritoryName());
+		// Prompt player to choose a territory to attack
+		Territory defendingTerritory = chooseTerritoryToAttack(attackingTerritory);
+		System.out.println("Defending from " + defendingTerritory.getTerritoryName());
+		boolean continueAttack = true;
+		while(continueAttack) {
+			// Continue until player decides to end attack phase
+			continueAttack = attack(attackingTerritory, defendingTerritory);
+		}
 		
 		// 3. Fortifying
 		
