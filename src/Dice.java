@@ -22,4 +22,7 @@ public class Dice
 		roll();
 		return diceValue;
 	}
+	public int getCurrentValue() {
+		return diceValue;
+	}
 }

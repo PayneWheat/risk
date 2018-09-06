@@ -9,7 +9,12 @@ public class Territory {
 	private int armyCount;
 	private int x;
 	private int y;
-
+	public Territory() {
+		this.name = "";
+		this.continentIndex = (byte)-1;
+		hasPlayer = false;
+		armyCount = 0;
+	}
 	public Territory(String name, byte continentIndex) {
 		this.name = name;
 		this.continentIndex = continentIndex;
@@ -21,6 +26,22 @@ public class Territory {
 	}
 	public byte getcontinentIndex(){
 		return continentIndex;
+	}
+	public ArrayList<Territory> getAdjacentTerritories(boolean onlyOtherPlayers) {
+		ArrayList<Territory> tempList = new ArrayList<Territory>();
+		for(int i = 0; i < adjacentTerritories.size(); i++) {
+			Territory tempTerritory = adjacentTerritories.get(i);
+			if(onlyOtherPlayers) {
+				if(tempTerritory.getPlayer() != occupyingPlayer) {
+					tempList.add(tempTerritory);
+					System.out.println(tempTerritory.getTerritoryName() + "(" + tempTerritory.getPlayer().getName() + "):" + tempTerritory.getArmyCount() + " armies");
+				}
+			} else {
+				tempList.add(tempTerritory);
+				System.out.println(tempTerritory.getTerritoryName() + "(" + tempTerritory.getPlayer().getName() + "):" + tempTerritory.getArmyCount() + " armies");
+			}
+		}
+		return tempList;
 	}
 	public String getContinent() {
 		/*
@@ -34,22 +55,22 @@ public class Territory {
 		String continent;
 		switch((int)continentIndex)
 		{
-			case 1:
+			case 0:
 				continent = "North America";
 				break;
-			case 2:
+			case 1:
 				continent = "South America";
 				break;
-			case 3:
+			case 2:
 				continent = "Europe";
 				break;
-			case 4:
+			case 3:
 				continent = "Africa";
 				break;
-			case 5:
+			case 4:
 				continent = "Asia";
 				break;
-			case 6:
+			case 5:
 				continent = "Australia";
 				break;
 			default:

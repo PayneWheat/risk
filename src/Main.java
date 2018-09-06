@@ -1,11 +1,11 @@
-import java.util.*;
+//import java.util.*;
 import javax.swing.JOptionPane;
 
 
 public class Main {
 	public static void main(String[] args) {
 		// Risk
-		
+		System.out.println("We will put Risk here.");
 		Board board = new Board();
 		Map map = new Map();
 		
@@ -55,19 +55,14 @@ public class Main {
 		
 		
 		// Players begin initial army placement and continue until all armies have been placed
-		board.initialPlacement();
+		board.initialPlacement(true);
 
 		// Players take turns until one player controls the whole board
 			// Should start with player that went first in the initial stage.
-			//	Each turn consists of three parts:
-			//	-- 1. Placing new troops
-			//	-- 2. Attacking
-			//	-- 3. Fortifying
-		/*
-		boolean gameOn = true;
-		while(gameOn) {
-			gameOn = board.currentPlayerTurn();
+		boolean continueGame = true;
+		while(continueGame) {
+			continueGame = board.currentPlayerTurn();
 		}
-		*/
+		
 	}
 }
