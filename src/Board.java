@@ -372,7 +372,7 @@ public class Board {
 	private boolean attack(Territory attackingTerritory, Territory defendingTerritory) {
 		boolean continueAttack = false;
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
-		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ")");
+		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
 		// Prompt player to roll dice, with the number of dice determined
 		// for both players by the total armies present on either territory.
 		// OR allow player to "retreat" -- or stop attack
