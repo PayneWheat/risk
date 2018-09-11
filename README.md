@@ -39,6 +39,7 @@ At the beginning of each player’s turn, if they have a set of cards that can b
 - 6th set: 15 armies  
 - 7th set: 20 armies  
 - 8th+ sets: 20 + (set# - 7) * 5  (8th set receives 25, 9th receives 30, 10th receives 35, …)
+
 If any of the 3 cards turned in has a territory the player is currently occupying, the player receives an additional 2 armies on that territory.
 
 ----

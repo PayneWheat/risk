@@ -1,4 +1,4 @@
-
+import java.util.*;
 public class Player 
 {
 	String name;
@@ -8,6 +8,7 @@ public class Player
 	int territoriesOccupied;
 	int countriesOccupied;
 	int continentsOccupied;
+	ArrayList<Card> cards;
 	
 	Player() {
 		this.name = "";
@@ -17,6 +18,7 @@ public class Player
 		this.territoriesOccupied = 0;
 		this.continentsOccupied = 0;
 		this.countriesOccupied = 0;
+		this.cards = new ArrayList<Card>();
 	}
 	Player(String name, String color) {
 		this.name = name;
@@ -26,6 +28,7 @@ public class Player
 		this.territoriesOccupied = 0;
 		this.countriesOccupied = 0;
 		this.continentsOccupied = 0;
+		this.cards = new ArrayList<Card>();
 	}
 	Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied){
 
@@ -35,6 +38,7 @@ public class Player
 		this.diceValue = diceValue;
 		this.territoriesOccupied = countriesOccupied;
 		this.continentsOccupied = continentsOccupied;	
+		this.cards = new ArrayList<Card>();
 	}
 	
 	public String getName() {
@@ -63,5 +67,7 @@ public class Player
 		armies = armies - numOfArmies;
 		System.out.println(name + " lost " + numOfArmies + " armies.");
 	}
-	
+	public void addCard(Card card) {
+		cards.add(card);
+	}
 }

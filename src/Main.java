@@ -5,15 +5,8 @@ import javax.swing.JOptionPane;
 public class Main {
 	public static void main(String[] args) {
 		// Risk
-		System.out.println("We will put Risk here.");
 		Board board = new Board();
 		Map map = new Map();
-		
-		// Card Pilot: should always have a set to turn in after 5 cards are collected.
-		for(int i = 0; i < 5; i++) {
-			Card tempCard = board.drawCard();
-			System.out.println(tempCard.territoryName + ", " + tempCard.getCardTypeName());
-		}
 		
 		board.printTerritories(false, true);
 		

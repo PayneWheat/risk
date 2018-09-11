@@ -27,18 +27,29 @@ public class Territory {
 	public byte getcontinentIndex(){
 		return continentIndex;
 	}
-	public ArrayList<Territory> getAdjacentTerritories(boolean onlyOtherPlayers) {
+	public void setPlayer(Player player) {
+		occupyingPlayer = player;
+	}
+	public ArrayList<Territory> getAdjacentTerritories(boolean onlyOtherPlayers, boolean onlyPlayerTerritories, boolean print) {
 		ArrayList<Territory> tempList = new ArrayList<Territory>();
 		for(int i = 0; i < adjacentTerritories.size(); i++) {
 			Territory tempTerritory = adjacentTerritories.get(i);
 			if(onlyOtherPlayers) {
 				if(tempTerritory.getPlayer() != occupyingPlayer) {
 					tempList.add(tempTerritory);
-					System.out.println(tempTerritory.getTerritoryName() + "(" + tempTerritory.getPlayer().getName() + "):" + tempTerritory.getArmyCount() + " armies");
+					if(print)
+						System.out.println(tempTerritory.getTerritoryName() + "(" + tempTerritory.getPlayer().getName() + "):" + tempTerritory.getArmyCount() + " armies");
 				}
 			} else {
-				tempList.add(tempTerritory);
-				System.out.println(tempTerritory.getTerritoryName() + "(" + tempTerritory.getPlayer().getName() + "):" + tempTerritory.getArmyCount() + " armies");
+				if(onlyPlayerTerritories) {
+					if(tempTerritory.getPlayer() == occupyingPlayer) {
+						tempList.add(tempTerritory);
+					}
+				} else {
+					tempList.add(tempTerritory);
+					if(print)
+						System.out.println(tempTerritory.getTerritoryName() + "(" + tempTerritory.getPlayer().getName() + "):" + tempTerritory.getArmyCount() + " armies");					
+				}
 			}
 		}
 		return tempList;
