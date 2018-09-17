@@ -93,11 +93,14 @@ public class Board {
 	public void setPlayers(Player[] players, boolean sortByInitRoll) {
 		int numOfPlayers = players.length;
 		System.out.println("Number of players: " + numOfPlayers);
-		// roll dice for each player
+		
+		// Roll dice for each player to determine who goes first
 		Dice d = new Dice();
 		int initRolls[] = new int[numOfPlayers];
 		int maxIndex = 0;
 		initRolls[0] = d.getDiceValue();
+		
+		// Sorting and displaying results
 		System.out.println(players[0].getName() + " rolled a " + initRolls[0]);
 		for(int i = 1; i < numOfPlayers; i++) {
 			initRolls[i] = d.getDiceValue();
@@ -106,6 +109,8 @@ public class Board {
 				maxIndex = i;
 		}
 		System.out.println(players[maxIndex].getName() + " goes first.");
+		
+		// Determine the number of initial armies to place by the number of players
 		switch(numOfPlayers)
 		{
 			case 2:
@@ -123,8 +128,9 @@ public class Board {
 			case 6: 
 				initialArmies = 20;
 				break;
-		
 		}
+		
+		// TODO: Find a way to tiebreak the dice rolls in this situation
 		if(sortByInitRoll == true) {
 			Player temp;
 			for(int i = 0; i < numOfPlayers; i++) {
@@ -143,25 +149,24 @@ public class Board {
 			// return max from dice rolls
 			currentPlayerIndex = maxIndex;
 		}
+		
+		// Converting array parameter Players into an ArrayList
 		this.players = new ArrayList<Player>(Arrays.asList(players));
 		for(int i = 0; i < numOfPlayers; i++) {
 			System.out.println(" The order of players to play is " + players[i].getName());
 		}
-		/*
-		for(int i = 0; i < this.players.size(); i++) {
-			System.out.println(players[i].name + " (" + players[i].color + "):" + diceRoll);
-		}
-		*/
-		
-		// CARD PILOT
+
+		// CARD PILOT -- just checking that the cards are working
 		for(int i = 0; i < numOfPlayers; i++) {
 			for(int j = 0; j < 5; j++) {
 				this.players.get(i).addCard(drawCard());
 			}
 		}
 	}
+	
 	/**
 	 * @param automatic automatically places initial troops if true
+	 * The first step in a game of Risk: initial troop placement.
 	 */
 	public void initialPlacement(boolean automatic) {
 		// Show map with each territory's occupying player and army count
@@ -202,14 +207,21 @@ public class Board {
 		}
 
 	}
-	
+	/**
+	 * 
+	 * @param initialTurns boolean flag indicating whether or not it's the initial placement step.
+	 * If true, player can only place one army at a time.
+	 * @return index of territory picked
+	 */
 	private int pickTerritory(boolean initialTurns) {
 		int ti = -1;
 		String territoryIndex = "";
 		if(initialTurns)
-			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place one army");
+			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place one army (" + players.get(currentPlayerIndex).getArmies() + " remaining)");
 		else
-			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place at least one army");
+			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place at least one army (" + players.get(currentPlayerIndex).getArmies() + " remaining)");
+		
+		// TODO: Abstract out a function for parsing input from JOptionPane 
 		try {
 			ti = Integer.parseInt(territoryIndex);
 		} catch(NumberFormatException e) {
@@ -221,11 +233,12 @@ public class Board {
 			System.out.println("Error: " + e + "\nTry again");
 			ti = pickTerritory(initialTurns);
 		}
+		
+		// TODO: change these to a try/catch block. Throw proper exceptions
 		if(ti > territories.size() - 1) {
 			System.out.println("Out of range. Try again");
 			ti = pickTerritory(initialTurns);
 		}
-		
 		if(unoccupiedTerritoriesCount() > 0) {
 			if(territories.get(ti).isOccupied()) {
 				System.out.println("Territory already occupied. Try again");
@@ -240,6 +253,11 @@ public class Board {
 		
 		return ti;
 	}
+	
+	/**
+	 * Prompts user to choose how many armies to place on a territory.
+	 * @return number of armies to be placed
+	 */
 	
 	private int placeArmies() {
 		String armyQty = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", how many of your " + players.get(currentPlayerIndex).getArmies() + " remaining armies?");
@@ -265,6 +283,10 @@ public class Board {
 		return armies;
 	}
 	
+	/**
+	 * Increments the current player index value.
+	 * If the value is equal to the total number of players - 1, reset the index to 0
+	 */
 	public void incrementCurrentPlayerIndex() {
 		if(currentPlayerIndex == players.size() - 1)
 			currentPlayerIndex = 0;
@@ -272,6 +294,11 @@ public class Board {
 			currentPlayerIndex++;
 	}
 	
+	/**
+	 * Returns the number of unoccupied territories remaining on the board
+	 * For use during the initial army placements.
+	 * @return the number of unoccupied territories remaining
+	 */
 	public int unoccupiedTerritoriesCount() {
 		int count = 0;
 		for(int i = 0; i < territories.size(); i++) {
@@ -281,6 +308,11 @@ public class Board {
 		}
 		return count;
 	}
+	/**
+	 * Returns the current player's territory count
+	 * For use when calculating replenishment armies
+	 * @return count of territories occupied by current player
+	 */
 	public int getCurPlayerTerritoriesCount() {
 		int count = 0;
 		for(int i = 0; i < territories.size(); i++) {
@@ -290,6 +322,11 @@ public class Board {
 		}
 		return count;
 	}
+	
+	/**
+	 * Calculates how many armies are to be given to the player at the beginning of the turn
+	 * @return number of armies gained
+	 */
 	public int armyReplenishment() {
 		// Army replenishment at beginning of player's turn.
 		//Player curPlayer = players.get(currentPlayerIndex);
@@ -315,6 +352,11 @@ public class Board {
 		return armies;
 	}
 	
+	/**
+	 * Returns an ArrayList of the specified player's territories.
+	 * @param player which player to fetch territories for
+	 * @return ArrayList of the player's territories
+	 */
 	private ArrayList<Territory> getPlayersTerritories(Player player) {
 		ArrayList<Territory> playersTerritories = new ArrayList<Territory>();
 		for(int i = 0; i < territories.size(); i++) {
@@ -325,6 +367,11 @@ public class Board {
 		return playersTerritories;
 	}
 	
+	/**
+	 * Prompts user to select one of their territories to attack from
+	 * For use during the attack step of a player's turn
+	 * @return Territory selected
+	 */
 	private Territory chooseAttackingTerritory() {
 		// The territory must have at least 2 troops, and needs to be
 		//	 adjacent to a territory occupied by an opponent. (i.e., if 
@@ -348,6 +395,7 @@ public class Board {
 		String attackingTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to attack from.");
 		int attackingTerritoryIndex = -1;
 		Territory tempTerritory = new Territory();
+		// TODO: abstract out a function to parse JOptionPane input
 		try {
 			attackingTerritoryIndex = Integer.parseInt(attackingTerritoryInput);
 			tempTerritory = territories.get(attackingTerritoryIndex);
@@ -360,13 +408,20 @@ public class Board {
 			System.out.println("Error: " + e + "\nTry again");
 			tempTerritory = chooseAttackingTerritory();
 		}
+		// TODO: Change these to try/catch blocks and throw proper exceptions
 		if(tempTerritory.getPlayer() != players.get(currentPlayerIndex)) {
-			System.out.println("You do not occupy supplied territory. Try again");
+			System.out.println("You do not occupy selected territory. Try again");
 			tempTerritory = chooseAttackingTerritory();
 		}
 		return tempTerritory;
 	}
 	
+	/**
+	 * Prompts player to choose a territory to attack.
+	 * For use when the player is in the attack step of their turn.
+	 * @param attackingTerritory Territory chosen prior to attack from
+	 * @return Territory selected to be attacked
+	 */
 	private Territory chooseTerritoryToAttack(Territory attackingTerritory) {
 		// Display adjacent territories occupied by another player
 		// and prompt the user to select one
@@ -403,6 +458,12 @@ public class Board {
 		return tempTerritory;
 	}
 	
+	/**
+	 * Sorts an ArrayList of Dice in descending order
+	 * For use when comparing the dice during an attack
+	 * @param dice An ArrayList of Dice objects
+	 * @return Sorted ArrayList
+	 */
 	public ArrayList<Dice> sortDice(ArrayList<Dice> dice) {
 		if(dice.size() < 2)
 			return dice;
@@ -418,6 +479,13 @@ public class Board {
 		return dice;
 	}
 	
+	/**
+	 * Moves armies from one territory to another
+	 * @param fromTerritory The territory to move armies from
+	 * @param toTerritory The territory to move armies to
+	 * @param armies The number of armies to move
+	 */
+	// TODO: Validation
 	private void moveArmies(Territory fromTerritory, Territory toTerritory, int armies) {
 		System.out.println("Moving " + armies + " armies from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName());
 		// check player has both territories
@@ -427,6 +495,14 @@ public class Board {
 		toTerritory.incrementArmy(armies);
 	}
 	
+	/**
+	 * The attack step for the current player
+	 * @param curAttack Attack object that holds a flag indicating if the Player receives a Risk card at the end of the attack step
+	 * 	AND if the player chooses to continue the current attack
+	 * @param attackingTerritory selected territory to attack from
+	 * @param defendingTerritory selected territory to attack
+	 * @return current Attack object
+	 */
 	private Attack attack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
@@ -502,6 +578,7 @@ public class Board {
 				minDiceTotal = attackingDiceTotal;
 			}
 			
+			// Compare the dice rolls
 			for(int i = 0; i < minDiceTotal; i++) {
 				if(defendingDice.get(i).getCurrentValue() < attackingDice.get(i).getCurrentValue()) {
 					// If the defender's die is less than the attacker's, 
@@ -515,16 +592,20 @@ public class Board {
 					attackingTerritory.decrementArmy(1);
 				}
 			}
-			// Display results
 			
 			// Repeat until:
-			// A) has wiped out the defending players armies on their territory.
+			// A) The attacking player has wiped out the defending players armies on their territory.
 			if(defendingTerritory.getArmyCount() == 0) {
 				if(!curAttack.receiveCard)
 					curAttack.receiveCard = true;
 				System.out.println(attackingTerritory.getPlayer().getName() + " has conquered " + defendingTerritory.getTerritoryName());
 				// change ownership of territory
 				defendingTerritory.setPlayer(attackingTerritory.getPlayer());
+				
+				// TODO: Check if the defending player has more than 0 remaining territories. If not, remove player from players ArrayList
+				// TODO: If the defending player has lost, then check if there are more than 1 remaining players in the players ArrayList.
+				//			If not, the game is over.
+				
 				// prompt attacking player to move at least 1 troop into conquered territory
 				int armiesToMove = 0;
 				boolean tryAgain = true;
@@ -551,7 +632,7 @@ public class Board {
 				moveArmies(attackingTerritory, defendingTerritory, armiesToMove);
 			}
 			
-			// B) has only 1 remaining army on their territory, or
+			// B) The attacking player has only 1 remaining army on their territory
 			if(attackingTerritory.getArmyCount() == 1) {
 				// attacking player can no longer attack from this territory
 				System.out.println(attackingTerritory.getPlayer().getName() + " no longer has enough armies to attack from " + attackingTerritory.getTerritoryName());
@@ -571,12 +652,13 @@ public class Board {
 				    continueAttacking = false;
 				}
 			}
-			// C) the attacking player retreats,
+			// C) the attacking player retreats
 
 		}
 		String[] values = {"Yes", "No"};
 		Object selected = JOptionPane.showInputDialog(null, "Choose a different territory to attack from?", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
-		if ( selected != null ) {//null if the user cancels. 
+		if ( selected != null ) {
+			//null if the user cancels. 
 		    String selectedString = selected.toString();
 			if(selectedString == "No") {
 				curAttack.continueAttack = false;
@@ -589,6 +671,13 @@ public class Board {
 		// or end the attack phase of their turn
 		return curAttack;
 	}
+	
+	/**
+	 * Fortification step during the current player's turn
+	 */
+	// Currently, this step only allows the player to move armies from one territory to another that is immediately adjacent to it
+	// I believe the rules of Risk allow the player to move armies across multiple territories as long as they're all connected
+	// TODO: We need to include a method that traverses all of the player's connected territories rather than just the immediately adjacent ones.
 	public void fortify() {
 		// Prompt player to pick a territory to move armies from		
 		ArrayList<Territory> playersTerritories = getPlayersTerritories(players.get(currentPlayerIndex));
@@ -674,6 +763,20 @@ public class Board {
 		moveArmies(fromTerritory, toTerritory, armiesToMove);
 		
 	}
+	
+	/**
+	 * Adds all possible subsets of supplied cards to the subsets parameter
+	 * @param organizedCards An ArrayList of cards to check for each unique permutation. 
+	 * In practice, this only needs to be called when the player has more than one possible sets of cards to turn in.
+	 * Additionally, this only needs to be called when the player has three of a kind or one or more wild cards
+	 * In the case the player has one or more of each card, the oneOfEachExtractor method will be called. 
+	 * @param n organizedCards size
+	 * @param r Subset size
+	 * @param index
+	 * @param data Temp array of the current set of cards being produced
+	 * @param i 
+	 * @param subsets 2D ArrayList of all subsets of size r
+	 */
 	private void getSubsetsUtil(ArrayList<Card> organizedCards, int n, int r, int index, Card[] data, int i, ArrayList<ArrayList<Card>> subsets) {
 		if(index == r) {
 			for(int j = 0; j < r; j++) {
@@ -689,12 +792,25 @@ public class Board {
 		
 		getSubsetsUtil(organizedCards, n, r, index, data, i + 1, subsets);
 	}
+	/**
+	 * If the player has three of a kind, find all the possible subsets of the card type 
+	 * @param organizedCards needs to contain only the cards that make up all of the three of a kind subsets
+	 * @return 2D ArrayList of all possible subsets of size 3
+	 */
 	private ArrayList<ArrayList<Card>> threeOfAKindSubsets(ArrayList<Card> organizedCards) {
 		Card[] data = new Card[3];
 		ArrayList<ArrayList<Card>> subsets = new ArrayList<ArrayList<Card>>();
 		getSubsetsUtil(organizedCards, organizedCards.size(), 3, 0, data, 0, subsets);
 		return subsets;
 	}
+	/**
+	 * Organizes the player's cards to be supplied to the proper subset function
+	 * @param playerCards Current player's cards
+	 * @param infantryCount The count of infantry cards the player is in possession of
+	 * @param cavalryCount The count of cavalry cards the player is in possession of
+	 * @param artilleryCount The count of artillery cards the player is in possession of
+	 * @return 2D ArrayList of all possible three of a kind subsets
+	 */
 	public ArrayList<ArrayList<Card>> threeOfAKindExtractor(ArrayList<Card> playerCards, int infantryCount, int cavalryCount, int artilleryCount) {
 		ArrayList<ArrayList<Card>> CardSets = new ArrayList<ArrayList<Card>>();
 		if(infantryCount >= 3) {
@@ -740,7 +856,14 @@ public class Board {
 		
 		return CardSets;
 	}
-	
+	/**
+	 * Nested loop to determine all possible combinations of sets of Risk cards where the player has one of each card type
+	 * @param playerCards Current player's cards
+	 * @param infantryCount The count of infantry cards the player is in possession of
+	 * @param cavalryCount The count of cavalry cards the player is in possession of
+	 * @param artilleryCount The count of artillery cards the player is in possession of
+	 * @return 2D ArrayList of all possible three of a kind subsets
+	 */
 	public ArrayList<ArrayList<Card>> oneOfEachExtractor(ArrayList<Card> playerCards, int infantryCount, int cavalryCount, int artilleryCount) {
 		ArrayList<ArrayList<Card>> CardSets = new ArrayList<ArrayList<Card>>();
 		for(int i = 0; i < infantryCount; i++) {
@@ -807,6 +930,7 @@ public class Board {
 		}
 		return tempSets;
 	}
+	
 	private int turnInCardSet(Player player, ArrayList<Card> cardSet) {
 		// check set
 		
@@ -840,6 +964,7 @@ public class Board {
 			return 0;
 		}
 	}
+	
 	public boolean currentPlayerTurn() {
 		boolean continueGame = true;
 		//	Each turn consists of three parts:
