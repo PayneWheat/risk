@@ -1038,16 +1038,26 @@ public class Board {
 				}
 			}
 			boolean tryAgain = true;
+			boolean trySetAgain = true;
 			int cardSetIndex = -1;
+			String cardSetInput = "";
 			while(tryAgain) {
 				try {
 					if(mustTurnIn) {
-						String cardSetInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select a set of cards to turn in. (You must select a set)");
+						while(trySetAgain){
+							cardSetInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select a set of cards to turn in. (You must select a set)");
+							if(cardSetInput.equals("0") || cardSetInput.equals("1") || cardSetInput.equals("2") || cardSetInput.equals("3")){
+								trySetAgain = false;
+							}
+							else{
+								JOptionPane.showMessageDialog(null, "You have entered an invalid set. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+							}
+						}
 						if(cardSetInput != null) {
 							cardSetIndex = Integer.parseInt(cardSetInput);
 						}
 					} else {
-						String cardSetInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select a set of cards to turn in. Click cancel to wait.");
+						cardSetInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select a set of cards to turn in. Click cancel to wait.");
 						if(cardSetInput == null) {
 							tryAgain = false;
 							break;
