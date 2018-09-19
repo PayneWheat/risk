@@ -15,11 +15,12 @@ public class Main {
 		//Player[]players = new Player[6];
 		
 		boolean incorrectPlayers = true;
-		int numOfPlayers = 0;
+		int numOfPlayers;;
+		String userInput = "";
 		while(incorrectPlayers)
 		{
-			numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
-			if(numOfPlayers == 2 || numOfPlayers == 3 || numOfPlayers == 4 || numOfPlayers == 5 || numOfPlayers == 6)
+			userInput = JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): ");
+			if(userInput.equals("2") || userInput.equals("3") || userInput.equals("4") || userInput.equals("5") || userInput.equals("6"))
 			{
 				incorrectPlayers = false;
 			}
@@ -28,6 +29,7 @@ public class Main {
 				JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		numOfPlayers = Integer.parseInt(userInput);
 		Player[] players = new Player[numOfPlayers];
 		
 		// Initial number of armies for each player is determined 
