@@ -14,19 +14,139 @@ public class Main {
 		// Dice d = new Dice(); Changed this up, see Board class.
 		//Player[]players = new Player[6];
 		
-		int numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
+		boolean incorrectPlayers = true;
+		int numOfPlayers = 0;
+		while(incorrectPlayers)
+		{
+			numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
+			if(numOfPlayers == 2 || numOfPlayers == 3 || numOfPlayers == 4 || numOfPlayers == 5 || numOfPlayers == 6)
+			{
+				incorrectPlayers = false;
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 		Player[] players = new Player[numOfPlayers];
 		
 		// Initial number of armies for each player is determined 
 		// (now included in Board class (setPlayers method)
 
 		// Each player chooses their color and enters their name
-		
+		//String[] colors = {"Red", "Yellow", "Green", "Blue", "Purple"};
+		boolean[] colorTaken = {false, false, false, false, false, false};
 		for(int i = 0; i < numOfPlayers; i++)
 		{
-			String name = JOptionPane.showInputDialog("Please enter the name of player " + (i+1) + ":");
-			String color = JOptionPane.showInputDialog("Please enter a color for player " + (i+1) + ":");
-
+			boolean nameTaken = true;
+			String name = "";
+			while(nameTaken)
+			{
+				name = JOptionPane.showInputDialog("Please enter the name of player " + (i+1) + ":");
+				if(i == 0)
+				{
+					nameTaken = false;
+				}
+				else
+				{
+					for(int j = 0; j < i; j++)
+					{
+						if(!(name.equals(players[j].getName())))
+						{
+							nameTaken = false;
+						}
+					}
+				}
+				
+				if(nameTaken)
+				{
+					JOptionPane.showMessageDialog(null, "This name has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			boolean incorrectColor = true;
+			String color = "";
+			while(incorrectColor)
+			{
+				color = JOptionPane.showInputDialog("Please enter a color (Red, Orange, Yellow, Green, Blue, Purple) for player" + (i+1) + ":");
+				if(color.equals("Red"))
+				{
+					if (colorTaken[0] == false)
+					{
+						colorTaken[0] = true;
+						incorrectColor = false;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else if(color.equals("Orange"))
+				{
+					if(colorTaken[1] == false)
+					{
+						colorTaken[1] = true;
+						incorrectColor = false;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else if(color.equals("Yellow"))
+				{
+					if(colorTaken[2] == false)
+					{
+						colorTaken[2] = true;
+						incorrectColor = false;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else if(color.equals("Green"))
+				{
+					if(colorTaken[3] == false)
+					{
+						colorTaken[3] = true;
+						incorrectColor = false;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else if(color.equals("Blue"))
+				{
+					if(colorTaken[4] == false)
+					{
+						colorTaken[4] = true;
+						incorrectColor = false;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else if(color.equals("Purple"))
+				{
+					if(colorTaken[4] == false)
+					{
+						colorTaken[4] = true;
+						incorrectColor = false;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "You have entered an invalid color. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+			
 			//int diceValue = d.getDiceValue();
 			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
 			/*
