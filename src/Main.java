@@ -34,18 +34,40 @@ public class Main {
 		// (now included in Board class (setPlayers method)
 
 		// Each player chooses their color and enters their name
-		
-// Each player chooses their color and enters their name
 		//String[] colors = {"Red", "Yellow", "Green", "Blue", "Purple"};
-		boolean[] colorTaken = {false, false, false, false, false};
+		boolean[] colorTaken = {false, false, false, false, false, false};
 		for(int i = 0; i < numOfPlayers; i++)
 		{
-			String name = JOptionPane.showInputDialog("Please enter the name of player " + (i+1) + ":");
+			boolean nameTaken = true;
+			String name = "";
+			while(nameTaken)
+			{
+				name = JOptionPane.showInputDialog("Please enter the name of player " + (i+1) + ":");
+				if(i == 0)
+				{
+					nameTaken = false;
+				}
+				else
+				{
+					for(int j = 0; j < i; j++)
+					{
+						if(!(name.equals(players[j].getName())))
+						{
+							nameTaken = false;
+						}
+					}
+				}
+				
+				if(nameTaken)
+				{
+					JOptionPane.showMessageDialog(null, "This name has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
 			boolean incorrectColor = true;
 			String color = "";
 			while(incorrectColor)
 			{
-				color = JOptionPane.showInputDialog("Please enter a color (Red, Yellow, Green, Blue, Purple) for player" + (i+1) + ":");
+				color = JOptionPane.showInputDialog("Please enter a color (Red, Orange, Yellow, Green, Blue, Purple) for player" + (i+1) + ":");
 				if(color.equals("Red"))
 				{
 					if (colorTaken[0] == false)
@@ -58,7 +80,7 @@ public class Main {
 						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
-				else if(color.equals("Yellow"))
+				else if(color.equals("Orange"))
 				{
 					if(colorTaken[1] == false)
 					{
@@ -70,7 +92,7 @@ public class Main {
 						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
-				else if(color.equals("Green"))
+				else if(color.equals("Yellow"))
 				{
 					if(colorTaken[2] == false)
 					{
@@ -82,11 +104,23 @@ public class Main {
 						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
-				else if(color.equals("Blue"))
+				else if(color.equals("Green"))
 				{
 					if(colorTaken[3] == false)
 					{
 						colorTaken[3] = true;
+						incorrectColor = false;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "This color has already been taken. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else if(color.equals("Blue"))
+				{
+					if(colorTaken[4] == false)
+					{
+						colorTaken[4] = true;
 						incorrectColor = false;
 					}
 					else
@@ -112,6 +146,18 @@ public class Main {
 				}
 				
 			}
+			
+			//int diceValue = d.getDiceValue();
+			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
+			/*
+			 * Changed this up a little, this initial roll is part 
+			 * of the setPlayers board method now.
+			 * See Board class
+			int diceValue = d.getDiceValue();
+			players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
+			*/
+			players[i] = new Player(name, color);
+		}
 		
 		// Sort players by descending dice value
 		// OR -- I believe in the game, the players sit in a circle around the board. 
