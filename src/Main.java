@@ -14,7 +14,20 @@ public class Main {
 		// Dice d = new Dice(); Changed this up, see Board class.
 		//Player[]players = new Player[6];
 		
-		int numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
+		boolean incorrectPlayers = true;
+		int numOfPlayers = 0;
+		while(incorrectPlayers)
+		{
+			numOfPlayers = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): "));
+			if(numOfPlayers == 2 || numOfPlayers == 3 || numOfPlayers == 4 || numOfPlayers == 5 || numOfPlayers == 6)
+			{
+				incorrectPlayers = false;
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 		Player[] players = new Player[numOfPlayers];
 		
 		// Initial number of armies for each player is determined 
