@@ -142,7 +142,7 @@ public class Main {
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(null, "You have entered an incorrect. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "You have entered an invalid color. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
 				}
 				
 			}
