@@ -2,6 +2,10 @@
 ### COSC 4353, Dr. Alipour
 ### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin
 
+### Current Build Status
+[status]: https://travis-ci.com/PayneWheat/risk.svg?branch=master
+![alt text][status]
+
 
 [Risk Rules](https://www.hasbro.com/common/instruct/risk.pdf)
 
