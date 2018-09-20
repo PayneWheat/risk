@@ -1,9 +1,8 @@
 package test.java;
 import junit.framework.TestCase;
+import main.java.game.Card;
 
 import org.junit.Test;
-
-import game.Card;
 
 public class CardTest extends TestCase {
 	/*

@@ -1,7 +1,6 @@
 package test.java;
 import junit.framework.TestCase;
-
-import game.Player;
+import main.java.game.Player;
 
 public class PlayerTest extends TestCase {
 	

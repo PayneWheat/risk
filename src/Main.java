@@ -1,9 +1,9 @@
 //import java.util.*;
 import javax.swing.JOptionPane;
 
-import game.Board;
-import game.Map;
-import game.Player;
+import main.java.game.Board;
+import main.java.game.Map;
+import main.java.game.Player;
 
 
 public class Main {
