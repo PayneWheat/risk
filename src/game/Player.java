@@ -31,7 +31,7 @@ public class Player
 		this.continentsOccupied = 0;
 		this.cards = new ArrayList<Card>();
 	}
-	Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied){
+	public Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied){
 
 		this.name = name;
 		this.color = color;

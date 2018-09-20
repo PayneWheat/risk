@@ -1,9 +1,11 @@
 package test.java;
 import junit.framework.TestCase;
 
+import game.Player;
+
 public class PlayerTest extends TestCase {
 	
-	protected Player one = new Player("John", Blue, 35, 6, 5, 4);
+	protected Player one = new Player("John", "Blue", 35, 6, 5, 4);
       	
 	public void test() {
           one.increaseArmies(5);
