@@ -11,7 +11,6 @@ public class CardTest extends TestCase {
 		super(name);
 	}
 	*/
-	@Test
 	public void testGetCardName() throws Exception {
 		
 		Card card = new Card("Test", (byte)1);
