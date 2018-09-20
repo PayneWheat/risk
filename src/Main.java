@@ -1,6 +1,10 @@
 //import java.util.*;
 import javax.swing.JOptionPane;
 
+import game.Board;
+import game.Map;
+import game.Player;
+
 
 public class Main {
 	public static void main(String[] args) {
@@ -148,16 +152,6 @@ public class Main {
 				}
 				
 			}
-			
-			//int diceValue = d.getDiceValue();
-			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
-			/*
-			 * Changed this up a little, this initial roll is part 
-			 * of the setPlayers board method now.
-			 * See Board class
-			int diceValue = d.getDiceValue();
-			players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
-			*/
 			players[i] = new Player(name, color);
 		}
 		

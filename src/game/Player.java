@@ -1,3 +1,4 @@
+package game;
 import java.util.*;
 public class Player 
 {
@@ -20,7 +21,7 @@ public class Player
 		this.countriesOccupied = 0;
 		this.cards = new ArrayList<Card>();
 	}
-	Player(String name, String color) {
+	public Player(String name, String color) {
 		this.name = name;
 		this.color = color;
 		this.armies = 0;
