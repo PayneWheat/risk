@@ -4,8 +4,9 @@
 
 Current Build Status
 
-![alt text][status]
 [status]: https://travis-ci.com/PayneWheat/risk.svg?branch=master
+![alt text][status]
+
 
 
 [Risk Rules](https://www.hasbro.com/common/instruct/risk.pdf)
