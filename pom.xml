@@ -10,6 +10,7 @@
             <version>4.5</version>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -17,12 +18,14 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+        -->
     </dependencies>
+    <!--
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    <!--
+
     <build>
     <plugins>
             <plugin>
