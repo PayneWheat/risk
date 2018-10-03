@@ -2,4 +2,5 @@ test\java\TerritoryTest.class
 test\java\currentPlayerIndexTest.class
 test\java\CardTest.class
 test\java\ContinentTest.class
+test\java\PlayerLosesTest.class
 test\java\PlayerTest.class
