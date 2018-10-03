@@ -1,6 +1,6 @@
-package main.java.game;
 import java.util.*;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Board {
@@ -129,7 +129,7 @@ public class Board {
 			case 6: 
 				initialArmies = 20;
 				break;
-		}
+		}    
 		
 		// TODO: Find a way to tiebreak the dice rolls in this situation
 		if(sortByInitRoll == true) {
@@ -217,11 +217,27 @@ public class Board {
 	private int pickTerritory(boolean initialTurns) {
 		int ti = -1;
 		String territoryIndex = "";
-		if(initialTurns)
-			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place one army (" + players.get(currentPlayerIndex).getArmies() + " remaining)");
+		boolean undo = true;
+		while(undo)
+		{
+			if(initialTurns)
+			{
+				territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place one army (" + players.get(currentPlayerIndex).getArmies() + " remaining)");
+			}
 		else
+		{
 			territoryIndex = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", input a territory index to place at least one army (" + players.get(currentPlayerIndex).getArmies() + " remaining)");
-		
+		}
+			String[] buttons = {"Continue", "Undo"};    
+			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen territory " + territoryIndex, 
+				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+			 if (n == JOptionPane.YES_OPTION) {
+		            undo = false;
+		        } else if (n == JOptionPane.NO_OPTION) {
+		            undo = true;
+		        }
+		}
 		// TODO: Abstract out a function for parsing input from JOptionPane 
 		try {
 			ti = Integer.parseInt(territoryIndex);
@@ -261,25 +277,41 @@ public class Board {
 	 */
 	
 	private int placeArmies() {
-		String armyQty = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", how many of your " + players.get(currentPlayerIndex).getArmies() + " remaining armies?");
+		boolean undo = true;
 		int armies = 0;
-		try {
-			armies = Integer.parseInt(armyQty);
-		} catch(NumberFormatException e) {
-			// not an int
-			System.out.println("Could not parse number. Try again");
-			armies = placeArmies();
-		} catch(Exception e) {
-			// not a territory index
-			System.out.println("Error: " + e + "\nTry again");
-			armies = placeArmies();
-		}
-		if(armies > players.get(currentPlayerIndex).getArmies()) {
-			System.out.println("You don't have that many armies.");
-			armies = placeArmies();
-		} else if(armies < 0) {
-			System.out.println("Choose a positive number less than " + players.get(currentPlayerIndex).getArmies());
-			armies = placeArmies();
+		while(undo){
+			String armyQty = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", how many of your " + players.get(currentPlayerIndex).getArmies() + " remaining armies?");
+			String[] buttons = {"Continue", "Undo"};    
+			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to place " + armyQty + " armies", 
+				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+			 if (n == JOptionPane.YES_OPTION) {
+		            undo = false;
+		        } else if (n == JOptionPane.NO_OPTION) {
+		            undo = true;
+		        }
+				try {
+					armies = Integer.parseInt(armyQty);
+				} catch(NumberFormatException e) {
+					// not an int
+					System.out.println("Could not parse number. Try again");
+					armies = placeArmies();
+					undo = true;
+				} catch(Exception e) {
+					// not a territory index
+					System.out.println("Error: " + e + "\nTry again");
+					armies = placeArmies();
+					undo = true;
+				}
+				if(armies > players.get(currentPlayerIndex).getArmies()) {
+					System.out.println("You don't have that many armies.");
+					armies = placeArmies();
+					undo = true;
+				} else if(armies < 0) {
+					System.out.println("Choose a positive number less than " + players.get(currentPlayerIndex).getArmies());
+					armies = placeArmies();
+					undo = true;
+				}
 		}
 		return armies;
 	}
@@ -1044,14 +1076,28 @@ public class Board {
 			String cardSetInput = "";
 			while(tryAgain) {
 				try {
+					boolean undo = true;
 					if(mustTurnIn) {
 						while(trySetAgain){
-							cardSetInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select a set of cards to turn in. (You must select a set)");
+							while(undo){
+								cardSetInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select a set of cards to turn in. (You must select a set)");
+								String[] buttons = {"Continue", "Undo"};    
+								int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen set " + cardSetInput, 
+									        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+									        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+								 if (n == JOptionPane.YES_OPTION) {
+							            undo = false;
+							        } else if (n == JOptionPane.NO_OPTION) {
+							            undo = true;
+							        }
+							}
+							
 							if(cardSetInput.equals("0") || cardSetInput.equals("1") || cardSetInput.equals("2") || cardSetInput.equals("3")){
 								trySetAgain = false;
 							}
 							else{
 								JOptionPane.showMessageDialog(null, "You have entered an invalid set. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+								undo = true;
 							}
 						}
 						if(cardSetInput != null) {
