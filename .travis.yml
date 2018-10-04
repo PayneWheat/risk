@@ -6,7 +6,6 @@ jdk:
   
 script: 
 - mvn -f risk/pom.xml test
-- "mvn -f risk/pom.xml cobertura:cobertura"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
