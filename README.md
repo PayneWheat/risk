@@ -1,6 +1,6 @@
 # RISK
 ### COSC 4353, Dr. Alipour
-### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin
+### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin, Nivetha Natarajan 
 
 Current Build Status
 
