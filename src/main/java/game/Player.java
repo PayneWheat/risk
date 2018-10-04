@@ -99,24 +99,6 @@ public class Player
 			System.out.println("Error: " + e + "\nTry again");
 			ti = pickTerritory(initialTurns);
 		}
-		/*
-		// TODO: change these to a try/catch block. Throw proper exceptions
-		if(ti > territories.size() - 1) {
-			System.out.println("Out of range. Try again");
-			ti = pickTerritory(initialTurns);
-		}
-		if(unoccupiedTerritoriesCount() > 0) {
-			if(territories.get(ti).isOccupied()) {
-				System.out.println("Territory already occupied. Try again");
-				ti = pickTerritory(initialTurns);
-			}
-		} else {
-			if(territories.get(ti).getPlayer() != players.get(currentPlayerIndex)) {
-				System.out.println("You do not control this territory. Try again");
-				ti = pickTerritory(initialTurns);
-			}
-		}
-		*/
 		return ti;
 	}
 	
