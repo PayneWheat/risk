@@ -82,6 +82,7 @@ public class Player
 	public int pickTerritory(boolean initialTurns) {
 		int ti = -1;
 		String territoryIndex = "";
+
 		if(initialTurns)
 			territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place one army (" + getArmies() + " remaining)");
 		else
@@ -99,6 +100,8 @@ public class Player
 			System.out.println("Error: " + e + "\nTry again");
 			ti = pickTerritory(initialTurns);
 		}
+			
+		
 		return ti;
 	}
 	

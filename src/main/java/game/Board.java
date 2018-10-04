@@ -1,6 +1,7 @@
 package main.java.game;
 import java.util.*;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Board {
@@ -236,22 +237,34 @@ public class Board {
 	 * @return index of territory picked
 	 */
 	private int pickTerritory(boolean initialTurns, Player player) {
-		int ti = player.pickTerritory(initialTurns);
-		// TODO: change these to a try/catch block. Throw proper exceptions
-		if(ti > territories.size() - 1) {
-			System.out.println("Out of range. Try again");
-			ti = pickTerritory(initialTurns, player);
-		}
-		if(unoccupiedTerritoriesCount() > 0) {
-			if(territories.get(ti).isOccupied()) {
-				System.out.println("Territory already occupied. Try again");
+		boolean undo = true;
+		int ti = -1;
+		while(undo) {
+			ti = player.pickTerritory(initialTurns);
+			// TODO: change these to a try/catch block. Throw proper exceptions
+			if(ti > territories.size() - 1) {
+				System.out.println("Out of range. Try again");
 				ti = pickTerritory(initialTurns, player);
 			}
-		} else {
-			if(territories.get(ti).getPlayer() != player) {
-				System.out.println("You do not control this territory. Try again");
-				ti = pickTerritory(initialTurns, player);
+			if(unoccupiedTerritoriesCount() > 0) {
+				if(territories.get(ti).isOccupied()) {
+					System.out.println("Territory already occupied. Try again");
+					ti = pickTerritory(initialTurns, player);
+				}
+			} else {
+				if(territories.get(ti).getPlayer() != player) {
+					System.out.println("You do not control this territory. Try again");
+					ti = pickTerritory(initialTurns, player);
+				}
 			}
+			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen " + territories.get(ti).getTerritoryName(), 
+			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+			if (n == JOptionPane.YES_OPTION) {
+	            undo = false;
+	        } else if (n == JOptionPane.NO_OPTION) {
+	            undo = true;
+	        }
 		}
 		return ti;
 	}
@@ -347,8 +360,20 @@ public class Board {
 	 * @return Territory selected
 	 */
 	private Territory chooseAttackingTerritory() {
-		Player currentPlayer = players.get(currentPlayerIndex);
-		Territory tempTerritory = currentPlayer.chooseAttackingTerritory(getPlayersTerritories(currentPlayer), territories);
+		boolean undo = true;
+		Territory tempTerritory = new Territory();
+		while(undo) {
+			Player currentPlayer = players.get(currentPlayerIndex);
+			tempTerritory = currentPlayer.chooseAttackingTerritory(getPlayersTerritories(currentPlayer), territories);
+			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack from " + tempTerritory.getTerritoryName(), 
+			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+			if (n == JOptionPane.YES_OPTION) {
+	            undo = false;
+	        } else if (n == JOptionPane.NO_OPTION) {
+	            undo = true;
+	        }
+		}
 		return tempTerritory;
 	}
 	
@@ -360,7 +385,19 @@ public class Board {
 	 * @return Territory selected to be attacked
 	 */
 	private Territory chooseTerritoryToAttack(Territory attackingTerritory) {
-		Territory tempTerritory = players.get(currentPlayerIndex).chooseTerritoryToAttack(attackingTerritory, territories);
+		boolean undo = true;
+		Territory tempTerritory = new Territory();
+		while(undo) {
+			tempTerritory = players.get(currentPlayerIndex).chooseTerritoryToAttack(attackingTerritory, territories);
+			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack " + tempTerritory.getTerritoryName(), 
+			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+			if (n == JOptionPane.YES_OPTION) {
+				undo = false;
+			} else if (n == JOptionPane.NO_OPTION) {
+			    undo = true;
+			}
+		}
 		return tempTerritory;
 	}
 	
@@ -606,51 +643,79 @@ public class Board {
 		}
 		
 		int fromTerritoryIndex = -1;
-		Territory fromTerritory = new Territory();
+		Territory fromTerritory = null;
 		boolean tryAgain = true;
 		while(tryAgain) {
-			try {
-				String fromTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.");
-				if(fromTerritoryInput == null) {
+			boolean undo = true;
+			while(undo) {
+				try {
+					String fromTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.");
+					if(fromTerritoryInput == null) {
+						return;
+					}
+					fromTerritoryIndex = Integer.parseInt(fromTerritoryInput);
+					fromTerritory = territories.get(fromTerritoryIndex);
+					tryAgain = false;
+				} catch(NumberFormatException e) {
+					// not an int
+					System.out.println("Could not parse number. Try again");
+					tryAgain = true;
+				} catch(Exception e) {
+					// not a territory index
+					System.out.println("Error: " + e + "\nTry again");
+					tryAgain = true;
+				}
+				if(fromTerritory == null) {
 					return;
 				}
-				fromTerritoryIndex = Integer.parseInt(fromTerritoryInput);
-				fromTerritory = territories.get(fromTerritoryIndex);
-				tryAgain = false;
-			} catch(NumberFormatException e) {
-				// not an int
-				System.out.println("Could not parse number. Try again");
-				tryAgain = true;
-			} catch(Exception e) {
-				// not a territory index
-				System.out.println("Error: " + e + "\nTry again");
-				tryAgain = true;
+				int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to send armies from " + fromTerritory.getTerritoryName(), 
+				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+				if (n == JOptionPane.YES_OPTION) {
+					undo = false;
+		        } else if (n == JOptionPane.NO_OPTION) {
+		        	undo = true;
+		        }
+
 			}
 		}
 		int toTerritoryIndex = -1;
 		tryAgain = true;
-		Territory toTerritory = new Territory();
+		Territory toTerritory = null;
 		while(tryAgain) {
-			try {
-				String toTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.");
-				if(toTerritoryInput == null) {
+			boolean undo = true;
+			while(undo) {
+				try {
+					String toTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.");
+					if(toTerritoryInput == null) {
+						return;
+					}
+					toTerritoryIndex = Integer.parseInt(toTerritoryInput);
+					toTerritory = territories.get(toTerritoryIndex);
+					System.out.println("toTerritoryIndex: " + toTerritoryIndex + ", " + toTerritory.getTerritoryName());
+					tryAgain = false;
+				} catch(NumberFormatException e) {
+					// not an int
+					System.out.println("Could not parse number. Try again");
+					tryAgain = true;
+				} catch(Exception e) {
+					// not a territory index
+					System.out.println("Error: " + e + "\nTry again");
+					tryAgain = true;
+				}
+				if(toTerritory == null) {
 					return;
 				}
-				toTerritoryIndex = Integer.parseInt(toTerritoryInput);
-				toTerritory = territories.get(toTerritoryIndex);
-				System.out.println("toTerritoryIndex: " + toTerritoryIndex + ", " + toTerritory.getTerritoryName());
-				tryAgain = false;
-			} catch(NumberFormatException e) {
-				// not an int
-				System.out.println("Could not parse number. Try again");
-				tryAgain = true;
-			} catch(Exception e) {
-				// not a territory index
-				System.out.println("Error: " + e + "\nTry again");
-				tryAgain = true;
-			}		
+				int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to send armies from " + toTerritory.getTerritoryName(), 
+				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+				if (n == JOptionPane.YES_OPTION) {
+		            undo = false;
+		        } else if (n == JOptionPane.NO_OPTION) {
+		            undo = true;
+		        }
+			}
 		}
-		
 		
 		int armiesToMove = 0;
 		tryAgain = true;
