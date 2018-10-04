@@ -7,7 +7,9 @@ Current Build Status
 [status]: https://travis-ci.com/PayneWheat/risk.svg?branch=master
 ![alt text][status]
 
+Code Coverage
 
+[![codecov](https://codecov.io/gh/PayneWheat/risk/branch/master/graph/badge.svg)](https://codecov.io/gh/PayneWheat/risk)
 
 [Risk Rules](https://www.hasbro.com/common/instruct/risk.pdf)
 
