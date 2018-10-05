@@ -1,0 +1,10 @@
+# Created on 2018-10-05T12:11:55.678
+Corrupted stdin stream in forked JVM 1. Stream 'FATAL ERROR in native method: processing of -javaagent failed'.
+java.lang.IllegalArgumentException: Stream stdin corrupted. Expected comma after third character in command 'FATAL ERROR in native method: processing of -javaagent failed'.
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient$OperationalData.<init>(ForkClient.java:469)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.processLine(ForkClient.java:191)
+	at org.apache.maven.plugin.surefire.booterclient.output.ForkClient.consumeLine(ForkClient.java:158)
+	at org.apache.maven.plugin.surefire.booterclient.output.ThreadedStreamConsumer$Pumper.run(ThreadedStreamConsumer.java:87)
+	at java.base/java.lang.Thread.run(Thread.java:844)
+
+

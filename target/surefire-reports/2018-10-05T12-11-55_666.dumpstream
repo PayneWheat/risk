@@ -1,0 +1,54 @@
+# Created on 2018-10-05T12:11:55.670
+java.lang.reflect.InvocationTargetException
+
+# Created on 2018-10-05T12:11:55.688
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+# Created on 2018-10-05T12:11:55.692
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+# Created on 2018-10-05T12:11:55.698
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+# Created on 2018-10-05T12:11:55.698
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+
+# Created on 2018-10-05T12:11:55.717
+	at java.instrument/sun.instrument.InstrumentationImpl.loadClassAndStartAgent(InstrumentationImpl.java:510)
+
+# Created on 2018-10-05T12:11:55.724
+	at java.instrument/sun.instrument.InstrumentationImpl.loadClassAndCallPremain(InstrumentationImpl.java:522)
+
+# Created on 2018-10-05T12:11:55.728
+Caused by: java.lang.RuntimeException: Class java/util/UUID could not be instrumented.
+
+# Created on 2018-10-05T12:11:55.728
+	at org.jacoco.agent.rt.internal_8ff85ea.core.runtime.ModifiedSystemClassRuntime.createFor(ModifiedSystemClassRuntime.java:140)
+
+# Created on 2018-10-05T12:11:55.755
+	at org.jacoco.agent.rt.internal_8ff85ea.core.runtime.ModifiedSystemClassRuntime.createFor(ModifiedSystemClassRuntime.java:101)
+
+# Created on 2018-10-05T12:11:55.757
+	at org.jacoco.agent.rt.internal_8ff85ea.PreMain.createRuntime(PreMain.java:55)
+
+# Created on 2018-10-05T12:11:55.772
+	at org.jacoco.agent.rt.internal_8ff85ea.PreMain.premain(PreMain.java:47)
+
+# Created on 2018-10-05T12:11:55.787
+	... 6 more
+
+# Created on 2018-10-05T12:11:55.788
+Caused by: java.lang.NoSuchFieldException: $jacocoAccess
+
+# Created on 2018-10-05T12:11:55.803
+	at java.base/java.lang.Class.getField(Class.java:1958)
+
+# Created on 2018-10-05T12:11:55.804
+	at org.jacoco.agent.rt.internal_8ff85ea.core.runtime.ModifiedSystemClassRuntime.createFor(ModifiedSystemClassRuntime.java:138)
+
+# Created on 2018-10-05T12:11:55.804
+	... 9 more
+
+# Created on 2018-10-05T12:11:55.817
+Exception in thread "main" 
+

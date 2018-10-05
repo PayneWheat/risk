@@ -10,11 +10,6 @@
             <version>4.5</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk</artifactId>
-			<version>1.11.327</version>
-		</dependency>
         <!--
         <dependency>
             <groupId>org.testng</groupId>
@@ -25,14 +20,29 @@
         </dependency>
         -->
     </dependencies>
-    <!--
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
     <build>
-    <plugins>
+		<plugins>
+            <!--
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -42,18 +52,6 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-                <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>${testngFiles}</suiteXmlFile>
-                    </suiteXmlFiles>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -64,9 +62,9 @@
                         <format>xml</format>
                     </formats>
                     <check />
-                 </configuration>
+                </configuration>
             </plugin>
-        </plugins>
-    </build>
-    -->
+		</plugins>
+	</build>
+
 </project>
