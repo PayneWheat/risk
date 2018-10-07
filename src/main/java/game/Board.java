@@ -448,6 +448,7 @@ public class Board {
 	 */
 	private Attack attack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
+		notifyPlayer(attackingTerritory.getPlayer().getName(), defendingTerritory.getPlayer().getName(), defendingTerritory.getTerritoryName());
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
 		// Prompt player to roll dice, with the number of dice determined
 		// for both players by the total armies present on either territory.
@@ -621,6 +622,11 @@ public class Board {
 		// Prompt the player either attack another territory
 		// or end the attack phase of their turn
 		return curAttack;
+	}
+	
+	public void notifyPlayer(String attackingPlayer, String defendingPlayer, String territoryName){
+		String message = defendingPlayer + attackingPlayer + " is attacking " + territoryName;
+		JOptionPane.showMessageDialog(null, message, "warning", JOptionPane.WARNING_MESSAGE);
 	}
 	
 	/**
