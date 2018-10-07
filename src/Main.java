@@ -1,8 +1,7 @@
 //import java.util.*;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import main.java.game.*;
-
+//import main.java.game.*;
 
 public class Main {
 	public static void main(String[] args) {
@@ -150,7 +149,37 @@ public class Main {
 				}
 				
 			}
-			players[i] = new Player(name, color);
+			
+			//int diceValue = d.getDiceValue();
+			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
+			/*
+			 * Changed this up a little, this initial roll is part 
+			 * of the setPlayers board method now.
+			 * See Board class
+			int diceValue = d.getDiceValue();
+			players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
+			*/
+			/* Each player is given 25 units of currency at the start of the game
+			 Throughout the game, they can use their currency to purchase in-game credits*/
+			int credits = 0;
+			int currency = 25;
+			boolean invalidCredits = true;
+			int c = JOptionPane.showOptionDialog(new JFrame(),"Would you like to purchase in-game credits?", 
+			        "In-Game Credits", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+			        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
+			if (c == JOptionPane.YES_OPTION) {
+				while(invalidCredits){
+					credits = Integer.parseInt(JOptionPane.showInputDialog(null, "How many credits would you like to purchase? You are given " + currency + " units of currency"));
+					if(credits >=currency && currency <= currency){
+						invalidCredits = false;
+						currency = currency - credits;
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please Try again.");
+					}
+				}
+	        }
+			players[i] = new Player(name, color, currency, credits);
 		}
 		
 		// Sort players by descending dice value
