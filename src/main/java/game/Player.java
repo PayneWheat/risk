@@ -92,7 +92,10 @@ public class Player
 	public int continentsOccupied(){
 		return continentsOccupied;
 	}
-	public int credits(){
+	public int getCurrency(){
+		return currency;
+	}
+	public int getCredits(){
 		return credits;
 	}
 	public void increaseArmies(int numOfArmies) {
