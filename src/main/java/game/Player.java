@@ -1,7 +1,9 @@
 package main.java.game;
 import java.util.*;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 public class Player 
 {
 	String name;
@@ -12,6 +14,8 @@ public class Player
 	int countriesOccupied;
 	int continentsOccupied;
 	ArrayList<Card> cards;
+	int currency;
+	int credits;
 	
 	Player() {
 		this.name = "";
@@ -22,6 +26,8 @@ public class Player
 		this.continentsOccupied = 0;
 		this.countriesOccupied = 0;
 		this.cards = new ArrayList<Card>();
+		currency = 0;
+		this.credits = 0;
 	}
 	public Player(String name, String color) {
 		this.name = name;
@@ -43,6 +49,30 @@ public class Player
 		this.continentsOccupied = continentsOccupied;	
 		this.cards = new ArrayList<Card>();
 	}
+	public Player(String name, String color, int currency, int credits) {
+		this.name = name;
+		this.color = color;
+		this.armies = 0;
+		this.diceValue = 0;
+		this.territoriesOccupied = 0;
+		this.countriesOccupied = 0;
+		this.continentsOccupied = 0;
+		this.cards = new ArrayList<Card>();
+		this.currency = currency;
+		this.credits = credits;
+	}
+	public Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied, int currency, int credits){
+
+		this.name = name;
+		this.color = color;
+		this.armies = armies;
+		this.diceValue = diceValue;
+		this.territoriesOccupied = countriesOccupied;
+		this.continentsOccupied = continentsOccupied;	
+		this.cards = new ArrayList<Card>();
+		this.currency = currency;
+		this.credits = credits;
+	}
 	
 	public String getName() {
 		return name;
@@ -62,6 +92,9 @@ public class Player
 	public int continentsOccupied(){
 		return continentsOccupied;
 	}
+	public int credits(){
+		return credits;
+	}
 	public void increaseArmies(int numOfArmies) {
 		armies = armies + numOfArmies;
 		System.out.println(name + " increased " + numOfArmies + " armies.");
@@ -73,6 +106,16 @@ public class Player
 	public void addCard(Card card) {
 		cards.add(card);
 	}
+	public void decreaseCurrency(int currency){
+		this.currency = this.currency - currency;
+	}
+	public void buyCredits(int credits){
+		this.credits = this.credits + credits;
+	}
+	public void useCredits(int credits){
+		this.credits = this.credits - credits;
+	}
+	
 	/**
 	 * 
 	 * @param initialTurns boolean flag indicating whether or not it's the initial placement step.
@@ -111,30 +154,44 @@ public class Player
 	 * @return number of armies to be placed
 	 */
 	public int chooseArmiesQty() {
-		String armyQty = JOptionPane.showInputDialog(getName() + ", how many of your " + getArmies() + " remaining armies?");
+		boolean undo = true;
 		int armies = 0;
-		try {
-			armies = Integer.parseInt(armyQty);
-		} catch(NumberFormatException e) {
-			// not an int
-			System.out.println("Could not parse number. Try again");
-			armies = chooseArmiesQty();
-		} catch(Exception e) {
-			// not a territory index
-			System.out.println("Error: " + e + "\nTry again");
-			armies = chooseArmiesQty();
-		}
-		if(armies > getArmies()) {
-			System.out.println("You don't have that many armies.");
-			armies = chooseArmiesQty();
-		} else if(armies < 0) {
-			System.out.println("Choose a number between 0 and " + getArmies());
-			armies = chooseArmiesQty();
+		while(undo){
+			String armyQty = JOptionPane.showInputDialog(getName() + ", how many of your " + getArmies() + " remaining armies?");
+			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to place " + Integer.parseInt(armyQty), 
+			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+			if (n == JOptionPane.YES_OPTION) {
+	            undo = false;
+	        } else if (n == JOptionPane.NO_OPTION) {
+	            undo = true;
+	        }
+			try {
+				armies = Integer.parseInt(armyQty);
+			} catch(NumberFormatException e) {
+				// not an int
+				System.out.println("Could not parse number. Try again");
+				armies = chooseArmiesQty();
+				undo = true;
+			} catch(Exception e) {
+				// not a territory index
+				System.out.println("Error: " + e + "\nTry again");
+				armies = chooseArmiesQty();
+				undo = true;
+			}
+			if(armies > getArmies()) {
+				System.out.println("You don't have that many armies.");
+				armies = chooseArmiesQty();
+				undo = true;
+			} else if(armies < 0) {
+				System.out.println("Choose a number between 0 and " + getArmies());
+				armies = chooseArmiesQty();
+				undo = true;
+			}
 		}
 		return armies;
 	}
 
-	
 	public Territory chooseAttackingTerritory(ArrayList<Territory> allTerritories, ArrayList<Territory> territories) {
 		// The territory must have at least 2 troops, and needs to be
 		//	 adjacent to a territory occupied by an opponent. (i.e., if 
@@ -288,40 +345,50 @@ public class Player
 			int cardSetIndex = -1;
 			String cardSetInput = "";
 			while(tryAgain) {
-				try {
-					if(mustTurnIn) {
-						while(trySetAgain){
-							cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. (You must select a set)");
-							if(cardSetInput.equals("0") || cardSetInput.equals("1") || cardSetInput.equals("2") || cardSetInput.equals("3")){
-								trySetAgain = false;
+				boolean undo = true;
+				while(undo){
+					try {
+						if(mustTurnIn) {
+							while(trySetAgain){
+								cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. (You must select a set)");
+								int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen set " + Integer.parseInt(cardSetInput), 
+								        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+								        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+								if (n == JOptionPane.YES_OPTION) {
+						            undo = false;
+						        } else if (n == JOptionPane.NO_OPTION) {
+						            undo = true;
+						        }
+								if(cardSetInput.equals("0") || cardSetInput.equals("1") || cardSetInput.equals("2") || cardSetInput.equals("3") || cardSetInput.equals("4")|| cardSetInput.equals("5") || cardSetInput.equals("6") || cardSetInput.equals("7")){
+									trySetAgain = false;
+								}
+								else{
+									JOptionPane.showMessageDialog(null, "You have entered an invalid set. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+								}
 							}
-							else{
-								JOptionPane.showMessageDialog(null, "You have entered an invalid set. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
+							if(cardSetInput != null) {
+								cardSetIndex = Integer.parseInt(cardSetInput);
 							}
-						}
-						if(cardSetInput != null) {
+						} else {
+							cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. Click cancel to wait.");
+							if(cardSetInput == null) {
+								tryAgain = false;
+								break;
+							}
 							cardSetIndex = Integer.parseInt(cardSetInput);
 						}
-					} else {
-						cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. Click cancel to wait.");
-						if(cardSetInput == null) {
-							tryAgain = false;
-							break;
-						}
-						cardSetIndex = Integer.parseInt(cardSetInput);
-					}
-					
-					tryAgain = false;
-					/*
-					int bonusArmies = turnInCardSet(this, CardSets.get(cardSetIndex));
-					System.out.println(getName() + " turned in a set of Risk Cards and was awarded " + bonusArmies + " armies.");
-					increaseArmies(bonusArmies);
-					*/
-				} catch(NumberFormatException e) {
-					// not an int
-					System.out.println("Could not parse number. Try again");
+						
+						tryAgain = false;
+						/*
+						int bonusArmies = turnInCardSet(this, CardSets.get(cardSetIndex));
+						System.out.println(getName() + " turned in a set of Risk Cards and was awarded " + bonusArmies + " armies.");
+						increaseArmies(bonusArmies);
+						*/
+					} catch(NumberFormatException e) {
+						// not an int
+						System.out.println("Could not parse number. Try again");
+					}	
 				}
-				
 			}
 			return CardSets.get(cardSetIndex);
 		}
