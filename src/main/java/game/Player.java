@@ -109,7 +109,7 @@ public class Player
 	public void addCard(Card card) {
 		cards.add(card);
 	}
-	public void decreaseCurrency(int currency){
+	public void useCurrency(int currency){
 		this.currency = this.currency - currency;
 	}
 	public void buyCredits(int credits){
