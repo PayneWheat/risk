@@ -170,7 +170,7 @@ public class Main {
 			if (c == JOptionPane.YES_OPTION) {
 				while(invalidCredits){
 					credits = Integer.parseInt(JOptionPane.showInputDialog(null, "How many credits would you like to purchase? You are given " + currency + " units of currency"));
-					if(credits >=currency && currency <= currency){
+					if(currency >= credits){
 						invalidCredits = false;
 						currency = currency - credits;
 					}
