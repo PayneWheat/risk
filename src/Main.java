@@ -1,7 +1,7 @@
 //import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-//import main.java.game.*;
+import main.java.game.*;
 
 public class Main {
 	public static void main(String[] args) {
