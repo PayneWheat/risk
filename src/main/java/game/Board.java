@@ -1,8 +1,9 @@
-package main.java.game;
 import java.util.*;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+//package main.java.game;
 
 public class Board {
 	//TODO: Make class a singleton
@@ -237,6 +238,7 @@ public class Board {
 	 * @return index of territory picked
 	 */
 	private int pickTerritory(boolean initialTurns, Player player) {
+		
 		boolean undo = true;
 		int ti = -1;
 		while(undo) {
@@ -260,10 +262,16 @@ public class Board {
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen " + territories.get(ti).getTerritoryName(), 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-			if (n == JOptionPane.YES_OPTION) {
+			if (n == JOptionPane.NO_OPTION) {
+				if(player.getCredits() > 0){
+					player.useCredits(player.getCredits()-1);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					undo = false;
+				}
+	        } else if (n == JOptionPane.YES_OPTION) {
 	            undo = false;
-	        } else if (n == JOptionPane.NO_OPTION) {
-	            undo = true;
 	        }
 		}
 		return ti;
@@ -368,10 +376,16 @@ public class Board {
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack from " + tempTerritory.getTerritoryName(), 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-			if (n == JOptionPane.YES_OPTION) {
+			if (n == JOptionPane.NO_OPTION) {
+				if(currentPlayer.getCredits() > 0){
+					currentPlayer.useCredits(currentPlayer.getCredits()-1);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					undo = false;
+				}
+	        } else if (n == JOptionPane.YES_OPTION) {
 	            undo = false;
-	        } else if (n == JOptionPane.NO_OPTION) {
-	            undo = true;
 	        }
 		}
 		return tempTerritory;
@@ -392,10 +406,16 @@ public class Board {
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack " + tempTerritory.getTerritoryName(), 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-			if (n == JOptionPane.YES_OPTION) {
-				undo = false;
-			} else if (n == JOptionPane.NO_OPTION) {
-			    undo = true;
+			if (n == JOptionPane.NO_OPTION) {
+				if(players.get(currentPlayerIndex).getCredits() > 0){
+					players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					undo = true;
+				}
+			} else if (n == JOptionPane.YES_OPTION) {
+			    undo = false;
 			}
 		}
 		return tempTerritory;
@@ -678,7 +698,13 @@ public class Board {
 				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
 				if (n == JOptionPane.YES_OPTION) {
-					undo = false;
+					if(players.get(currentPlayerIndex).getCredits() > 0){
+						players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					}
+		            undo = false;
 		        } else if (n == JOptionPane.NO_OPTION) {
 		        	undo = true;
 		        }
@@ -715,10 +741,16 @@ public class Board {
 				int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to send armies from " + toTerritory.getTerritoryName(), 
 				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-				if (n == JOptionPane.YES_OPTION) {
+				if (n == JOptionPane.NO_OPTION) {
+					if(players.get(currentPlayerIndex).getCredits() > 0){
+						players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						undo = true;
+					}
+		        } else if (n == JOptionPane.YES_OPTION) {
 		            undo = false;
-		        } else if (n == JOptionPane.NO_OPTION) {
-		            undo = true;
 		        }
 			}
 		}
@@ -797,7 +829,10 @@ public class Board {
 	 * -- 1. Placing new troops
 	 * -- 2. Attacking
 	 * -- 3. Fortifying
-	 * 
+	 * In addition, at the beginning of each turn, players are given the option to purchase in-game credit which they can use to purchase undo moves and wild cards
+	 * It costs 1 credit to undo a move.
+	 * It costs 5 credits to purchase a wild card.
+	 * They can also transfer credits to another player for no additional cost.
 	 * @return
 	 */
 	public boolean currentPlayerTurn() {
@@ -805,6 +840,83 @@ public class Board {
 		Player currentPlayer = players.get(currentPlayerIndex);
 		System.out.println("It is " + currentPlayer.getName() + "'s turn.");
 		
+		// Purchasing in-game credit
+		boolean invalidCredits = true;
+		int credits = 0;
+		int c = JOptionPane.showOptionDialog(new JFrame(),currentPlayer.getName() + ", would you like to purchase in-game credits?", 
+		        "In-Game Credits", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
+		if (c == JOptionPane.YES_OPTION) {
+			while(invalidCredits){
+				credits = Integer.parseInt(JOptionPane.showInputDialog(null, "How many credits would you like to purchase? You currently have " + currentPlayer.getCurrency() + " units of currency"));
+				if(currentPlayer.getCurrency() >= credits && credits >= 0){
+					invalidCredits = false;
+					currentPlayer.useCurrency(credits);
+					currentPlayer.buyCredits(credits);
+				}
+				else if (currentPlayer.getCurrency() < currentPlayer.getCredits()){
+					JOptionPane.showMessageDialog(null, "You don't have enough currency. Please try again.");
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
+				}
+			}
+        }
+		// Buy wild cards
+		int card = JOptionPane.showOptionDialog(new JFrame(),currentPlayer.getName() + ", would you like to purchase a wild card (each one costs 5 units of currency)?", 
+		        "Cards", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
+		if (card == JOptionPane.YES_OPTION){
+			if(currentPlayer.getCredits() >= 5){
+				Card wild = new Card("Wild", (byte)4);
+				currentPlayer.addCard(wild);
+				currentPlayer.useCredits(5);
+				JOptionPane.showMessageDialog(null, "You have successfully purchases a wild card!");
+			}
+			else{
+				JOptionPane.showMessageDialog(null, "Sorry, you don't have enough currency.");
+			}
+		}
+		
+		// Transfer credits
+		String reciever = "";
+		boolean playerNotFound = true;
+		boolean invalidTransferCredits = true;
+		int playerIndex = 0;
+		String transferCredits = "";
+		int transfer = JOptionPane.showOptionDialog(new JFrame(),currentPlayer.getName() + ", would you like to transfer credits to another player?", 
+		        "Transfer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
+		if (transfer == JOptionPane.YES_OPTION){
+			while(playerNotFound){
+				reciever = JOptionPane.showInputDialog(null, "Enter the name of the player you wish to transfer credits to.");
+				for(int i = 0; i < players.size(); i++){
+					if(reciever.equals(players.get(i).getName())){
+						playerIndex = i;
+						playerNotFound = false;
+					}
+				}
+				if(playerNotFound){
+					JOptionPane.showMessageDialog(null, "The player you requested is not found. Please try again.");
+				}
+			}
+			while(invalidTransferCredits){
+				transferCredits = JOptionPane.showInputDialog(null, "How many credits would you like to transfer to " + players.get(playerIndex).getName());
+				int transferNum = Integer.parseInt(transferCredits);
+				if(transferNum <= currentPlayer.getCredits()){
+					players.get(playerIndex).buyCredits(transferNum);
+					currentPlayer.useCredits(transferNum);
+					invalidTransferCredits = false;
+				}
+				else if(transferNum > currentPlayer.getCredits()){
+					JOptionPane.showMessageDialog(null, "You don't have enough currency. Please try again.");
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
+				}
+			}
+			
+		}
 		// 1. Placing new troops
 		
 		//TODO: Create a method for this in the Player class
