@@ -1,20 +1,54 @@
 package test.java;
+
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+
+import org.junit.Test;
 import junit.framework.TestCase;
-import main.java.game.Player;
+import main.java.game.*;
 
 public class PlayerTest extends TestCase {
 	
-	protected Player one = new Player("John", "Blue", 35, 6, 5, 4);
-      	
-	public void test() {
+	protected Player one = new Player("Test1", "Blue", 25, 0);
+	protected Player two = new Player("Test2", "Red", 25, 1);
+	protected Board b = new Board();
+	
+	@Test
+	public void testArmies() {
 		one.increaseArmies(5);
-		assertEquals(40, one.getArmies());
+		assertEquals(5, one.getArmies());
 		one.decreaseArmies(5);
-		assertEquals(35, one.getArmies());
-		assertEquals("John", one.getName());
+		assertEquals(0, one.getArmies());
+		assertEquals("Test1", one.getName());
 		assertEquals("Blue", one.getColor());
-		assertEquals(6, one.getDiceValue());
-        //assertEquals(5, one.getTerritoriesOccupied());
-        //assertEquals(4, one.continentsOccupied());
+		//assertEquals(6, one.getDiceValue());	
+	}
+	
+	@Test
+	public void testCurrencyAndCredits() {
+		assertEquals(25, one.getCurrency());
+		assertEquals(1, two.getCredits());
+	}
+	
+	@Test
+	public void testCard() {
+		ArrayList<Card> cardset = new ArrayList<Card>();
+		Card card1 = new Card("Test1", (byte)1);
+		Card card2 = new Card("Test2", (byte)2);
+		Card card3 = new Card("Test3", (byte)3);
+		Card card4 = new Card("Test4", (byte)4);
+		Player one = new Player("John", "Blue", 0, 0);
+		cardset.add(card1);
+		cardset.add(card2);
+		cardset.add(card3);
+		cardset.add(card4);
+		one.addCard(card1);
+		one.addCard(card2);
+		one.addCard(card3);
+		one.addCard(card4);
+		assertNotNull(one.oneOfEachExtractor(cardset, 1, 1, 1));
+		assertNotNull(one.wildSetsExtractor(cardset, 1));
+		assertNotNull(one.threeOfAKindExtractor(cardset, 3, 3, 3));
 	}
 }

@@ -7,10 +7,10 @@ public class CurrentPlayerIndexTest extends TestCase {
 	public void testIncrementPlayerIndex() throws Exception {
 		Board b = new Board();
 		Player players[] = {
-				new Player("TestPlayer1", "Red"),
-				new Player("TestPlayer2", "Yellow"),
-				new Player("TestPlayer3", "Green"),
-				new Player("TestPlayer4", "Blue")
+				new Player("TestPlayer1", "Red", 0, 0),
+				new Player("TestPlayer2", "Yellow", 0, 0),
+				new Player("TestPlayer3", "Green", 0, 0),
+				new Player("TestPlayer4", "Blue", 0, 0)
 		};
 		b.setPlayers(players, false);
 		b.currentPlayerIndex = 0;

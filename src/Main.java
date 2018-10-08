@@ -16,7 +16,7 @@ public class Main {
 		//Player[]players = new Player[6];
 		
 		boolean incorrectPlayers = true;
-		int numOfPlayers;;
+		int numOfPlayers;
 		String userInput = "";
 		while(incorrectPlayers)
 		{
@@ -147,16 +147,6 @@ public class Main {
 				}
 				
 			}
-			
-			//int diceValue = d.getDiceValue();
-			//players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
-			/*
-			 * Changed this up a little, this initial roll is part 
-			 * of the setPlayers board method now.
-			 * See Board class
-			int diceValue = d.getDiceValue();
-			players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
-			*/
 			
 			/* Each player is given 25 units of currency at the start of the game.
 			 At the beginning of each turn, players can use their currency to purchase in-game credits.
