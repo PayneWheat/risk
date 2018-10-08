@@ -99,7 +99,28 @@ public class Board {
 		}
 	}
 	
-	
+	public int initalArmyDispursement(int numOfPlayers) {
+		int armies = 0;
+		switch(numOfPlayers)
+		{
+			case 2:
+				armies = 40;
+				break;
+			case 3:
+				armies = 35;
+				break;
+			case 4:
+				armies = 30;
+				break;
+			case 5 :
+				armies = 25;
+				break;
+			case 6: 
+				armies = 20;
+				break;
+		}
+		return armies;
+	}
 	
 	/**
 	 * Accepts an array of Player objects, rolls the first die to determine who goes first,
@@ -130,6 +151,8 @@ public class Board {
 		System.out.println(players[maxIndex].getName() + " goes first.");
 		
 		// Determine the number of initial armies to place by the number of players
+		this.initialArmies = initalArmyDispursement(numOfPlayers);
+		/*
 		switch(numOfPlayers)
 		{
 			case 2:
@@ -148,7 +171,7 @@ public class Board {
 				initialArmies = 20;
 				break;
 		}
-		
+		*/
 		if(sortByInitRoll == true) {
 			Player temp;
 			for(int i = 0; i < numOfPlayers; i++) {
@@ -175,11 +198,13 @@ public class Board {
 		}
 
 		// CARD PILOT -- just checking that the cards are working
+		/*
 		for(int i = 0; i < numOfPlayers; i++) {
 			for(int j = 0; j < 5; j++) {
 				this.players.get(i).addCard(drawCard());
 			}
 		}
+		*/
 	}
 	
 	/**

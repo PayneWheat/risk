@@ -26,7 +26,7 @@ public class Player
 		this.continentsOccupied = 0;
 		this.countriesOccupied = 0;
 		this.cards = new ArrayList<Card>();
-		currency = 0;
+		this.currency = 0;
 		this.credits = 0;
 	}
 	public Player(String name, String color) {
@@ -38,6 +38,8 @@ public class Player
 		this.countriesOccupied = 0;
 		this.continentsOccupied = 0;
 		this.cards = new ArrayList<Card>();
+		this.currency = 0;
+		this.credits = 0;
 	}
 	public Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied){
 
@@ -48,6 +50,8 @@ public class Player
 		this.territoriesOccupied = countriesOccupied;
 		this.continentsOccupied = continentsOccupied;	
 		this.cards = new ArrayList<Card>();
+		this.currency = 0;
+		this.credits = 0;
 	}
 	public Player(String name, String color, int currency, int credits) {
 		this.name = name;
@@ -289,6 +293,12 @@ public class Player
 		return tempTerritory;
 	}
 	
+	/**
+	 * Checks if this player has a set of risk cards to turn in
+	 * If true, prompt the player which set of cards to turn in,
+	 * also force the player to select a set of cards if they have more than 5 cards total. 
+	 * @return set of cards to be exchanged for bonus armies
+	 */
 	public ArrayList<Card> cardCheck() {
 		for(int i = 0; i < cards.size(); i++) {
 			System.out.println("\t" + cards.get(i).getCardTypeName() + " (" + cards.get(i).getTerritoryName() + ")");
@@ -397,7 +407,7 @@ public class Player
 	/**
 	 * Adds all possible subsets of supplied cards to the subsets parameter
 	 * @param organizedCards An ArrayList of cards to check for each unique permutation. 
-	 * In practice, this only needs to be called when the player has more than one possible sets of cards to turn in.
+	 * In practice, this only needs to be called when the player has more than one possible set of cards to turn in.
 	 * Additionally, this only needs to be called when the player has three of a kind or one or more wild cards
 	 * In the case the player has one or more of each card, the oneOfEachExtractor method will be called. 
 	 * @param n organizedCards size
@@ -423,7 +433,7 @@ public class Player
 		getSubsetsUtil(organizedCards, n, r, index, data, i + 1, subsets);
 	}
 	/**
-	 * If the player has three of a kind, find all the possible subsets of the card type 
+	 * Returns all possible subsets from supplied, organized cards
 	 * @param organizedCards needs to contain only the cards that make up all of the three of a kind subsets
 	 * @return 2D ArrayList of all possible subsets of size 3
 	 */
@@ -434,7 +444,7 @@ public class Player
 		return subsets;
 	}
 	/**
-	 * Organizes the player's cards to be supplied to the proper subset function
+	 * Organizes the player's cards to be supplied to the threeOfAKindSubsets method
 	 * @param playerCards Current player's cards
 	 * @param infantryCount The count of infantry cards the player is in possession of
 	 * @param cavalryCount The count of cavalry cards the player is in possession of
@@ -487,7 +497,7 @@ public class Player
 		return CardSets;
 	}
 	/**
-	 * Nested loop to determine all possible combinations of sets of Risk cards where the player has one of each card type
+	 * Extracts all combinations of risk cards where there are one of each card type (excluding wilds)
 	 * @param playerCards Current player's cards
 	 * @param infantryCount The count of infantry cards the player is in possession of
 	 * @param cavalryCount The count of cavalry cards the player is in possession of
@@ -532,7 +542,7 @@ public class Player
 	
 	
 	/**
-	 * Returns all possible subsets of cards with a wildcard
+	 * Returns all possible subsets of cards with a wildcard from a properly organized list of cards 
 	 * @param organizedCards
 	 * @return subsets each subset from the supplied cards as a list
 	 */
@@ -544,7 +554,7 @@ public class Player
 	}
 	
 	/**
-	 * 
+	 * Organizes cards to be passed to wildSubsets method
 	 * @param playerCards
 	 * @param wildCount
 	 * @return 

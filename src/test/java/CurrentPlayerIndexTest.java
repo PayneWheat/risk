@@ -1,11 +1,9 @@
 package test.java;
 
-import junit.framework.Assert;
-
 import junit.framework.TestCase;
 import main.java.game.*;
 
-public class currentPlayerIndexTest extends TestCase {
+public class CurrentPlayerIndexTest extends TestCase {
 	public void testIncrementPlayerIndex() throws Exception {
 		Board b = new Board();
 		Player players[] = {
