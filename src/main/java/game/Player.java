@@ -17,7 +17,7 @@ public class Player
 	int currency;
 	int credits;
 	
-	Player() {
+	public Player() {
 		this.name = "";
 		this.color = "";
 		this.armies = 0;
