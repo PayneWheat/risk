@@ -60,11 +60,11 @@ public class Board {
 		return tempCard;
 	}
 	
-	/*
+
 	public int remainingCards() {
 		return cards.size();
 	}
-	*/
+
 	
 	//TODO: refactor this code before testing
 	public void printTerritories(boolean onlyUnoccupied, boolean showAdjacent) {
@@ -152,26 +152,8 @@ public class Board {
 		
 		// Determine the number of initial armies to place by the number of players
 		this.initialArmies = initalArmyDispursement(numOfPlayers);
-		/*
-		switch(numOfPlayers)
-		{
-			case 2:
-				initialArmies = 40;
-				break;
-			case 3:
-				initialArmies = 35;
-				break;
-			case 4:
-				initialArmies = 30;
-				break;
-			case 5 :
-				initialArmies = 25;
-				break;
-			case 6: 
-				initialArmies = 20;
-				break;
-		}
-		*/
+		
+		
 		if(sortByInitRoll == true) {
 			Player temp;
 			for(int i = 0; i < numOfPlayers; i++) {
