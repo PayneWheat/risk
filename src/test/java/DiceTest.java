@@ -9,7 +9,8 @@ public class DiceTest extends TestCase {
 	public void test() throws Exception {
 		
 		Dice d = new Dice();
-    int value = d.getDiceValue();
+		d.roll();
+    	int value = d.getDiceValue();
 		assertTrue(1 <= value && value <= 6);
 	}
 }

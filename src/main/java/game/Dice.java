@@ -5,7 +5,7 @@ public class Dice
 	private int diceValue;
 	private final int SIDES = 6;
 	
-	Dice()
+	public Dice()
 	{
 		
 	}
