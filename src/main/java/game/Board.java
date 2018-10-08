@@ -34,15 +34,15 @@ public class Board {
 			byte type = (byte)(i % 3 + 1);
 			Card tempCard = new Card(this.territories.get(i).name, type);
 			deck.add(tempCard);
-			System.out.println("Card created[" + i + "]: " + tempCard.territoryName + ", " + tempCard.getCardTypeName());
+			//System.out.println("Card created[" + i + "]: " + tempCard.territoryName + ", " + tempCard.getCardTypeName());
 		}
 		for(int i = 0; i < 2; i++) {
 			// wild cards
 			deck.add(new Card("Wild", (byte)4));
-			System.out.println("Card created: Wild card");
+			//System.out.println("Card created: Wild card");
 		}
 		// shuffles risk card deck
-		System.out.println("Total cards: " + deck.size() + "\n");
+		//System.out.println("Total cards: " + deck.size() + "\n");
 		Collections.shuffle(deck);
 		return deck;
 	}
@@ -454,12 +454,11 @@ public class Board {
 	 * @param toTerritory The territory to move armies to
 	 * @param armies The number of armies to move
 	 */
-	// TODO: Validation
-	private void moveArmies(Territory fromTerritory, Territory toTerritory, int armies) {
+	public void moveArmies(Territory fromTerritory, Territory toTerritory, int armies) {
 		System.out.println("Moving " + armies + " armies from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName());
-		// check player has both territories
-		// check for adjacency
-		// check that there's enough armies to move and still leave at least 1
+		// TODO: check player has both territories
+		// TODO: check for adjacency
+		// TODO: check that there's enough armies to move and still leave at least 1
 		fromTerritory.decrementArmy(armies);
 		toTerritory.incrementArmy(armies);
 	}
@@ -794,7 +793,7 @@ public class Board {
 	 * @param cardSet
 	 * @return
 	 */
-	private int turnInCardSet(Player player, ArrayList<Card> cardSet) {
+	public int turnInCardSet(Player player, ArrayList<Card> cardSet) {
 		// check set
 		
 		// remove cards from player's current stack of cards
@@ -890,7 +889,7 @@ public class Board {
 		boolean invalidTransferCredits = true;
 		int playerIndex = 0;
 		String transferCredits = "";
-		int transfer = JOptionPane.showOptionDialog(new JFrame(),currentPlayer.getName() + ", would you like to transfer credits to another player?", 
+		int transfer = JOptionPane.showOptionDialog(new JFrame(), currentPlayer.getName() + ", would you like to transfer credits to another player?", 
 		        "Transfer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
 		if (transfer == JOptionPane.YES_OPTION){
@@ -994,7 +993,7 @@ public class Board {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1006,7 +1005,7 @@ public class Board {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1018,7 +1017,7 @@ public class Board {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1030,7 +1029,7 @@ public class Board {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1042,7 +1041,7 @@ public class Board {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1054,12 +1053,12 @@ public class Board {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 
-		printTerritories(true, false);
-		System.out.println("Territories size: " + this.territories.size());
-		System.out.println(this.territories.get(0).getTerritoryName());
+		//printTerritories(true, false);
+		//System.out.println("Territories size: " + this.territories.size());
+		//System.out.println(this.territories.get(0).getTerritoryName());
 		
 		//set each XY coordinates for each territories
 		territories.get(0).setX(55);

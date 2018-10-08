@@ -80,20 +80,10 @@ public class Player
 		else
 			territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place at least one army (" + getArmies() + " remaining)");
 		
-		// TODO: Abstract out a function for parsing input from JOptionPane 
-		try {
-			ti = Integer.parseInt(territoryIndex);
-		} catch(NumberFormatException e) {
-			// not an int
-			System.out.println("Could not parse number. Try again");
-			ti = pickTerritory(initialTurns);
-		} catch(Exception e) {
-			// not a territory index
-			System.out.println("Error: " + e + "\nTry again");
+		ti = numberInputParser(territoryIndex);
+		if(ti < 0) {
 			ti = pickTerritory(initialTurns);
 		}
-			
-		
 		return ti;
 	}
 	
