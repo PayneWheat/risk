@@ -9,31 +9,31 @@ public class Player
 	String name;
 	String color;
 	int armies;
-	int diceValue;
-	int territoriesOccupied;
-	int countriesOccupied;
-	int continentsOccupied;
+	//int diceValue;
+	//int territoriesOccupied;
+	//int countriesOccupied;
+	//int continentsOccupied;
 	ArrayList<Card> cards;
 	int currency;
 	int credits;
-	
 	public Player() {
 		this.name = "";
 		this.color = "";
 		this.armies = 0;
-		this.diceValue = 0;
-		this.territoriesOccupied = 0;
-		this.continentsOccupied = 0;
-		this.countriesOccupied = 0;
+		//this.diceValue = 0;
+		//this.territoriesOccupied = 0;
+		//this.continentsOccupied = 0;
+		//this.countriesOccupied = 0;
 		this.cards = new ArrayList<Card>();
 		this.currency = 0;
 		this.credits = 0;
 	}
+	/*
 	public Player(String name, String color) {
 		this.name = name;
 		this.color = color;
 		this.armies = 0;
-		this.diceValue = 0;
+		//this.diceValue = 0;
 		this.territoriesOccupied = 0;
 		this.countriesOccupied = 0;
 		this.continentsOccupied = 0;
@@ -41,43 +41,45 @@ public class Player
 		this.currency = 0;
 		this.credits = 0;
 	}
-	public Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied){
+	public Player(String name, String color, int armies, int territoriesOccupied, int continentsOccupied){
 
 		this.name = name;
 		this.color = color;
 		this.armies = armies;
-		this.diceValue = diceValue;
+		//this.diceValue = diceValue;
 		this.territoriesOccupied = countriesOccupied;
 		this.continentsOccupied = continentsOccupied;	
 		this.cards = new ArrayList<Card>();
 		this.currency = 0;
 		this.credits = 0;
 	}
+	*/
 	public Player(String name, String color, int currency, int credits) {
 		this.name = name;
 		this.color = color;
 		this.armies = 0;
-		this.diceValue = 0;
-		this.territoriesOccupied = 0;
-		this.countriesOccupied = 0;
-		this.continentsOccupied = 0;
+		//this.diceValue = 0;
+		//this.territoriesOccupied = 0;
+		//this.countriesOccupied = 0;
+		//this.continentsOccupied = 0;
 		this.cards = new ArrayList<Card>();
 		this.currency = currency;
 		this.credits = credits;
 	}
+	/*
 	public Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied, int currency, int credits){
 
 		this.name = name;
 		this.color = color;
 		this.armies = armies;
-		this.diceValue = diceValue;
+		//this.diceValue = diceValue;
 		this.territoriesOccupied = countriesOccupied;
 		this.continentsOccupied = continentsOccupied;	
 		this.cards = new ArrayList<Card>();
 		this.currency = currency;
 		this.credits = credits;
 	}
-	
+	*/
 	public String getName() {
 		return name;
 	}
@@ -87,15 +89,19 @@ public class Player
 	public int getArmies(){
 		return armies;
 	}
+	/*
 	public int getDiceValue(){
 		return diceValue;
 	}
+	*/
+	/*
 	public int getTerritoriesOccupied(){
 		return territoriesOccupied;
 	}
 	public int continentsOccupied(){
 		return continentsOccupied;
 	}
+	*/
 	public int getCurrency(){
 		return currency;
 	}
