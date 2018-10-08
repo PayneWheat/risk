@@ -1,8 +1,11 @@
 test\java\TerritoryTest.class
 test\java\CurrentPlayerIndexTest.class
 test\java\InitialTroopsTest.class
+test\java\AttackTest.class
 test\java\CardTest.class
 test\java\ContinentTest.class
 test\java\CardSetTest.class
 test\java\PlayerTest.class
+test\java\CardDeckTest.class
 test\java\DiceTest.class
+test\java\UnoccupiedTerritoriesTest.class
