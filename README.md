@@ -2,6 +2,14 @@
 ### COSC 4353, Dr. Alipour
 ### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin, Nivetha Natarajan 
 
+To-Do List
+New Requirements:
+-Twitter feed
+-Generate graphs/Javadocs
+Old requirements:
+-Amazon S3 Replay
+-Units tests >= 50%
+
 Current Build Status
 
 [status]: https://travis-ci.com/PayneWheat/risk.svg?branch=master
