@@ -10,6 +10,11 @@ public class Dice
 		
 	}
 	
+	public Dice(int diceValue)
+	{
+		this.diceValue = diceValue;
+	}
+	
 	public void roll()
 	{
 		diceValue = (int) (Math.random() * SIDES) + 1;
