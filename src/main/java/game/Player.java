@@ -4,8 +4,7 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class Player 
-{
+public class Player {
 	String name;
 	String color;
 	int armies;
@@ -161,14 +160,21 @@ public class Player
 		int armies = 0;
 		while(undo){
 			String armyQty = JOptionPane.showInputDialog(getName() + ", how many of your " + getArmies() + " remaining armies?");
-			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to place " + Integer.parseInt(armyQty), 
+			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to place " + Integer.parseInt(armyQty) + " armies", 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-			if (n == JOptionPane.YES_OPTION) {
-	            undo = false;
-	        } else if (n == JOptionPane.NO_OPTION) {
-	            undo = true;
-	        }
+			if (n == JOptionPane.NO_OPTION) {
+				if(getCredits() > 0){
+					--credits;
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					undo = false;
+				}
+	        } 
+			else if(n == JOptionPane.YES_OPTION){
+				undo = false;
+			}
 			try {
 				armies = Integer.parseInt(armyQty);
 			} catch(NumberFormatException e) {
@@ -348,50 +354,39 @@ public class Player
 			int cardSetIndex = -1;
 			String cardSetInput = "";
 			while(tryAgain) {
-				boolean undo = true;
-				while(undo){
-					try {
-						if(mustTurnIn) {
-							while(trySetAgain){
-								cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. (You must select a set)");
-								int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen set " + Integer.parseInt(cardSetInput), 
-								        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
-								        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-								if (n == JOptionPane.YES_OPTION) {
-						            undo = false;
-						        } else if (n == JOptionPane.NO_OPTION) {
-						            undo = true;
-						        }
-								if(cardSetInput.equals("0") || cardSetInput.equals("1") || cardSetInput.equals("2") || cardSetInput.equals("3") || cardSetInput.equals("4")|| cardSetInput.equals("5") || cardSetInput.equals("6") || cardSetInput.equals("7")){
+				try {
+					if(mustTurnIn) {
+						while(trySetAgain){
+							cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. (You must select a set)");
+							if(cardSetInput.equals("0") || cardSetInput.equals("1") || cardSetInput.equals("2") || cardSetInput.equals("3") || cardSetInput.equals("4")|| cardSetInput.equals("5") || cardSetInput.equals("6") || cardSetInput.equals("7")){
 									trySetAgain = false;
-								}
-								else{
+							}
+							else{
 									JOptionPane.showMessageDialog(null, "You have entered an invalid set. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
-								}
 							}
-							if(cardSetInput != null) {
-								cardSetIndex = Integer.parseInt(cardSetInput);
-							}
-						} else {
-							cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. Click cancel to wait.");
-							if(cardSetInput == null) {
-								tryAgain = false;
-								break;
-							}
+						}
+						if(cardSetInput != null) {
 							cardSetIndex = Integer.parseInt(cardSetInput);
 						}
+					} else {
+						cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. Click cancel to wait.");
+						if(cardSetInput == null) {
+							tryAgain = false;
+							break;
+						}
+						cardSetIndex = Integer.parseInt(cardSetInput);
+					}
 						
-						tryAgain = false;
-						/*
-						int bonusArmies = turnInCardSet(this, CardSets.get(cardSetIndex));
-						System.out.println(getName() + " turned in a set of Risk Cards and was awarded " + bonusArmies + " armies.");
-						increaseArmies(bonusArmies);
-						*/
-					} catch(NumberFormatException e) {
-						// not an int
-						System.out.println("Could not parse number. Try again");
-					}	
-				}
+					tryAgain = false;
+					/*
+					int bonusArmies = turnInCardSet(this, CardSets.get(cardSetIndex));
+					System.out.println(getName() + " turned in a set of Risk Cards and was awarded " + bonusArmies + " armies.");
+					increaseArmies(bonusArmies);
+					*/
+				} catch(NumberFormatException e) {
+					// not an int
+					System.out.println("Could not parse number. Try again");
+				}	
 			}
 			return CardSets.get(cardSetIndex);
 		}
