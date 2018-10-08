@@ -161,7 +161,23 @@ public class Player
 		return ti;
 	}
 	
-	//TODO: move to Player class
+	public int numberInputParser(String input) {
+		int number = -1;
+		try {
+			number = Integer.parseInt(input);
+			if(number < 0) {
+				number = -1;
+				throw new IllegalArgumentException("Must be a positive number.");
+			}
+		} catch(NumberFormatException e) {
+			// not an int
+			System.out.println("Could not parse number. Try again");
+		} catch(Exception e) {
+			System.out.println("Error: " + e + "\nTry again");
+		}
+		return number;
+	}
+	
 	/**
 	 * Prompts user to choose how many armies to place on a territory.
 	 * @return number of armies to be placed
@@ -186,8 +202,11 @@ public class Player
 			else if(n == JOptionPane.YES_OPTION){
 				undo = false;
 			}
+			armies = numberInputParser(armyQty);
+			/*
 			try {
-				armies = Integer.parseInt(armyQty);
+				//armies = Integer.parseInt(armyQty);
+				
 			} catch(NumberFormatException e) {
 				// not an int
 				System.out.println("Could not parse number. Try again");
@@ -199,6 +218,7 @@ public class Player
 				armies = chooseArmiesQty();
 				undo = true;
 			}
+			*/
 			if(armies > getArmies()) {
 				System.out.println("You don't have that many armies.");
 				armies = chooseArmiesQty();
@@ -234,21 +254,21 @@ public class Player
 			}
 		}
 		String attackingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose a territory to attack from.");
-		int attackingTerritoryIndex = -1;
+		int attackingTerritoryIndex = numberInputParser(attackingTerritoryInput);
 		Territory tempTerritory = new Territory();
-		// TODO: abstract out a function to parse JOptionPane input
-		try {
-			attackingTerritoryIndex = Integer.parseInt(attackingTerritoryInput);
-			tempTerritory = territories.get(attackingTerritoryIndex);
-		} catch(NumberFormatException e) {
-			// not an int
-			System.out.println("Could not parse number. Try again");
+		if(attackingTerritoryIndex < 0)
 			tempTerritory = chooseAttackingTerritory(allTerritories, territories);
+		else
+			tempTerritory = territories.get(attackingTerritoryIndex);
+		/*
+		try {
+			attackingTerritoryIndex = numberInputParser(attackingTerritoryInput);
+			tempTerritory = territories.get(attackingTerritoryIndex);
 		} catch(Exception e) {
 			System.out.println("Error: " + e + "\nTry again");
 			tempTerritory = chooseAttackingTerritory(allTerritories, territories);
 		}
-		/*
+		
 		// TODO: Change these to try/catch blocks and throw proper exceptions
 		if(tempTerritory.getPlayer() != this) {
 			System.out.println("You do not occupy selected territory. Try again");
@@ -273,6 +293,8 @@ public class Player
 			System.out.println("[" + tempIndex + "]" + opposingAdjacents.get(i).getTerritoryName() + " (" + opposingAdjacents.get(i).getPlayer().getName()  + "): " + opposingAdjacents.get(i).getArmyCount() + " armies.");
 		}
 		String defendingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose an opponent's territory to attack.");
+		int defendingTerritoryIndex = numberInputParser(defendingTerritoryInput);
+		/*
 		int defendingTerritoryIndex = -1;
 		try {
 			defendingTerritoryIndex = Integer.parseInt(defendingTerritoryInput);
@@ -286,6 +308,12 @@ public class Player
 			System.out.println("Error: " + e + "\nTry again");
 			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
 		}
+		*/
+		if(defendingTerritoryIndex < 0) {
+			System.out.println("Try again.");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
+		}
+		tempTerritory = territories.get(defendingTerritoryIndex);
 		if(tempTerritory.getPlayer() == this) {
 			System.out.println("You cannot attack your own territory. Try again");
 			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);

@@ -51,4 +51,13 @@ public class PlayerTest extends TestCase {
 		assertNotNull(one.wildSetsExtractor(cardset, 1));
 		assertNotNull(one.threeOfAKindExtractor(cardset, 3, 3, 3));
 	}
+	
+	@Test
+	public void testNumberInputParser() {
+		int parsed = one.numberInputParser("0");
+		assertEquals(0, parsed);
+		// should only accept positive numbers
+		parsed = one.numberInputParser("-100");
+		assertEquals(-1, parsed);
+	}
 }
