@@ -9,10 +9,6 @@ public class Player
 	String name;
 	String color;
 	int armies;
-	//int diceValue;
-	//int territoriesOccupied;
-	//int countriesOccupied;
-	//int continentsOccupied;
 	ArrayList<Card> cards;
 	int currency;
 	int credits;
@@ -20,66 +16,19 @@ public class Player
 		this.name = "";
 		this.color = "";
 		this.armies = 0;
-		//this.diceValue = 0;
-		//this.territoriesOccupied = 0;
-		//this.continentsOccupied = 0;
-		//this.countriesOccupied = 0;
 		this.cards = new ArrayList<Card>();
 		this.currency = 0;
 		this.credits = 0;
 	}
-	/*
-	public Player(String name, String color) {
-		this.name = name;
-		this.color = color;
-		this.armies = 0;
-		//this.diceValue = 0;
-		this.territoriesOccupied = 0;
-		this.countriesOccupied = 0;
-		this.continentsOccupied = 0;
-		this.cards = new ArrayList<Card>();
-		this.currency = 0;
-		this.credits = 0;
-	}
-	public Player(String name, String color, int armies, int territoriesOccupied, int continentsOccupied){
-
-		this.name = name;
-		this.color = color;
-		this.armies = armies;
-		//this.diceValue = diceValue;
-		this.territoriesOccupied = countriesOccupied;
-		this.continentsOccupied = continentsOccupied;	
-		this.cards = new ArrayList<Card>();
-		this.currency = 0;
-		this.credits = 0;
-	}
-	*/
 	public Player(String name, String color, int currency, int credits) {
 		this.name = name;
 		this.color = color;
 		this.armies = 0;
-		//this.diceValue = 0;
-		//this.territoriesOccupied = 0;
-		//this.countriesOccupied = 0;
-		//this.continentsOccupied = 0;
 		this.cards = new ArrayList<Card>();
 		this.currency = currency;
 		this.credits = credits;
 	}
-	/*
-	public Player(String name, String color, int armies, int diceValue, int territoriesOccupied, int continentsOccupied, int currency, int credits){
 
-		this.name = name;
-		this.color = color;
-		this.armies = armies;
-		//this.diceValue = diceValue;
-		this.territoriesOccupied = countriesOccupied;
-		this.continentsOccupied = continentsOccupied;	
-		this.cards = new ArrayList<Card>();
-		this.currency = currency;
-		this.credits = credits;
-	}
-	*/
 	public String getName() {
 		return name;
 	}
@@ -89,19 +38,6 @@ public class Player
 	public int getArmies(){
 		return armies;
 	}
-	/*
-	public int getDiceValue(){
-		return diceValue;
-	}
-	*/
-	/*
-	public int getTerritoriesOccupied(){
-		return territoriesOccupied;
-	}
-	public int continentsOccupied(){
-		return continentsOccupied;
-	}
-	*/
 	public int getCurrency(){
 		return currency;
 	}
@@ -203,22 +139,7 @@ public class Player
 				undo = false;
 			}
 			armies = numberInputParser(armyQty);
-			/*
-			try {
-				//armies = Integer.parseInt(armyQty);
-				
-			} catch(NumberFormatException e) {
-				// not an int
-				System.out.println("Could not parse number. Try again");
-				armies = chooseArmiesQty();
-				undo = true;
-			} catch(Exception e) {
-				// not a territory index
-				System.out.println("Error: " + e + "\nTry again");
-				armies = chooseArmiesQty();
-				undo = true;
-			}
-			*/
+
 			if(armies > getArmies()) {
 				System.out.println("You don't have that many armies.");
 				armies = chooseArmiesQty();
@@ -260,21 +181,6 @@ public class Player
 			tempTerritory = chooseAttackingTerritory(allTerritories, territories);
 		else
 			tempTerritory = territories.get(attackingTerritoryIndex);
-		/*
-		try {
-			attackingTerritoryIndex = numberInputParser(attackingTerritoryInput);
-			tempTerritory = territories.get(attackingTerritoryIndex);
-		} catch(Exception e) {
-			System.out.println("Error: " + e + "\nTry again");
-			tempTerritory = chooseAttackingTerritory(allTerritories, territories);
-		}
-		
-		// TODO: Change these to try/catch blocks and throw proper exceptions
-		if(tempTerritory.getPlayer() != this) {
-			System.out.println("You do not occupy selected territory. Try again");
-			attackingTerritoryIndex = chooseAttackingTerritory(allTerritories, territories);
-		}
-		*/
 		return tempTerritory;
 	}
 	/**
@@ -294,21 +200,6 @@ public class Player
 		}
 		String defendingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose an opponent's territory to attack.");
 		int defendingTerritoryIndex = numberInputParser(defendingTerritoryInput);
-		/*
-		int defendingTerritoryIndex = -1;
-		try {
-			defendingTerritoryIndex = Integer.parseInt(defendingTerritoryInput);
-			tempTerritory = territories.get(defendingTerritoryIndex);
-		} catch(NumberFormatException e) {
-			// not an int
-			System.out.println("Could not parse number. Try again");
-			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
-		} catch(Exception e) {
-			// not a territory index
-			System.out.println("Error: " + e + "\nTry again");
-			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
-		}
-		*/
 		if(defendingTerritoryIndex < 0) {
 			System.out.println("Try again.");
 			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
@@ -423,11 +314,6 @@ public class Player
 					}
 						
 					tryAgain = false;
-					/*
-					int bonusArmies = turnInCardSet(this, CardSets.get(cardSetIndex));
-					System.out.println(getName() + " turned in a set of Risk Cards and was awarded " + bonusArmies + " armies.");
-					increaseArmies(bonusArmies);
-					*/
 				} catch(NumberFormatException e) {
 					// not an int
 					System.out.println("Could not parse number. Try again");
