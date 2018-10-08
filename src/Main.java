@@ -21,12 +21,10 @@ public class Main {
 		while(incorrectPlayers)
 		{
 			userInput = JOptionPane.showInputDialog(null, "Please enter the number of players (2,3,4,5,6): ");
-			if(userInput.equals("2") || userInput.equals("3") || userInput.equals("4") || userInput.equals("5") || userInput.equals("6"))
-			{
+			if(userInput.equals("2") || userInput.equals("3") || userInput.equals("4") || userInput.equals("5") || userInput.equals("6")){
 				incorrectPlayers = false;
 			}
-			else
-			{
+			else{
 				JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -159,27 +157,13 @@ public class Main {
 			int diceValue = d.getDiceValue();
 			players[i] = new Player(name, color, initialArmies, diceValue, 0, 0);
 			*/
-			/* Each player is given 25 units of currency at the start of the game
-			 Throughout the game, they can use their currency to purchase in-game credits*/
-			int credits = 0;
-			int currency = 25;
-			boolean invalidCredits = true;
-			int c = JOptionPane.showOptionDialog(new JFrame(),"Would you like to purchase in-game credits?", 
-			        "In-Game Credits", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
-			        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
-			if (c == JOptionPane.YES_OPTION) {
-				while(invalidCredits){
-					credits = Integer.parseInt(JOptionPane.showInputDialog(null, "How many credits would you like to purchase? You are given " + currency + " units of currency"));
-					if(currency >= credits){
-						invalidCredits = false;
-						currency = currency - credits;
-					}
-					else{
-						JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please Try again.");
-					}
-				}
-	        }
-			players[i] = new Player(name, color, currency, credits);
+			
+			/* Each player is given 25 units of currency at the start of the game.
+			 At the beginning of each turn, players can use their currency to purchase in-game credits.
+			 It costs 1 credit to undo a move.
+			 It costs 5 credits to purchase a card.
+			 They can also transfer credits to another player for no additional fee.*/
+			players[i] = new Player(name, color, 25, 0);
 		}
 		
 		// Sort players by descending dice value
