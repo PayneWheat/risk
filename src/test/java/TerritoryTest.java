@@ -21,6 +21,16 @@ public class TerritoryTest extends TestCase {
 		assertEquals("Alaska", index0.getTerritoryName());
 		assertEquals((byte)0, index0.getcontinentIndex());
 		assertEquals("North America", index0.getContinent());
+		Territory t1 = new Territory("Brazil", (byte)1);
+		assertEquals("South America", t1.getContinent());
+		t1 = new Territory("Great Britain", (byte)2);
+		assertEquals("Europe", t1.getContinent());
+		t1 = new Territory("Congo", (byte)3);
+		assertEquals("Africa", t1.getContinent());
+		t1 = new Territory("Japan", (byte)4);
+		assertEquals("Asia", t1.getContinent());
+		t1 = new Territory("New Guinea", (byte)5);
+		assertEquals("Australia", t1.getContinent());
 		Player one = new Player("John", "Blue", 0, 0);
 		index0.setPlayer(one);
 		index0.setOccupant(one);

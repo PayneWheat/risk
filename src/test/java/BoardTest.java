@@ -129,7 +129,7 @@ public class BoardTest extends TestCase {
 		for(int i = 0; i < 4; i++) {
 			b.territories.get(i).setOccupant(p);
 		}
-		System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
+		//System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
 		assertEquals(3, b.armyReplenishment(p));
 		for(int i = 13; i < 19; i++) {
 			b.territories.get(i).setOccupant(p);
@@ -137,10 +137,10 @@ public class BoardTest extends TestCase {
 		for(int i = 20; i < 25; i++) {
 			b.territories.get(i).setOccupant(p);
 		}
-		System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
+		//System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
 		assertEquals(5, b.armyReplenishment(p));
 		b.territories.get(25).setOccupant(p);
-		System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
+		//System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
 		assertEquals(8, b.armyReplenishment(p));
 	}
 }
