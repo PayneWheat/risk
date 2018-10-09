@@ -20,7 +20,7 @@ public class BoardTest extends TestCase {
 		tempCard = new Card("Test2", (byte)1);
 		cards.add(tempCard);
 		p.addCard(tempCard);
-		tempCard =new Card("Test3", (byte)1);
+		tempCard = new Card("Test3", (byte)1);
 		cards.add(tempCard);
 		p.addCard(tempCard);
 		assertEquals(b.turnInCardSet(p, cards), 4);
@@ -95,7 +95,8 @@ public class BoardTest extends TestCase {
 			assertEquals(b.cardSetsTurnedIn, i + 1);
 		}
 	}
-	public void testMoveArmies() {
+	@Test
+	public void testMoveArmies() throws Exception {
 		Territory t1 = b.territories.get(0);
 		t1.setPlayer(p);
 		t1.incrementArmy(5);
@@ -106,8 +107,8 @@ public class BoardTest extends TestCase {
 		assertEquals(2, t1.getArmyCount());
 		assertEquals(4, t2.getArmyCount());
 	}
-	
-	public void testSortDice() {
+	@Test
+	public void testSortDice() throws Exception {
 		ArrayList<Dice> d = new ArrayList<Dice>();
 		d.add(new Dice(1));
 		d.add(new Dice(2));
@@ -121,5 +122,25 @@ public class BoardTest extends TestCase {
 			assertEquals(expectedValue, sorted.get(i).getCurrentValue());
 			expectedValue--;
 		}
+	}
+	@Test
+	public void testArmyReplenishment() throws Exception {
+		System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
+		for(int i = 0; i < 4; i++) {
+			b.territories.get(i).setOccupant(p);
+		}
+		System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
+		assertEquals(3, b.armyReplenishment(p));
+		for(int i = 13; i < 19; i++) {
+			b.territories.get(i).setOccupant(p);
+		}
+		for(int i = 20; i < 25; i++) {
+			b.territories.get(i).setOccupant(p);
+		}
+		System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
+		assertEquals(5, b.armyReplenishment(p));
+		b.territories.get(25).setOccupant(p);
+		System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
+		assertEquals(8, b.armyReplenishment(p));
 	}
 }

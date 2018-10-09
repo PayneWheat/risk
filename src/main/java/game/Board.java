@@ -330,26 +330,25 @@ public class Board {
 	 */
 	public int armyReplenishment(Player player) {
 		// Army replenishment at beginning of player's turn.
-		//Player curPlayer = players.get(currentPlayerIndex);
 		int armies = 0;
 		int territoryCount = playerTerritoriesCount(player);
 		if(territoryCount < 9)
 			armies = 3;
 		else
 			armies = territoryCount / 3;
-		System.out.println(players.get(currentPlayerIndex).name + " has " + territoryCount + " territories which yields " + armies + " armies.");
+		System.out.println(player.name + " has " + territoryCount + " territories which yields " + armies + " armies.");
 		int contArmies = 0;
 		int contCount = 0;
 		// check if player has control of any continent
 		for(int i = 0; i < continents.size(); i++) {
-			if(continents.get(i).bonusArmiesAwarded() == players.get(currentPlayerIndex)) {
+			if(continents.get(i).bonusArmiesAwarded() == player) {
 				contArmies += continents.get(i).getBonusArmies();
 				contCount++;
 			}
 		}
-		System.out.println(players.get(currentPlayerIndex).name + " has control of " + contCount + " continents for an additional " + contArmies + " armies.");
+		System.out.println(player.name + " has control of " + contCount + " continents for an additional " + contArmies + " armies.");
 		armies += contArmies;
-		System.out.println(players.get(currentPlayerIndex).name + " receives " + armies + " armies.");
+		System.out.println(player.name + " receives " + armies + " armies.");
 		return armies;
 	}
 	
