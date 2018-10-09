@@ -59,5 +59,7 @@ public class PlayerTest extends TestCase {
 		// should only accept positive numbers
 		parsed = one.numberInputParser("-100");
 		assertEquals(-1, parsed);
+		parsed = one.numberInputParser("abc");
+		assertEquals(-1, parsed);
 	}
 }

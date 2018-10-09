@@ -143,4 +143,11 @@ public class BoardTest extends TestCase {
 		//System.out.println("CURRENT TERRITORY COUNT: " + b.getPlayersTerritories(p).size());
 		assertEquals(8, b.armyReplenishment(p));
 	}
+	@Test
+	public void testPrintTerritories() throws Exception {
+		b.printTerritories(true, false);
+		b.printTerritories(true, true);
+		b.printTerritories(false, false);
+		b.printTerritories(false, false);
+	}
 }

@@ -173,6 +173,7 @@ public class Player
 			tempTerritory = territories.get(attackingTerritoryIndex);
 		return tempTerritory;
 	}
+	
 	/**
 	 * Prompts player to choose a territory to attack.
 	 * For use when the player is in the attack step of their turn.

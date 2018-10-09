@@ -9,8 +9,13 @@ public class CardDeckTest extends TestCase {
 		assertEquals(b.remainingCards(), 44);
 	}
 	public void testCardDraw() throws Exception {
-		int value = b.drawCard().type;
-		assertTrue(1 <= value && value <= 4);
-		assertEquals(b.remainingCards(), 43);
+		for(int i = 0; i < 44; i++) {
+			Card c = b.drawCard();
+			int value = c.type;
+			
+			assertTrue(1 <= value && value <= 4);
+			assertEquals(b.remainingCards(), 43 - i);
+			assertNotNull(c.territoryName);
+		}
 	} 
 }
