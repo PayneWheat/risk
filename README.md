@@ -6,8 +6,7 @@ To-Do List: Twitter feed, Generate graphs/Javadocs, Amazon S3 Replay, Units test
 
 Current Build Status
 
-[status]: https://travis-ci.com/PayneWheat/risk.svg?branch=master
-![alt text][status]
+[![status](https://travis-ci.com/PayneWheat/risk.svg?branch=master)](https://travis-ci.org/PayneWheat/risk)
 
 Code Coverage
 
