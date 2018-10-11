@@ -23,6 +23,22 @@ Code Coverage
     Please note that during the semester there will be assignments to add new features to your program, 
     thus it is important to implement the core functionality by the end of fourth week of the class. 
 
+## Installing Maven
+Maven needs to run locally in order to perform tests prior to the build on Travis CI.
+
+###For Windows:
+[How to install Maven](https://www.mkyong.com/maven/how-to-install-maven-in-windows/)
+
+## AWS Dependencies
+Email me at pewheat@uh.edu to receive the API secret keys. I will send this as a properties file, secrets_PHP.prop, which you will need to put in the root folder of the project. To prevent the secret keys from being pushed to the repo, be sure to exclude the file using .gitignore. [More about gitignore](https://help.github.com/articles/ignoring-files/)
+
+Once you have the properties file in place, checkout a new branch locally (git checkout -b aws), pull from the aws branch in this repository (git pull origin aws), and set your build path to include the jar files in /lib/. To do this in Eclipse, right click on the project in project explorer > Build Path > Configure Build Path > Click the Libraries tab > Add Class Folder...
+Then select /lib/
+
+Once everyone has the necessary dependencies in place, I will merge the aws branch with master.
+
+For the time being, if you need to create a Board object in any of your tests, set the 'useAWS' parameter in the board constructor as false (until I have Travis CI working with AWS dependencies).
+
 [riskmap]: https://static1.squarespace.com/static/563fc40de4b06686c7220979/t/5658b45ce4b05e0c71b95004/1448653925676/?format=1500w
 ![alt text][riskmap]
 
@@ -31,7 +47,7 @@ Code Coverage
 - Each card has a type of either infantry, cavalry, or artillery and one of the territories.
 - Wild card has all three types and no territory
 
-At the end of any turn in which the player has captured at least one territory, they will earn one (and only one) RISK card[source](http://www.ultraboardgames.com/risk/game-rules.php).
+At the end of any turn in which the player has captured at least one territory, they will earn one (and only one) RISK card [source](http://www.ultraboardgames.com/risk/game-rules.php).
 
 **Card objective**: collect a set of 3 cards containing the following combinations.
 - 3 cards of the same type (infantry, artillery, or cavalry)  
