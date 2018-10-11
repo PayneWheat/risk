@@ -9,14 +9,15 @@ import java.util.List;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 
 public class S3 {
-    //private static AWSCredentials awsCredentials = new BasicAWSCredentials("email", "password");  
-    //private static AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient(); 
+    private static AWSCredentials awsCredentials = null;  
+    private static AmazonS3 s3 = null; 
 	public S3() {
 		Properties prop = new Properties();
 		InputStream input = null;
@@ -33,11 +34,11 @@ public class S3 {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		AWSCredentials awsCreds = new BasicAWSCredentials(awsUser, awsPassword);
-		AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).build();
+		awsCredentials = new BasicAWSCredentials(awsUser, awsPassword);
+		s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_WEST_2).withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
 		//AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
-		/*
-		String bucket_name = "risk_replay";
+		
+		String bucket_name = "riskreplay";
 		Bucket b = null;
 		
 		if(s3.doesBucketExistV2(bucket_name)) {
@@ -52,7 +53,7 @@ public class S3 {
 				System.err.println(e.getErrorMessage());
 			}
 		}
-		*/
+		
 		
 	}
 	public static Bucket getBucket(String bucket_name) {
