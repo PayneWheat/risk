@@ -4,7 +4,7 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class Board {
+public class Board implements Observer {
 	//TODO: Make class a singleton
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
 	public ArrayList<Continent> continents = new ArrayList<Continent>();
