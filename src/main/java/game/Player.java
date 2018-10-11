@@ -1,4 +1,4 @@
-//package main.java.game;
+package main.java.game;
 import java.util.*;
 
 import javax.swing.JFrame;
