@@ -476,7 +476,7 @@ public class Board implements Observer {
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
 		
 		attackMessage = defendingTerritory.getPlayer().getName() + ", " + attackingTerritory.getPlayer().getName() + " is attacking your territory (" + defendingTerritory.getTerritoryName() + ")!"; 
-		defendingTerritory.getPlayer().setAttackMessage(attackMessage);
+		update(defendingTerritory.getPlayer(), attackMessage);
 		// Prompt player to roll dice, with the number of dice determined
 		// for both players by the total armies present on either territory.
 		// OR allow player to "retreat" -- or stop attack
@@ -653,7 +653,7 @@ public class Board implements Observer {
 	
 	@Override
     	public void update(Player p, String o) {
-		
+		p.setAttackMessage(p, o);
 	}
 	
 	/**
