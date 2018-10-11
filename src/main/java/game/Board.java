@@ -652,7 +652,7 @@ public class Board {
 	}
 	
 	@Override
-    	public void update(String message) {
+    	public void update(String o) {
 		
 	}
 	
