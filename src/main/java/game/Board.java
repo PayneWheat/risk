@@ -652,7 +652,7 @@ public class Board implements Observer {
 	}
 	
 	@Override
-    	public void update(String o) {
+    	public void update(Player p, String o) {
 		
 	}
 	
