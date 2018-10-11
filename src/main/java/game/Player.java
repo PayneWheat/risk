@@ -80,9 +80,10 @@ public class Player
 	public void setAttackMessage(String attackMessage){
 		this.attackMessage = attackMessage;
 		JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
-		/*for (Observer observer : observers) {
-           	observer.update(p, this.attackMessage);
-        }*/
+		
+		for (Observer observer : observers) {
+           	observer.update(this.attackMessage);
+        	}
 	}
 	
 	/**
