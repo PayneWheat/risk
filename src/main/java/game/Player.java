@@ -13,7 +13,7 @@ public class Player
 	int currency;
 	int credits;
 	String attackMessage;
-	//private List<Observer> observers = new ArrayList<>();
+	public List<Observer> observers = new ArrayList<>();
 	public Player() {
 		this.name = "";
 		this.color = "";
@@ -68,20 +68,22 @@ public class Player
 	public void useCredits(int credits){
 		this.credits = this.credits - credits;
 	}
-	/*public void addObserver(Observer observer) {
+	public void addObserver(Observer observer) {
         observers.add(observer);
-   	 }
+   	}
     	public void removeObserver(Observer observer) {
         observers.remove(observer);
-    	}*/
+    	}
 	public String getAttackMessage(){
 		return attackMessage;
 	}
-	public void setAttackMessage(String attackMessage){
+	public void setAttackMessage(Player p, String attackMessage){
 		this.attackMessage = attackMessage;
-		/*for (Observer observer : observers) {
+		JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
+		
+		for (Observer observer : observers) {
            	observer.update(p, this.attackMessage);
-        }*/
+        	}
 	}
 	
 	/**
