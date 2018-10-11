@@ -474,6 +474,7 @@ public class Board {
 	private Attack attack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
+		
 		attackMessage = defendingTerritory.getPlayer().getName() + ", " + attackingTerritory.getPlayer().getName() + " is attacking your territory (" + defendingTerritory.getTerritoryName() + ")!"; 
 		defendingTerritory.getPlayer().setAttackMessage(attackMessage);
 		// Prompt player to roll dice, with the number of dice determined
@@ -648,6 +649,11 @@ public class Board {
 		// Prompt the player either attack another territory
 		// or end the attack phase of their turn
 		return curAttack;
+	}
+	
+	@Override
+    	public void update(String message) {
+		
 	}
 	
 	/**
