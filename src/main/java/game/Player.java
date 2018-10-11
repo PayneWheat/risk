@@ -13,7 +13,7 @@ public class Player
 	int currency;
 	int credits;
 	String attackMessage;
-	//private List<Observer> observers = new ArrayList<>();
+	public List<Observer> observers = new ArrayList<>();
 	public Player() {
 		this.name = "";
 		this.color = "";
