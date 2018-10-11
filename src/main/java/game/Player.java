@@ -12,6 +12,8 @@ public class Player
 	ArrayList<Card> cards;
 	int currency;
 	int credits;
+	String attackMessage;
+	//private List<Observer> observers = new ArrayList<>();
 	public Player() {
 		this.name = "";
 		this.color = "";
@@ -19,6 +21,7 @@ public class Player
 		this.cards = new ArrayList<Card>();
 		this.currency = 0;
 		this.credits = 0;
+		this.attackMessage = "";
 	}
 	public Player(String name, String color, int currency, int credits) {
 		this.name = name;
@@ -27,6 +30,7 @@ public class Player
 		this.cards = new ArrayList<Card>();
 		this.currency = currency;
 		this.credits = credits;
+		this.attackMessage = "";
 	}
 
 	public String getName() {
@@ -63,6 +67,21 @@ public class Player
 	}
 	public void useCredits(int credits){
 		this.credits = this.credits - credits;
+	}
+	/*public void addObserver(Observer observer) {
+        observers.add(observer);
+   	 }
+    	public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    	}*/
+	public String getAttackMessage(){
+		return attackMessage;
+	}
+	public void setAttackMessage(String attackMessage){
+		this.attackMessage = attackMessage;
+		/*for (Observer observer : observers) {
+           	observer.update(p, this.attackMessage);
+        }*/
 	}
 	
 	/**
