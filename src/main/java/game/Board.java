@@ -13,11 +13,15 @@ public class Board {
 	public ArrayList<Player> players = new ArrayList<Player>();
 	public int currentPlayerIndex;
 	public int initialArmies;
-	
-	public Board() {
+	public S3 s3 = null;
+	private boolean useAWS;
+	public Board(boolean useAWS) {
 		generateGraph();
 		this.cards = createCardDeck();
 		this.cardSetsTurnedIn = 0;
+		this.useAWS = useAWS;
+		if(this.useAWS == true)
+			s3 = new S3();
 	}
 	
 	/**
@@ -178,7 +182,10 @@ public class Board {
 		for(int i = 0; i < numOfPlayers; i++) {
 			System.out.println(" The order of players to play is " + players[i].getName());
 		}
-
+		if(this.useAWS == true) {
+			s3.pa.startGame(this.players);
+			s3.logPlayerActivity();
+		}
 		// CARD PILOT -- just checking that the cards are working
 		/*
 		for(int i = 0; i < numOfPlayers; i++) {
@@ -203,6 +210,10 @@ public class Board {
 		// Disperse initial troops
 		for(int i = 0; i < players.size(); i++) {
 			players.get(i).increaseArmies(initialArmies);
+			if(this.useAWS == true) {
+				s3.pa.receiveArmies(players.get(i), initialArmies);
+				s3.logPlayerActivity();
+			}
 		}
 		
 		// Player selects either an unoccupied territory (until all territories are occupied)
@@ -230,6 +241,10 @@ public class Board {
 			tempTerritory.setOccupant(players.get(currentPlayerIndex));
 			tempTerritory.incrementArmy(1);
 			players.get(currentPlayerIndex).decreaseArmies(1);
+			if(this.useAWS == true) {
+				s3.pa.placeArmies(players.get(currentPlayerIndex), tempTerritory, 1);
+				s3.logPlayerActivity();
+			}
 			// End turn and begin player to the left's turn. Continue until no remaining initial armies for any player.
 			incrementCurrentPlayerIndex();
 		}
@@ -526,7 +541,6 @@ public class Board {
 			// E.g., if attacking player A rolls a 3, 6, and 2 
 			// the dice should be sorted 6, 3, 2
 			sortDice(attackingDice);
-			
 			for(int i = 0; i < attackingDiceTotal; i++) {
 				System.out.print(attackingDice.get(i).getCurrentValue() + " ");
 			}
@@ -536,7 +550,10 @@ public class Board {
 				System.out.print(defendingDice.get(i).getCurrentValue() + " ");
 			}
 			System.out.println();
-			
+			if(this.useAWS == true) {
+				s3.pa.diceRoll(attackingTerritory, defendingTerritory, attackingDice, defendingDice);
+				s3.logPlayerActivity();	
+			}
 			// Find the minimum of number of dice rolled between the two players
 			// (it must either be 1 or 2), then compare each of the 1 or 2 dice
 			// to the opposing player's dice.
@@ -554,11 +571,19 @@ public class Board {
 					// the defender loses an army
 					System.out.println(defendingTerritory.getPlayer().getName() + " loses 1 army from " + defendingTerritory.getTerritoryName());
 					defendingTerritory.decrementArmy(1);
+					if(this.useAWS == true) {
+						s3.pa.loseArmy(defendingTerritory.getPlayer());
+						s3.logPlayerActivity();
+					}
 				} else {
 					// Else If the defender's die is greater than or equal to the attacker's,
 					// the attacker loses an army
 					System.out.println(attackingTerritory.getPlayer().getName() + " loses 1 army from " + attackingTerritory.getTerritoryName());
 					attackingTerritory.decrementArmy(1);
+					if(this.useAWS == true) {
+						s3.pa.loseArmy(attackingTerritory.getPlayer());
+						s3.logPlayerActivity();
+					}
 				}
 			}
 			
@@ -577,10 +602,18 @@ public class Board {
 				// If not, remove player from players ArrayList
 				if(playerTerritoriesCount(tempPlayer) < 1) {
 					players.remove(tempPlayer);
+					if(this.useAWS == true) {
+						s3.pa.playerDefeated(tempPlayer);
+						s3.logPlayerActivity();
+					}
 					// TODO: If the defending player has lost, then check if there are more than 1 remaining players in the players ArrayList.
 					//			If not, the game is over.
 					if(players.size() < 2) {
 						// game should end somehow
+						if(this.useAWS == true) {
+							s3.pa.playerWins(players.get(currentPlayerIndex));
+							s3.logPlayerActivity();
+						}
 					}		
 				}
 				
@@ -606,6 +639,10 @@ public class Board {
 					}
 				}
 				moveArmies(attackingTerritory, defendingTerritory, armiesToMove);
+				if(this.useAWS == true) {
+					s3.pa.fortify(players.get(currentPlayerIndex), attackingTerritory, defendingTerritory, armiesToMove);
+					s3.logPlayerActivity();
+				}
 				continueAttacking = false;
 			}
 			// B) The attacking player has only 1 remaining army on their territory
@@ -782,6 +819,10 @@ public class Board {
 			}
 		}
 		moveArmies(fromTerritory, toTerritory, armiesToMove);
+		if(this.useAWS == true) {
+			s3.pa.fortify(players.get(currentPlayerIndex), fromTerritory, toTerritory, armiesToMove);
+			s3.logPlayerActivity();
+		}
 		
 	}
 	
@@ -857,6 +898,10 @@ public class Board {
 					invalidCredits = false;
 					currentPlayer.useCurrency(credits);
 					currentPlayer.buyCredits(credits);
+					if(this.useAWS == true) {
+						s3.pa.buyCredits(currentPlayer, credits);
+						s3.logPlayerActivity();
+					}
 				}
 				else if (currentPlayer.getCurrency() < currentPlayer.getCredits()){
 					JOptionPane.showMessageDialog(null, "You don't have enough currency. Please try again.");
@@ -876,6 +921,10 @@ public class Board {
 				currentPlayer.addCard(wild);
 				currentPlayer.useCredits(5);
 				JOptionPane.showMessageDialog(null, "You have successfully purchases a wild card!");
+				if(this.useAWS == true) {
+					s3.pa.buyCards(currentPlayer);
+					s3.logPlayerActivity();
+				}
 			}
 			else{
 				JOptionPane.showMessageDialog(null, "Sorry, you don't have enough currency.");
@@ -919,7 +968,10 @@ public class Board {
 					JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
 				}
 			}
-			
+			if(this.useAWS == true) {
+				s3.pa.transferCredits(currentPlayer, reciever, transferCredits);
+				s3.logPlayerActivity();
+			}
 		}
 		// 1. Placing new troops
 		
@@ -935,7 +987,12 @@ public class Board {
 	
 		
 		// Determine total armies received by board
-		currentPlayer.increaseArmies(armyReplenishment(currentPlayer));
+		int armiesRecd = armyReplenishment(currentPlayer);
+		currentPlayer.increaseArmies(armiesRecd);
+		if(this.useAWS == true) {
+			s3.pa.receiveArmies(currentPlayer, armiesRecd);
+			s3.logPlayerActivity();
+		}
 		
 		// Prompt player to select a territory
 		while(currentPlayer.armies > 0) {
@@ -946,6 +1003,10 @@ public class Board {
 			int armies = currentPlayer.chooseArmiesQty();
 			tempTerritory.incrementArmy(armies);
 			currentPlayer.decreaseArmies(armies);
+			if(this.useAWS == true) {
+				s3.pa.placeArmies(currentPlayer, tempTerritory, armies);
+				s3.logPlayerActivity();
+			}
 			// Repeat until no armies remaining for player.
 		}
 		printTerritories(false, true);
@@ -960,11 +1021,20 @@ public class Board {
 			Territory defendingTerritory = chooseTerritoryToAttack(attackingTerritory);
 			System.out.println("Defending from " + defendingTerritory.getTerritoryName());
 			// Continue until player decides to end attack phase
+			if(this.useAWS == true) {
+				s3.pa.attack(attackingTerritory, defendingTerritory);
+				s3.logPlayerActivity();
+			}
 			currentAttack = attack(currentAttack, attackingTerritory, defendingTerritory);
 		}
 		if(currentAttack.receiveCard) {
-			currentAttack.attackingPlayer.addCard(drawCard());
+			Card tempCard = drawCard();
+			currentAttack.attackingPlayer.addCard(tempCard);
 			System.out.println(currentAttack.attackingPlayer.getName() + " has received one Risk card");
+			if(this.useAWS == true) {
+				s3.pa.receiveRiskCard(currentPlayer, tempCard);
+				s3.logPlayerActivity();
+			}
 		}
 		
 		// 3. Fortifying

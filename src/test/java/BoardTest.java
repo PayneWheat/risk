@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import main.java.game.*;
 
 public class BoardTest extends TestCase {
-	protected Board b = new Board();
+	protected Board b = new Board(false);
 	protected Player p = new Player("Test1", "Blue", 0, 0);
 	@Test
 	public void testTurnInCardSetMethod() throws Exception {
