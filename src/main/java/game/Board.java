@@ -4,9 +4,7 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-
-
-public class Board implements Observer {
+public class Board {
 	//TODO: Make class a singleton
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
 	public ArrayList<Continent> continents = new ArrayList<Continent>();
@@ -15,7 +13,6 @@ public class Board implements Observer {
 	public ArrayList<Player> players = new ArrayList<Player>();
 	public int currentPlayerIndex;
 	public int initialArmies;
-	public String attackMessage;
 	
 	public Board() {
 		generateGraph();
@@ -37,15 +34,15 @@ public class Board implements Observer {
 			byte type = (byte)(i % 3 + 1);
 			Card tempCard = new Card(this.territories.get(i).name, type);
 			deck.add(tempCard);
-			System.out.println("Card created[" + i + "]: " + tempCard.territoryName + ", " + tempCard.getCardTypeName());
+			//System.out.println("Card created[" + i + "]: " + tempCard.territoryName + ", " + tempCard.getCardTypeName());
 		}
 		for(int i = 0; i < 2; i++) {
 			// wild cards
 			deck.add(new Card("Wild", (byte)4));
-			System.out.println("Card created: Wild card");
+			//System.out.println("Card created: Wild card");
 		}
 		// shuffles risk card deck
-		System.out.println("Total cards: " + deck.size() + "\n");
+		//System.out.println("Total cards: " + deck.size() + "\n");
 		Collections.shuffle(deck);
 		return deck;
 	}
@@ -63,11 +60,11 @@ public class Board implements Observer {
 		return tempCard;
 	}
 	
-	/*
+
 	public int remainingCards() {
 		return cards.size();
 	}
-	*/
+
 	
 	//TODO: refactor this code before testing
 	public void printTerritories(boolean onlyUnoccupied, boolean showAdjacent) {
@@ -102,7 +99,28 @@ public class Board implements Observer {
 		}
 	}
 	
-	
+	public int initalArmyDispursement(int numOfPlayers) {
+		int armies = 0;
+		switch(numOfPlayers)
+		{
+			case 2:
+				armies = 40;
+				break;
+			case 3:
+				armies = 35;
+				break;
+			case 4:
+				armies = 30;
+				break;
+			case 5 :
+				armies = 25;
+				break;
+			case 6: 
+				armies = 20;
+				break;
+		}
+		return armies;
+	}
 	
 	/**
 	 * Accepts an array of Player objects, rolls the first die to determine who goes first,
@@ -133,24 +151,8 @@ public class Board implements Observer {
 		System.out.println(players[maxIndex].getName() + " goes first.");
 		
 		// Determine the number of initial armies to place by the number of players
-		switch(numOfPlayers)
-		{
-			case 2:
-				initialArmies = 40;
-				break;
-			case 3:
-				initialArmies = 35;
-				break;
-			case 4:
-				initialArmies = 30;
-				break;
-			case 5 :
-				initialArmies = 25;
-				break;
-			case 6: 
-				initialArmies = 20;
-				break;
-		}
+		this.initialArmies = initalArmyDispursement(numOfPlayers);
+		
 		
 		if(sortByInitRoll == true) {
 			Player temp;
@@ -178,11 +180,13 @@ public class Board implements Observer {
 		}
 
 		// CARD PILOT -- just checking that the cards are working
+		/*
 		for(int i = 0; i < numOfPlayers; i++) {
 			for(int j = 0; j < 5; j++) {
 				this.players.get(i).addCard(drawCard());
 			}
 		}
+		*/
 	}
 	
 	/**
@@ -326,26 +330,25 @@ public class Board implements Observer {
 	 */
 	public int armyReplenishment(Player player) {
 		// Army replenishment at beginning of player's turn.
-		//Player curPlayer = players.get(currentPlayerIndex);
 		int armies = 0;
 		int territoryCount = playerTerritoriesCount(player);
 		if(territoryCount < 9)
 			armies = 3;
 		else
 			armies = territoryCount / 3;
-		System.out.println(players.get(currentPlayerIndex).name + " has " + territoryCount + " territories which yields " + armies + " armies.");
+		System.out.println(player.name + " has " + territoryCount + " territories which yields " + armies + " armies.");
 		int contArmies = 0;
 		int contCount = 0;
 		// check if player has control of any continent
 		for(int i = 0; i < continents.size(); i++) {
-			if(continents.get(i).bonusArmiesAwarded() == players.get(currentPlayerIndex)) {
+			if(continents.get(i).bonusArmiesAwarded() == player) {
 				contArmies += continents.get(i).getBonusArmies();
 				contCount++;
 			}
 		}
-		System.out.println(players.get(currentPlayerIndex).name + " has control of " + contCount + " continents for an additional " + contArmies + " armies.");
+		System.out.println(player.name + " has control of " + contCount + " continents for an additional " + contArmies + " armies.");
 		armies += contArmies;
-		System.out.println(players.get(currentPlayerIndex).name + " receives " + armies + " armies.");
+		System.out.println(player.name + " receives " + armies + " armies.");
 		return armies;
 	}
 	
@@ -450,12 +453,11 @@ public class Board implements Observer {
 	 * @param toTerritory The territory to move armies to
 	 * @param armies The number of armies to move
 	 */
-	// TODO: Validation
-	private void moveArmies(Territory fromTerritory, Territory toTerritory, int armies) {
+	public void moveArmies(Territory fromTerritory, Territory toTerritory, int armies) {
 		System.out.println("Moving " + armies + " armies from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName());
-		// check player has both territories
-		// check for adjacency
-		// check that there's enough armies to move and still leave at least 1
+		// TODO: check player has both territories
+		// TODO: check for adjacency
+		// TODO: check that there's enough armies to move and still leave at least 1
 		fromTerritory.decrementArmy(armies);
 		toTerritory.incrementArmy(armies);
 	}
@@ -470,8 +472,8 @@ public class Board implements Observer {
 	 */
 	private Attack attack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
-		attackMessage = attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")";
-		update(defendingTerritory.getPlayer(), attackMessage);
+		notifyPlayer(attackingTerritory.getPlayer().getName(), defendingTerritory.getPlayer().getName(), defendingTerritory.getTerritoryName());
+		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
 		// Prompt player to roll dice, with the number of dice determined
 		// for both players by the total armies present on either territory.
 		// OR allow player to "retreat" -- or stop attack
@@ -646,11 +648,11 @@ public class Board implements Observer {
 		return curAttack;
 	}
 	
-	@Override
-    public void update(Player p, String message) {
+	public void notifyPlayer(String attackingPlayer, String defendingPlayer, String territoryName){
+		String message = defendingPlayer + attackingPlayer + " is attacking " + territoryName;
 		JOptionPane.showMessageDialog(null, message, "warning", JOptionPane.WARNING_MESSAGE);
-		p.setAttackMessage(p, message);
-	    } 
+	}
+	
 	/**
 	 * Fortification step during the current player's turn
 	 */
@@ -790,7 +792,7 @@ public class Board implements Observer {
 	 * @param cardSet
 	 * @return
 	 */
-	private int turnInCardSet(Player player, ArrayList<Card> cardSet) {
+	public int turnInCardSet(Player player, ArrayList<Card> cardSet) {
 		// check set
 		
 		// remove cards from player's current stack of cards
@@ -886,7 +888,7 @@ public class Board implements Observer {
 		boolean invalidTransferCredits = true;
 		int playerIndex = 0;
 		String transferCredits = "";
-		int transfer = JOptionPane.showOptionDialog(new JFrame(),currentPlayer.getName() + ", would you like to transfer credits to another player?", 
+		int transfer = JOptionPane.showOptionDialog(new JFrame(), currentPlayer.getName() + ", would you like to transfer credits to another player?", 
 		        "Transfer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
 		if (transfer == JOptionPane.YES_OPTION){
@@ -990,7 +992,7 @@ public class Board implements Observer {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1002,7 +1004,7 @@ public class Board implements Observer {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1014,7 +1016,7 @@ public class Board implements Observer {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1026,7 +1028,7 @@ public class Board implements Observer {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1038,7 +1040,7 @@ public class Board implements Observer {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 		
 		continentIndex++;
@@ -1050,12 +1052,12 @@ public class Board implements Observer {
 			this.territories.add(tempTerritory);
 			tempContinent.addToContinent(tempTerritory);
 		}
-		System.out.println("Continent " + continentIndex + " created!");
+		//System.out.println("Continent " + continentIndex + " created!");
 		continents.get(continentIndex).printTerritories();
 
-		printTerritories(true, false);
-		System.out.println("Territories size: " + this.territories.size());
-		System.out.println(this.territories.get(0).getTerritoryName());
+		//printTerritories(true, false);
+		//System.out.println("Territories size: " + this.territories.size());
+		//System.out.println(this.territories.get(0).getTerritoryName());
 		
 		//set each XY coordinates for each territories
 		territories.get(0).setX(55);
