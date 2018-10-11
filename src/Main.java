@@ -5,6 +5,9 @@ import main.java.game.*;
 
 public class Main {
 	public static void main(String[] args) {
+		// Testing properties
+		S3 s3 = new S3();
+		
 		// Risk
 		Board board = new Board();
 		Map map = new Map();

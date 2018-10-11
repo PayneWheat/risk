@@ -5,5 +5,6 @@ main\java\game\Map$1.class
 main\java\game\Territory.class
 main\java\game\Map.class
 main\java\game\Attack.class
+main\java\game\S3.class
 main\java\game\Dice.class
 main\java\game\Player.class
