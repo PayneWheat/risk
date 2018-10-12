@@ -4,7 +4,7 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class Board {
+public class Board implements Observer{
 	//TODO: Make class a singleton
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
 	public ArrayList<Continent> continents = new ArrayList<Continent>();
@@ -646,6 +646,10 @@ public class Board {
 		// Prompt the player either attack another territory
 		// or end the attack phase of their turn
 		return curAttack;
+	}
+	
+	@Override
+	public void update(Player p, String o){
 	}
 	
 	public void notifyPlayer(String attackingPlayer, String defendingPlayer, String territoryName){
