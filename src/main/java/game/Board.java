@@ -4,7 +4,7 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class Board {
+public class Board implements Observer{
 	//TODO: Make class a singleton
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
 	public ArrayList<Continent> continents = new ArrayList<Continent>();
@@ -15,6 +15,7 @@ public class Board {
 	public int initialArmies;
 	public S3 s3 = null;
 	private boolean useAWS;
+	public String attackMessage;
 	public Board(boolean useAWS) {
 		generateGraph();
 		this.cards = createCardDeck();
@@ -22,6 +23,9 @@ public class Board {
 		this.useAWS = useAWS;
 		if(this.useAWS == true)
 			s3 = new S3();
+	}
+	public String getBoardAttackMessage(){
+		return attackMessage;
 	}
 	
 	/**
@@ -487,8 +491,11 @@ public class Board {
 	 */
 	private Attack attack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
-		notifyPlayer(attackingTerritory.getPlayer().getName(), defendingTerritory.getPlayer().getName(), defendingTerritory.getTerritoryName());
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
+		
+		attackMessage = defendingTerritory.getPlayer().getName() + ", " + attackingTerritory.getPlayer().getName() + " is attacking your territory (" + defendingTerritory.getTerritoryName() + ")!"; 		
+		update(defendingTerritory.getPlayer(), attackMessage);
+		
 		// Prompt player to roll dice, with the number of dice determined
 		// for both players by the total armies present on either territory.
 		// OR allow player to "retreat" -- or stop attack
@@ -685,9 +692,9 @@ public class Board {
 		return curAttack;
 	}
 	
-	public void notifyPlayer(String attackingPlayer, String defendingPlayer, String territoryName){
-		String message = defendingPlayer + attackingPlayer + " is attacking " + territoryName;
-		JOptionPane.showMessageDialog(null, message, "warning", JOptionPane.WARNING_MESSAGE);
+	@Override
+	public void update(Player p, String o){
+		p.setAttackMessage(p, o);
 	}
 	
 	/**
