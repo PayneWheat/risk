@@ -29,6 +29,12 @@ public class PlayerTest extends TestCase {
 	public void testCurrencyAndCredits() {
 		assertEquals(25, one.getCurrency());
 		assertEquals(1, two.getCredits());
+		one.buyCredits(5);
+		assertEquals(5, one.getCredits())
+		one.useCurrency(5);
+		assertEquals(20, one.getCurrency);
+		two.useCredits(1);
+		assertEquals(0, two.getCredits());
 	}
 	
 	@Test
