@@ -12,7 +12,7 @@ public class Player {
 	int currency;
 	int credits;
 	String attackMessage;
-	public List<Observer> observers = new ArrayList<>();
+	ArrayList<Observer> observers;
 	public Player() {
 		this.name = "";
 		this.color = "";
@@ -21,6 +21,7 @@ public class Player {
 		this.currency = 0;
 		this.credits = 0;
 		this.attackMessage = "";
+		this.observers = new ArrayList<Observer>();
 	}
 	public Player(String name, String color, int currency, int credits) {
 		this.name = name;
@@ -30,6 +31,7 @@ public class Player {
 		this.currency = currency;
 		this.credits = credits;
 		this.attackMessage = "";
+		this.observers = new ArrayList<Observer>();
 	}
 
 	public String getName() {
