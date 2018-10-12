@@ -1,7 +1,7 @@
 package test.java;
 import junit.framework.TestCase;
 import org.junit.Test;
-import main.java.game.*
+import main.java.game.*;
 
 public class ObserverPatternTest extends TestCase {
 
