@@ -13,6 +13,7 @@ public class Board implements Observer{
 	public ArrayList<Player> players = new ArrayList<Player>();
 	public int currentPlayerIndex;
 	public int initialArmies;
+	public String attackMessage;
 	
 	public Board() {
 		generateGraph();
@@ -472,8 +473,11 @@ public class Board implements Observer{
 	 */
 	private Attack attack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
-		notifyPlayer(attackingTerritory.getPlayer().getName(), defendingTerritory.getPlayer().getName(), defendingTerritory.getTerritoryName());
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
+		
+		attackMessage = defendingTerritory.getPlayer().getName() + ", " + attackingTerritory.getPlayer().getName() + " is attacking your territory (" + defendingTerritory.getTerritoryName() + ")!"; 		
+		update(defendingTerritory.getPlayer(), attackMessage);
+		
 		// Prompt player to roll dice, with the number of dice determined
 		// for both players by the total armies present on either territory.
 		// OR allow player to "retreat" -- or stop attack
@@ -650,11 +654,7 @@ public class Board implements Observer{
 	
 	@Override
 	public void update(Player p, String o){
-	}
-	
-	public void notifyPlayer(String attackingPlayer, String defendingPlayer, String territoryName){
-		String message = defendingPlayer + attackingPlayer + " is attacking " + territoryName;
-		JOptionPane.showMessageDialog(null, message, "warning", JOptionPane.WARNING_MESSAGE);
+		p.setAttackMessage(p, o);
 	}
 	
 	/**
