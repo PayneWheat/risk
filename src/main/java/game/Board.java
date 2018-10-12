@@ -20,6 +20,9 @@ public class Board implements Observer{
 		this.cards = createCardDeck();
 		this.cardSetsTurnedIn = 0;
 	}
+	public String getBoardAttackMessage(){
+		return attackMessage;
+	}
 	
 	/**
 	 * Creates the initial card deck by taking each territory created
