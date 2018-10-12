@@ -2,7 +2,7 @@
 ### COSC 4353, Dr. Alipour
 ### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin, Nivetha Natarajan 
 
-To-Do List: Twitter feed, Generate graphs/Javadocs, Amazon S3 Replay, Units tests >= 50%
+To-Do List: Twitter feed, Generate graphs/Javadocs
 
 Current Build Status
 
@@ -26,7 +26,7 @@ Code Coverage
 ## Installing Maven
 Maven needs to run locally in order to perform tests prior to the build on Travis CI.
 
-###For Windows:
+### For Windows:
 [How to install Maven](https://www.mkyong.com/maven/how-to-install-maven-in-windows/)
 
 ## AWS Dependencies

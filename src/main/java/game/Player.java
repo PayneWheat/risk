@@ -4,8 +4,7 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class Player 
-{
+public class Player {
 	String name;
 	String color;
 	int armies;
@@ -13,7 +12,7 @@ public class Player
 	int currency;
 	int credits;
 	String attackMessage;
-	//private List<Observer> observers = new ArrayList<>();
+	ArrayList<Observer> observers;
 	public Player() {
 		this.name = "";
 		this.color = "";
@@ -22,6 +21,7 @@ public class Player
 		this.currency = 0;
 		this.credits = 0;
 		this.attackMessage = "";
+		this.observers = new ArrayList<Observer>();
 	}
 	public Player(String name, String color, int currency, int credits) {
 		this.name = name;
@@ -31,6 +31,7 @@ public class Player
 		this.currency = currency;
 		this.credits = credits;
 		this.attackMessage = "";
+		this.observers = new ArrayList<Observer>();
 	}
 
 	public String getName() {
@@ -68,20 +69,22 @@ public class Player
 	public void useCredits(int credits){
 		this.credits = this.credits - credits;
 	}
-	/*public void addObserver(Observer observer) {
+	public void addObserver(Observer observer) {
         observers.add(observer);
    	 }
     	public void removeObserver(Observer observer) {
         observers.remove(observer);
-    	}*/
+	}
 	public String getAttackMessage(){
 		return attackMessage;
 	}
-	public void setAttackMessage(String attackMessage){
+	public void setAttackMessage(Player p, String attackMessage){
 		this.attackMessage = attackMessage;
-		/*for (Observer observer : observers) {
+		JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
+		
+		for (Observer observer : observers) {
            	observer.update(p, this.attackMessage);
-        }*/
+        	}
 	}
 	
 	/**
