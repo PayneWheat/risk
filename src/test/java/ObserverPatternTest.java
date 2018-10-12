@@ -7,9 +7,10 @@ public class ObserverPatternTest extends TestCase {
 	@Test
 	public void testObserver() throws Exception {
 		Player p = new Player();
+		Player p2 = new Player();
     	Board b = new Board();
     	p.addObserver(b);
-		p.setAttackMessage(p, "You have been attacked!");
+		p.setAttackMessage(p2, "You have been attacked!");
 		assertEquals(p.getAttackMessage(), "You have been attacked!");
 	}
 }

@@ -66,6 +66,6 @@
   </properties>
   <testcase classname="test.java.PlayerTest" name="testCurrencyAndCredits" time="0"/>
   <testcase classname="test.java.PlayerTest" name="testNumberInputParser" time="0"/>
-  <testcase classname="test.java.PlayerTest" name="testCard" time="0"/>
   <testcase classname="test.java.PlayerTest" name="testArmies" time="0"/>
+  <testcase classname="test.java.PlayerTest" name="testCard" time="0"/>
 </testsuite>
