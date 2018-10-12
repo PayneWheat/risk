@@ -19,6 +19,7 @@ public class Board implements Observer{
 		generateGraph();
 		this.cards = createCardDeck();
 		this.cardSetsTurnedIn = 0;
+		this.attackMessage = "";
 	}
 	public String getBoardAttackMessage(){
 		return attackMessage;
@@ -569,6 +570,7 @@ public class Board implements Observer{
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
 		
 		attackMessage = defendingTerritory.getPlayer().getName() + ", " + attackingTerritory.getPlayer().getName() + " is attacking your territory (" + defendingTerritory.getTerritoryName() + ")!"; 		
+		JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
 		update(defendingTerritory.getPlayer(), attackMessage);
 		
 		// Prompt player to roll dice, with the number of dice determined
@@ -755,6 +757,7 @@ public class Board implements Observer{
 	
 	@Override
 	public void update(Player p, String o){
+		attackMessage = o;
 		p.setAttackMessage(p, o);
 	}
 	
