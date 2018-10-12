@@ -72,7 +72,7 @@ public class Player {
 	public void addObserver(Observer observer) {
         observers.add(observer);
    	 }
-    	public void removeObserver(Observer observer) {
+    public void removeObserver(Observer observer) {
         observers.remove(observer);
 	}
 	public String getAttackMessage(){
@@ -80,8 +80,8 @@ public class Player {
 	}
 	public void setAttackMessage(Player p, String attackMessage){
 		this.attackMessage = attackMessage;
-		JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
-		
+		//JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
+		System.out.println(attackMessage);
 		for (Observer observer : observers) {
            	observer.update(p, this.attackMessage);
         	}
