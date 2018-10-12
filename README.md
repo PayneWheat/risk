@@ -26,7 +26,7 @@ Code Coverage
 ## Installing Maven
 Maven needs to run locally in order to perform tests prior to the build on Travis CI.
 
-###For Windows:
+### For Windows:
 [How to install Maven](https://www.mkyong.com/maven/how-to-install-maven-in-windows/)
 
 ## AWS Dependencies

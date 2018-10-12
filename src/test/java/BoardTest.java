@@ -10,6 +10,7 @@ import main.java.game.*;
 public class BoardTest extends TestCase {
 	protected Board b = new Board();
 	protected Player p = new Player("Test1", "Blue", 0, 0);
+	protected Player p2 = new Player("Test2", "Red", 0, 0);
 	@Test
 	public void testTurnInCardSetMethod() throws Exception {
 		assertEquals(b.cardSetsTurnedIn, 0);
@@ -146,8 +147,66 @@ public class BoardTest extends TestCase {
 	@Test
 	public void testPrintTerritories() throws Exception {
 		b.printTerritories(true, false);
-		b.printTerritories(true, true);
+		//b.printTerritories(true, true);
 		b.printTerritories(false, false);
-		b.printTerritories(false, false);
+		b.territories.get(0).setOccupant(p);
+		b.territories.get(0).setArmyCount(1);
+		b.printTerritories(false, true);
+	}
+	@Test
+	public void testDiceHelper() throws Exception {
+		Territory t1 = new Territory("Test1", (byte)1);
+		Territory t2 = new Territory("Test2", (byte)2);
+		t1.setOccupant(p);
+		t1.setArmyCount(5);
+		t2.setOccupant(p2);
+		t2.setArmyCount(5);
+		ArrayList<ArrayList<Dice>> dice = b.diceHelper(t1, t2);
+		assertEquals(3, dice.get(0).size());
+		assertEquals(2, dice.get(1).size());
+		t1.setArmyCount(3);
+		t2.setArmyCount(3);
+		dice = b.diceHelper(t1, t2);
+		assertEquals(2, dice.get(0).size());
+		assertEquals(2, dice.get(1).size());
+		t1.setArmyCount(2);
+		t2.setArmyCount(2);
+		dice = b.diceHelper(t1, t2);
+		assertEquals(1, dice.get(0).size());
+		assertEquals(2, dice.get(1).size());
+		t1.setArmyCount(2);
+		t2.setArmyCount(1);
+		dice = b.diceHelper(t1, t2);
+		assertEquals(1, dice.get(0).size());
+		assertEquals(1, dice.get(1).size());
+	}
+	@Test
+	public void testArmyAdjustment() {
+		Territory t1 = new Territory("Test1", (byte)1);
+		t1.setOccupant(p);
+		t1.setArmyCount(4);
+		Territory t2 = new Territory("Test2", (byte)1);
+		t2.setOccupant(p2);
+		t2.setArmyCount(2);
+		Dice dA1 = new Dice();
+		dA1.setCurrentValue(6);
+		Dice dA2 = new Dice();
+		dA2.setCurrentValue(6);
+		Dice dA3 = new Dice();
+		dA3.setCurrentValue(6);
+		ArrayList<Dice> attackingDice = new ArrayList<Dice>();
+		attackingDice.add(dA1);
+		attackingDice.add(dA2);
+		attackingDice.add(dA3);
+		
+		Dice dD1 = new Dice();
+		dD1.setCurrentValue(5);
+		Dice dD2 = new Dice();
+		dD2.setCurrentValue(5);
+		ArrayList<Dice> defendingDice = new ArrayList<Dice>();
+		defendingDice.add(dD1);
+		defendingDice.add(dD2);
+		b.armyAdjustment(t1, attackingDice, t2, defendingDice);
+		assertEquals(0, t2.getArmyCount());
 	}
 }

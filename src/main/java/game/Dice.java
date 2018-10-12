@@ -31,4 +31,7 @@ public class Dice
 	public int getCurrentValue() {
 		return diceValue;
 	}
+	public void setCurrentValue(int n) {
+		this.diceValue = n;
+	}
 }
