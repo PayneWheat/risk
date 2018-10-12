@@ -1,6 +1,7 @@
 package test.java;
 import junit.framework.TestCase;
 import main.java.game.Player;
+import main.java.game.Board;
 import main.java.game.Observer;
 
 import org.junit.Test;
