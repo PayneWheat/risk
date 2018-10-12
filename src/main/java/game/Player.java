@@ -164,35 +164,55 @@ public class Player {
 		}
 		return armies;
 	}
-
-	public Territory chooseAttackingTerritory(ArrayList<Territory> allTerritories, ArrayList<Territory> territories) {
-		// The territory must have at least 2 troops, and needs to be
-		//	 adjacent to a territory occupied by an opponent. (i.e., if 
-		//	 a player's territory is completely surrounded by his own, other territories)
-		//ArrayList<Territory> allTerritories = getPlayersTerritories();
-		ArrayList<Territory> attackTerritories = new ArrayList<Territory>();
+	public ArrayList<Territory> territoriesThatCanAttack(ArrayList<Territory> playerTerritories, ArrayList<Territory> allTerritories) {
 		System.out.println("\nChoose one of your territories to attack from:\nNote: This list only contains territories you occupy with at least 2 armies");
-		for(int i = 0; i < allTerritories.size(); i++) {
-			if(allTerritories.get(i).getArmyCount() > 1) {
-				// TODO: check if territory is completely surrounded by current player's
-				//			territories (i.e., nowhere to attack)
-				ArrayList<Territory> tempAdjacencies = allTerritories.get(i).getAdjacentTerritories(true, false, false);
-				attackTerritories.add(allTerritories.get(i));
-				int tempIndex = territories.indexOf(allTerritories.get(i));
-				System.out.print("[" + tempIndex + "]" + allTerritories.get(i).getTerritoryName() + ": " + allTerritories.get(i).getArmyCount() + " armies; -> { ");
+		ArrayList<Territory> attackTerritories = new ArrayList<Territory>();
+		for(int i = 0; i < playerTerritories.size(); i++) {
+			ArrayList<Territory> tempAdjacencies = playerTerritories.get(i).getAdjacentTerritories(true, false, false);
+			if(playerTerritories.get(i).getArmyCount() > 1 && tempAdjacencies.size() > 0) {
+				attackTerritories.add(playerTerritories.get(i));
+				int tempIndex = allTerritories.indexOf(playerTerritories.get(i));
+				System.out.print("[" + tempIndex + "]" + playerTerritories.get(i).getTerritoryName() + ": " + playerTerritories.get(i).getArmyCount() + " armies; -> { ");
 				for(int j = 0; j < tempAdjacencies.size(); j++) {
 					System.out.print(tempAdjacencies.get(j).getTerritoryName() + " (" + tempAdjacencies.get(j).getPlayer().getName() + "): " + tempAdjacencies.get(j).getArmyCount() + "; ");
 				}
 				System.out.println("}");
 			}
 		}
+		return attackTerritories;
+	}
+	public Territory chooseAttackingTerritory(ArrayList<Territory> playerTerritories, ArrayList<Territory> allTerritories) {
+		// The territory must have at least 2 troops, and needs to be
+		//	 adjacent to a territory occupied by an opponent. (i.e., if 
+		//	 a player's territory is completely surrounded by his own, other territories)
+		//ArrayList<Territory> playerTerritories = getPlayersTerritories();
+		ArrayList<Territory> attackTerritories = territoriesThatCanAttack(playerTerritories, allTerritories);
+		//ArrayList<Territory> attackTerritories = new ArrayList<Territory>();
+		/*
+		System.out.println("\nChoose one of your territories to attack from:\nNote: This list only contains territories you occupy with at least 2 armies");
+		for(int i = 0; i < playerTerritories.size(); i++) {
+			if(playerTerritories.get(i).getArmyCount() > 1) {
+				// TODO: check if territory is completely surrounded by current player's
+				//			territories (i.e., nowhere to attack)
+				ArrayList<Territory> tempAdjacencies = playerTerritories.get(i).getAdjacentTerritories(true, false, false);
+				attackTerritories.add(playerTerritories.get(i));
+				int tempIndex = territories.indexOf(playerTerritories.get(i));
+				System.out.print("[" + tempIndex + "]" + playerTerritories.get(i).getTerritoryName() + ": " + playerTerritories.get(i).getArmyCount() + " armies; -> { ");
+				for(int j = 0; j < tempAdjacencies.size(); j++) {
+					System.out.print(tempAdjacencies.get(j).getTerritoryName() + " (" + tempAdjacencies.get(j).getPlayer().getName() + "): " + tempAdjacencies.get(j).getArmyCount() + "; ");
+				}
+				System.out.println("}");
+			}
+		}
+		*/
+		
 		String attackingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose a territory to attack from.");
 		int attackingTerritoryIndex = numberInputParser(attackingTerritoryInput);
 		Territory tempTerritory = new Territory();
 		if(attackingTerritoryIndex < 0)
-			tempTerritory = chooseAttackingTerritory(allTerritories, territories);
+			tempTerritory = chooseAttackingTerritory(playerTerritories, allTerritories);
 		else
-			tempTerritory = territories.get(attackingTerritoryIndex);
+			tempTerritory = allTerritories.get(attackingTerritoryIndex);
 		return tempTerritory;
 	}
 	
