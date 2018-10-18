@@ -4,6 +4,10 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
 public class Board implements Observer{
 	//TODO: Make class a singleton
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
@@ -1080,6 +1084,17 @@ public class Board implements Observer{
 		
 		// Change currentPlayerIndex to next player
 		incrementCurrentPlayerIndex();
+		
+		//post the number of territories conquered by each player on Twitter 
+		//after each turn and at the end of the game
+		try {
+			Twitter twitter = new TwitterFactory().getInstance();
+			twitter.updateStatus(" Player " + currentPlayer.getName() + " have  conquered " + playerTerritoriesCount(currentPlayer) + " territories");
+			System.out.println("Successfully updated the status in Twitter.");
+		} catch (TwitterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// Check if one player controls all the territories
 		// if so, continueGame = false
