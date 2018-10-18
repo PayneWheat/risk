@@ -1,5 +1,5 @@
 # RISK
-### COSC 4353, Dr. Alipour
+### COSC 4353, Software Design, Dr. Alipour
 ### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin, Nivetha Natarajan 
 
 Current Build Status
