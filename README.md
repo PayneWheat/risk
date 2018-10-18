@@ -12,6 +12,9 @@ Code Coverage
 
 [Risk Rules](https://www.hasbro.com/common/instruct/risk.pdf)
 
+## UML
+![UML graph](/graph.png)
+
 ## Description:
     You will implement Risk game; 
     description of the game is available at: (http://www.ultraboardgames.com/risk/index.php). 
