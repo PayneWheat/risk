@@ -13,7 +13,7 @@ Code Coverage
 [Risk Rules](https://www.hasbro.com/common/instruct/risk.pdf)
 
 ## UML
-![UML graph](/graph.png)
+![UML graph](doc/graph.png)
 
 ## Description:
     You will implement Risk game; 
@@ -128,70 +128,4 @@ If any of the 3 cards turned in has a territory the player is currently occupyin
 - Indonesia
 - New Guinea
 - Western Australia
-
----------------
-
-## Object Models:
-### Board
-    ------------------
-    |     Board      |
-    ------------------
-    Players  
-    Territories  
-    Continents  
-    CardDeck  
-    ---------------------
-    Allow players to set up board  
-    Allow players to take turns  
-    Distribute armies  
-    Check for winner  
-    Create deck of cards and shuffle  
-
-
-### Player
-    ---------------------------------
-    |           Player              |
-    ---------------------------------
-    Name
-    Available army total (beginning of round)
-    Cards
-    ---------------------------------
-    Roll dice
-    Turn in cards/check for set of risk cards
-    Attack adjacent territory
-    Place armies
-    Move armies
-----
-Maybe we don't need both continent and territory. 
-We can just have a continent member variable in the territory class.
-
-### Territory
-    ---------------------------------
-    |          Territory            |
-    ---------------------------------
-    Name
-    Continent?
-    Occupying Player
-    Army total
-    Adjacent territories
-    --------------------------------
-    Change occupying player
-    Add adjacent territory
-----
-### Continent
-    ---------------------------------
-    |           Continent           |
-    ---------------------------------
-    Name
-    Territories?
-    ---------------------------------
-    Check if player has all territories
-    in a continent
-----
-### Card
-    ---------------------------------
-    |            Card               |
-    --------------------------------|
-    Territory name
-    Type (infantry, artillery, or cavalry)
 
