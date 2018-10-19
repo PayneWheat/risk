@@ -7,7 +7,7 @@ import main.java.game.*;
 public class Main {
 	public static void main(String[] args) {
 		// Risk
-		Board board = new Board();
+		Board board = new Board(true);
 		Map map = new Map();
 		
 		board.printTerritories(false, true);
