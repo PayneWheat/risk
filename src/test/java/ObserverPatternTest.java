@@ -8,7 +8,7 @@ public class ObserverPatternTest extends TestCase {
 	public void testObserver() throws Exception {
 		Player p = new Player();
 		Player p2 = new Player();
-    		Board b = new Board();
+    		Board b = new Board(false);
     		p.addObserver(b);
 		p.setAttackMessage(p2, "You have been attacked!");
 		assertEquals(p.getAttackMessage(), "You have been attacked!");
