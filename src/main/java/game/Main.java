@@ -1,4 +1,4 @@
-
+package main.java.game;
 //import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -6,11 +6,8 @@ import main.java.game.*;
 
 public class Main {
 	public static void main(String[] args) {
-		// Testing properties
-		//S3 s3 = new S3();
-		
 		// Risk
-		Board board = new Board(true);
+		Board board = new Board();
 		Map map = new Map();
 		
 		board.printTerritories(false, true);

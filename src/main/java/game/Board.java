@@ -4,6 +4,10 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
 public class Board implements Observer{
 	//TODO: Make class a singleton
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
@@ -161,7 +165,7 @@ public class Board implements Observer{
 		// Determine the number of initial armies to place by the number of players
 		this.initialArmies = initalArmyDispursement(numOfPlayers);
 		
-		
+		/*
 		if(sortByInitRoll == true) {
 			Player temp;
 			for(int i = 0; i < numOfPlayers; i++) {
@@ -180,7 +184,8 @@ public class Board implements Observer{
 			// return max from dice rolls
 			currentPlayerIndex = maxIndex;
 		}
-		
+		*/
+		currentPlayerIndex = maxIndex;
 		// Converting array parameter Players into an ArrayList
 		this.players = new ArrayList<Player>(Arrays.asList(players));
 		for(int i = 0; i < numOfPlayers; i++) {
@@ -481,6 +486,95 @@ public class Board implements Observer{
 		toTerritory.incrementArmy(armies);
 	}
 	
+	public ArrayList<ArrayList<Dice>> diceHelper(Territory attackingTerritory, Territory defendingTerritory) {
+		// If attacker has 2 armies, they roll one die.
+		// If attacker has 3 armies, they roll two dice.
+		// If attacker has 4 or more armies, they roll three dice.
+		int attackingDiceTotal = 0;
+		if(attackingTerritory.getArmyCount() > 3) {
+			attackingDiceTotal = 3;
+		} else if (attackingTerritory.getArmyCount() == 3) {
+			attackingDiceTotal = 2;
+		} else if (attackingTerritory.getArmyCount() == 2) {
+			attackingDiceTotal = 1;
+		}
+		// If defender has 1 army, they roll one die.
+		// If defender has 2 or more armies, they roll two dice.
+		int defendingDiceTotal = 0;
+		if(defendingTerritory.getArmyCount() > 1) {
+			defendingDiceTotal = 2;
+		} else if(defendingTerritory.getArmyCount() == 1) {
+			defendingDiceTotal = 1;
+		}
+		System.out.println(attackingTerritory.getPlayer().getName() + " has " + attackingTerritory.getArmyCount() + " armies on " + attackingTerritory.getTerritoryName() + ", rolls " + attackingDiceTotal + " die/dice.");
+		System.out.println(defendingTerritory.getPlayer().getName() + " has " + defendingTerritory.getArmyCount() + " armies on " + defendingTerritory.getTerritoryName() + ", rolls " + defendingDiceTotal + " die/dice.");
+		
+		ArrayList<Dice> attackingDice = new ArrayList<Dice>();
+		for(int i = 0; i < attackingDiceTotal; i++) {
+			attackingDice.add(new Dice());
+			attackingDice.get(i).roll();
+		}
+		System.out.print(attackingTerritory.getPlayer().getName() + " rolled ");
+		for(int i = 0; i < attackingDiceTotal; i++) {
+			System.out.print(attackingDice.get(i).getCurrentValue() + " ");
+		}
+		System.out.println();
+		ArrayList<Dice> defendingDice = new ArrayList<Dice>();
+		for(int i = 0; i < defendingDiceTotal; i++) {
+			defendingDice.add(new Dice());
+			defendingDice.get(i).roll();
+		}
+		System.out.print(defendingTerritory.getPlayer().getName() + " rolled ");
+		for(int i = 0; i < defendingDiceTotal; i++) {
+			System.out.print(defendingDice.get(i).getCurrentValue() + " ");
+		}
+		System.out.println();
+		
+		// Sort dice descending by value for both players. 
+		// E.g., if attacking player A rolls a 3, 6, and 2 
+		// the dice should be sorted 6, 3, 2
+		sortDice(attackingDice);
+		for(int i = 0; i < attackingDiceTotal; i++) {
+			System.out.print(attackingDice.get(i).getCurrentValue() + " ");
+		}
+		System.out.println();
+		sortDice(defendingDice);
+		for(int i = 0; i < defendingDiceTotal; i++) {
+			System.out.print(defendingDice.get(i).getCurrentValue() + " ");
+		}
+		System.out.println();
+		ArrayList<ArrayList<Dice>> returnLists = new ArrayList<ArrayList<Dice>>();
+		returnLists.add(attackingDice);
+		returnLists.add(defendingDice);		
+		return returnLists;
+	}
+	
+	public void armyAdjustment(Territory attackingTerritory, ArrayList<Dice> attackingDice, Territory defendingTerritory, ArrayList<Dice> defendingDice) {
+		int attackingDiceTotal = attackingDice.size();
+		int defendingDiceTotal = defendingDice.size();
+		int minDiceTotal = 0;
+		if(defendingDiceTotal <= attackingDiceTotal) {
+			minDiceTotal = defendingDiceTotal;
+		} else {
+			minDiceTotal = attackingDiceTotal;
+		}
+		
+		// Compare the dice rolls
+		for(int i = 0; i < minDiceTotal; i++) {
+			if(defendingDice.get(i).getCurrentValue() < attackingDice.get(i).getCurrentValue()) {
+				// If the defender's die is less than the attacker's, 
+				// the defender loses an army
+				System.out.println(defendingTerritory.getPlayer().getName() + " loses 1 army from " + defendingTerritory.getTerritoryName());
+				defendingTerritory.decrementArmy(1);
+			} else {
+				// Else If the defender's die is greater than or equal to the attacker's,
+				// the attacker loses an army
+				System.out.println(attackingTerritory.getPlayer().getName() + " loses 1 army from " + attackingTerritory.getTerritoryName());
+				attackingTerritory.decrementArmy(1);
+			}
+		}
+	}
+	
 	/**
 	 * The attack step for the current player
 	 * @param curAttack Attack object that holds a flag indicating if the Player receives a Risk card at the end of the attack step
@@ -494,6 +588,7 @@ public class Board implements Observer{
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
 		
 		attackMessage = defendingTerritory.getPlayer().getName() + ", " + attackingTerritory.getPlayer().getName() + " is attacking your territory (" + defendingTerritory.getTerritoryName() + ")!"; 		
+		JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
 		update(defendingTerritory.getPlayer(), attackMessage);
 		
 		// Prompt player to roll dice, with the number of dice determined
@@ -501,6 +596,8 @@ public class Board implements Observer{
 		// OR allow player to "retreat" -- or stop attack
 		boolean continueAttacking = true;
 		while(continueAttacking) {
+			ArrayList<ArrayList<Dice>> dice = diceHelper(attackingTerritory, defendingTerritory);
+			/*
 			// If attacker has 2 armies, they roll one die.
 			// If attacker has 3 armies, they roll two dice.
 			// If attacker has 4 or more armies, they roll three dice.
@@ -564,6 +661,12 @@ public class Board implements Observer{
 			// Find the minimum of number of dice rolled between the two players
 			// (it must either be 1 or 2), then compare each of the 1 or 2 dice
 			// to the opposing player's dice.
+			armyAdjustment(attackingTerritory, dice.get(0), defendingTerritory, dice.get(1));
+			/*
+			int attackingDiceTotal = dice.get(0).size();
+			ArrayList<Dice> attackingDice = dice.get(0);
+			int defendingDiceTotal = dice.get(1).size();
+			ArrayList<Dice> defendingDice = dice.get(1);
 			int minDiceTotal = 0;
 			if(defendingDiceTotal <= attackingDiceTotal) {
 				minDiceTotal = defendingDiceTotal;
@@ -593,6 +696,7 @@ public class Board implements Observer{
 					}
 				}
 			}
+			*/
 			
 			// Repeat until:
 			// A) The attacking player has wiped out the defending players armies on their territory.
@@ -694,6 +798,7 @@ public class Board implements Observer{
 	
 	@Override
 	public void update(Player p, String o){
+		attackMessage = o;
 		p.setAttackMessage(p, o);
 	}
 	
@@ -1049,6 +1154,17 @@ public class Board implements Observer{
 		
 		// Change currentPlayerIndex to next player
 		incrementCurrentPlayerIndex();
+		
+		//post the number of territories conquered by each player on Twitter 
+		//after each turn and at the end of the game
+		try {
+			Twitter twitter = new TwitterFactory().getInstance();
+			twitter.updateStatus(" Player " + currentPlayer.getName() + " have  conquered " + playerTerritoriesCount(currentPlayer) + " territories");
+			System.out.println("Successfully updated the status in Twitter.");
+		} catch (TwitterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// Check if one player controls all the territories
 		// if so, continueGame = false

@@ -2,8 +2,6 @@
 ### COSC 4353, Dr. Alipour
 ### Team members: Payne Wheat, Patricia Sieng, Haoxian Lin, Nivetha Natarajan 
 
-To-Do List: Twitter feed, Generate graphs/Javadocs, Amazon S3 Replay, Units tests >= 50%
-
 Current Build Status
 
 [![status](https://travis-ci.com/PayneWheat/risk.svg?branch=master)](https://travis-ci.org/PayneWheat/risk)
@@ -13,6 +11,9 @@ Code Coverage
 [![codecov](https://codecov.io/gh/PayneWheat/risk/branch/master/graph/badge.svg)](https://codecov.io/gh/PayneWheat/risk)
 
 [Risk Rules](https://www.hasbro.com/common/instruct/risk.pdf)
+
+## UML
+![UML graph](doc/graph.png)
 
 ## Description:
     You will implement Risk game; 
@@ -26,7 +27,7 @@ Code Coverage
 ## Installing Maven
 Maven needs to run locally in order to perform tests prior to the build on Travis CI.
 
-###For Windows:
+### For Windows:
 [How to install Maven](https://www.mkyong.com/maven/how-to-install-maven-in-windows/)
 
 ## AWS Dependencies
@@ -127,70 +128,4 @@ If any of the 3 cards turned in has a territory the player is currently occupyin
 - Indonesia
 - New Guinea
 - Western Australia
-
----------------
-
-## Object Models:
-### Board
-    ------------------
-    |     Board      |
-    ------------------
-    Players  
-    Territories  
-    Continents  
-    CardDeck  
-    ---------------------
-    Allow players to set up board  
-    Allow players to take turns  
-    Distribute armies  
-    Check for winner  
-    Create deck of cards and shuffle  
-
-
-### Player
-    ---------------------------------
-    |           Player              |
-    ---------------------------------
-    Name
-    Available army total (beginning of round)
-    Cards
-    ---------------------------------
-    Roll dice
-    Turn in cards/check for set of risk cards
-    Attack adjacent territory
-    Place armies
-    Move armies
-----
-Maybe we don't need both continent and territory. 
-We can just have a continent member variable in the territory class.
-
-### Territory
-    ---------------------------------
-    |          Territory            |
-    ---------------------------------
-    Name
-    Continent?
-    Occupying Player
-    Army total
-    Adjacent territories
-    --------------------------------
-    Change occupying player
-    Add adjacent territory
-----
-### Continent
-    ---------------------------------
-    |           Continent           |
-    ---------------------------------
-    Name
-    Territories?
-    ---------------------------------
-    Check if player has all territories
-    in a continent
-----
-### Card
-    ---------------------------------
-    |            Card               |
-    --------------------------------|
-    Territory name
-    Type (infantry, artillery, or cavalry)
 

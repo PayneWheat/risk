@@ -29,6 +29,12 @@ public class PlayerTest extends TestCase {
 	public void testCurrencyAndCredits() {
 		assertEquals(25, one.getCurrency());
 		assertEquals(1, two.getCredits());
+		one.buyCredits(5);
+		assertEquals(5, one.getCredits());
+		one.useCurrency(5);
+		assertEquals(20, one.getCurrency());
+		two.useCredits(1);
+		assertEquals(0, two.getCredits());
 	}
 	
 	@Test
@@ -61,5 +67,27 @@ public class PlayerTest extends TestCase {
 		assertEquals(-1, parsed);
 		parsed = one.numberInputParser("abc");
 		assertEquals(-1, parsed);
+	}
+	@Test
+	public void testTerritoriesThatCanAttack() {
+		// Give player 1 all of north america
+		for(int i = 0; i < 9; i++) {
+			b.territories.get(i).setOccupant(one);
+			b.territories.get(i).setArmyCount(4);
+		}
+		// Give player 2 the following territories:
+		// Kamchatka
+		b.territories.get(31).setOccupant(two);
+		b.territories.get(31).setArmyCount(2);
+		// Venezuela
+		b.territories.get(12).setOccupant(two);
+		b.territories.get(12).setArmyCount(2);
+		// Iceland
+		b.territories.get(14).setOccupant(two);
+		b.territories.get(14).setArmyCount(2);
+		
+		ArrayList<Territory> at = one.territoriesThatCanAttack(b.getPlayersTerritories(one), b.territories);
+		
+		assertEquals(3, at.size());
 	}
 }
