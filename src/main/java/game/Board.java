@@ -23,6 +23,26 @@ public class Board implements Observer{
 	public S3 s3 = null;
 	private boolean useAWS;
 	public String attackMessage;
+	
+	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
+	private String userInput;
+    TimerTask task = new TimerTask() {
+        public void run(){
+            if(userInput.equals("") ){
+            	JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning",
+            	        JOptionPane.WARNING_MESSAGE);
+                System.exit( 0 );
+            }
+        }    
+    };
+    
+    public void getInput() throws Exception{
+        Timer timer = new Timer();
+        timer.schedule( task, 30*1000 );
+        userInput = JOptionPane.showInputDialog(null, "Enter your action in the next 30 seconds or you will forfeit your turn");
+        timer.cancel();
+    }
+	
 	public Board(boolean useAWS) {
 		generateGraph();
 		this.cards = createCardDeck();
@@ -34,24 +54,6 @@ public class Board implements Observer{
 	public String getBoardAttackMessage(){
 		return attackMessage;
 	}
-	
-    	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
-	private String userInput;
-    	TimerTask task = new TimerTask(){
-        	public void run(){
-            		if(userInput.equals("") ){
-            			JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning", JOptionPane.WARNING_MESSAGE);
-                		System.exit( 0 );
-            		}
-        	}    
-    	};
-    
-    	public void getInput() throws Exception{
-        Timer timer = new Timer();
-        timer.schedule( task, 30*1000 );
-        userInput = JOptionPane.showInputDialog(null, "Enter your action in the next 30 seconds or you will forfeit your turn");
-        timer.cancel();
-    	}
 	
 	/**
 	 * Creates the initial card deck by taking each territory created
@@ -754,8 +756,15 @@ public class Board implements Observer{
 				boolean tryAgain = true;
 				while(tryAgain) {
 					try {
-						String armiesToMoveStr = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select between 1 and " + (attackingTerritory.getArmyCount() - 1) + " armies to move from " + attackingTerritory.getTerritoryName() + " to " + defendingTerritory.getTerritoryName());
-						armiesToMove = Integer.parseInt(armiesToMoveStr);
+						userInput = "";
+						JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", select between 1 and " + (attackingTerritory.getArmyCount() - 1) + " armies to move from " + attackingTerritory.getTerritoryName() + " to " + defendingTerritory.getTerritoryName());
+						try{
+					         (new Board(true)).getInput();
+					    }
+					    catch(Exception e ){
+					            
+					    }
+						armiesToMove = Integer.parseInt(userInput);
 						tryAgain = false;
 					} catch(NumberFormatException e) {
 						// not an int
@@ -849,11 +858,18 @@ public class Board implements Observer{
 			boolean undo = true;
 			while(undo) {
 				try {
-					String fromTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.");
-					if(fromTerritoryInput == null) {
+					userInput = "";
+					JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.");
+					try{
+				         (new Board(true)).getInput();
+				     }
+				    catch(Exception e){
+				            System.out.println( e );
+				    }
+					if(userInput == null) {
 						return;
 					}
-					fromTerritoryIndex = Integer.parseInt(fromTerritoryInput);
+					fromTerritoryIndex = Integer.parseInt(userInput);
 					fromTerritory = territories.get(fromTerritoryIndex);
 					tryAgain = false;
 				} catch(NumberFormatException e) {
@@ -892,11 +908,18 @@ public class Board implements Observer{
 			boolean undo = true;
 			while(undo) {
 				try {
-					String toTerritoryInput = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.");
-					if(toTerritoryInput == null) {
+					userInput = "";
+					JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.");
+					try{
+				         (new Board(true)).getInput();
+				    }
+				    catch(Exception e ){
+				            
+				    }
+					if(userInput == null) {
 						return;
 					}
-					toTerritoryIndex = Integer.parseInt(toTerritoryInput);
+					toTerritoryIndex = Integer.parseInt(userInput);
 					toTerritory = territories.get(toTerritoryIndex);
 					System.out.println("toTerritoryIndex: " + toTerritoryIndex + ", " + toTerritory.getTerritoryName());
 					tryAgain = false;
@@ -933,11 +956,18 @@ public class Board implements Observer{
 		tryAgain = true;
 		while(tryAgain) {
 			try {
-				String armiesToMoveStr = JOptionPane.showInputDialog(players.get(currentPlayerIndex).getName() + ", select between 1 and " + (fromTerritory.getArmyCount() - 1) + " armies to move from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName());
-				if(armiesToMoveStr == null) {
+				userInput = "";
+				JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", select between 1 and " + (fromTerritory.getArmyCount() - 1) + " armies to move from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName());
+				try{
+			         (new Board(true)).getInput();
+			    }
+			    catch(Exception e ){
+			            
+			    }
+				if(userInput == null) {
 					return;
 				}
-				armiesToMove = Integer.parseInt(armiesToMoveStr);
+				armiesToMove = Integer.parseInt(userInput);
 				tryAgain = false;
 			} catch(NumberFormatException e) {
 				// not an int
