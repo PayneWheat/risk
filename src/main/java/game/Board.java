@@ -4,6 +4,9 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -31,6 +34,24 @@ public class Board implements Observer{
 	public String getBoardAttackMessage(){
 		return attackMessage;
 	}
+	
+    	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
+	private String userInput;
+    	TimerTask task = new TimerTask(){
+        	public void run(){
+            		if(userInput.equals("") ){
+            			JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning", JOptionPane.WARNING_MESSAGE);
+                		System.exit( 0 );
+            		}
+        	}    
+    	};
+    
+    	public void getInput() throws Exception{
+        Timer timer = new Timer();
+        timer.schedule( task, 30*1000 );
+        userInput = JOptionPane.showInputDialog(null, "Enter your action in the next 30 seconds or you will forfeit your turn");
+        timer.cancel();
+    	}
 	
 	/**
 	 * Creates the initial card deck by taking each territory created
