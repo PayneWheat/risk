@@ -25,13 +25,14 @@ public class Board implements Observer{
 	public String attackMessage;
 	
 	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
-	private String userInput;
+	private static String userInput;
+	private static String inputMessage;
     TimerTask task = new TimerTask() {
         public void run(){
             if(userInput.equals("") ){
             	JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning",
             	        JOptionPane.WARNING_MESSAGE);
-                System.exit( 0 );
+                System.exit(0);
             }
         }    
     };
@@ -39,7 +40,7 @@ public class Board implements Observer{
     public void getInput() throws Exception{
         Timer timer = new Timer();
         timer.schedule( task, 30*1000 );
-        userInput = JOptionPane.showInputDialog(null, "Enter your action in the next 30 seconds or you will forfeit your turn");
+        userInput = JOptionPane.showInputDialog(null, inputMessage);
         timer.cancel();
     }
 	
@@ -757,7 +758,7 @@ public class Board implements Observer{
 				while(tryAgain) {
 					try {
 						userInput = "";
-						JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", select between 1 and " + (attackingTerritory.getArmyCount() - 1) + " armies to move from " + attackingTerritory.getTerritoryName() + " to " + defendingTerritory.getTerritoryName());
+						inputMessage = players.get(currentPlayerIndex).getName() + ", select between 1 and " + (attackingTerritory.getArmyCount() - 1) + " armies to move from " + attackingTerritory.getTerritoryName() + " to " + defendingTerritory.getTerritoryName();
 						try{
 					         (new Board(true)).getInput();
 					    }
@@ -859,7 +860,7 @@ public class Board implements Observer{
 			while(undo) {
 				try {
 					userInput = "";
-					JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.");
+					inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.";
 					try{
 				         (new Board(true)).getInput();
 				     }
@@ -909,7 +910,7 @@ public class Board implements Observer{
 			while(undo) {
 				try {
 					userInput = "";
-					JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.");
+					inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.";
 					try{
 				         (new Board(true)).getInput();
 				    }
@@ -957,7 +958,7 @@ public class Board implements Observer{
 		while(tryAgain) {
 			try {
 				userInput = "";
-				JOptionPane.showMessageDialog(null, players.get(currentPlayerIndex).getName() + ", select between 1 and " + (fromTerritory.getArmyCount() - 1) + " armies to move from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName());
+				inputMessage = players.get(currentPlayerIndex).getName() + ", select between 1 and " + (fromTerritory.getArmyCount() - 1) + " armies to move from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName();
 				try{
 			         (new Board(true)).getInput();
 			    }
