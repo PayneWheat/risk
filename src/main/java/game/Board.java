@@ -44,14 +44,6 @@ public class Board implements Observer{
 	ApiContextInitializer.init();
 	// Instantiate Telegram Bots API
 	TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-	// Register our bot
-	try {
-		telegramBotsApi.registerBot(new Chatbot());
-
-	} catch (TelegramApiException e) {
-			e.printStackTrace();
-		
-	}
 	
     	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
 	private String userInput;
