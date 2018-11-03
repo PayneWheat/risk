@@ -5,10 +5,6 @@ import javax.swing.JOptionPane;
 import main.java.game.*;
 import java.io.IOException;
 
-import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 public class Main {
 	public static void main(String[] args) {
 		// Risk
@@ -16,18 +12,6 @@ public class Main {
 		Map map = new Map();
 		
 		board.printTerritories(false, true);
-		
-		/*Chatbot*/
-		// Initialize Api Context
-		ApiContextInitializer.init();
-		// Instantiate Telegram Bots API
-		TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-		// Register the chatbot
-		try {
-			telegramBotsApi.registerBot(new Chatbot());
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
-		}
 		
 		// Prompt for number of players (here in main or in board constructor/method?)
 		// Dice d = new Dice(); Changed this up, see Board class.
