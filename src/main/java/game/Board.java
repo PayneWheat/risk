@@ -11,6 +11,10 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 public class Board implements Observer{
 	//TODO: Make class a singleton
 	public ArrayList<Territory> territories = new ArrayList<Territory>();
@@ -33,6 +37,20 @@ public class Board implements Observer{
 	}
 	public String getBoardAttackMessage(){
 		return attackMessage;
+	}
+	
+	/*Chatbot*/
+	// Initialize Api Context
+	ApiContextInitializer.init();
+	// Instantiate Telegram Bots API
+	TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+	// Register our bot
+	try {
+		telegramBotsApi.registerBot(new Chatbot());
+
+	} catch (TelegramApiException e) {
+			e.printStackTrace();
+		
 	}
 	
     	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
