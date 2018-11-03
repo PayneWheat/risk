@@ -6,7 +6,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class chatbot extends TelegramLongPollingBot {
+public class Chatbot extends TelegramLongPollingBot {
     @Override
 
     public void onUpdateReceived(Update update) {
