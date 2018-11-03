@@ -26,12 +26,12 @@ public class Chatbot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         // TODO
-        return "I_AM_A_BOT";
+        return "Chatbot";
     }
 
     @Override
     public String getBotToken() {
         // TODO
-        return "COSC_4353_PHP";
+        return "12345:qwertyuiopASDGFHKMK";
     }
 }
