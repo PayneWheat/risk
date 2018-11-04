@@ -93,18 +93,40 @@ public class Player {
 	 * If true, player can only place one army at a time.
 	 * @return index of territory picked
 	 */
-	public int pickTerritory(boolean initialTurns) {
+	public int pickTerritory(boolean initialTurns, Board b) {
 		int ti = -1;
 		String territoryIndex = "";
-
-		if(initialTurns)
-			territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place one army (" + getArmies() + " remaining)");
-		else
-			territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place at least one army (" + getArmies() + " remaining)");
 		
+		if(initialTurns) {
+			//territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place one army (" + getArmies() + " remaining)");
+			String inputMessage = getName() + ", input a territory index to place one army (" + getArmies() + " remaining)";
+			try {
+				territoryIndex = b.timedPrompt(inputMessage);
+			} catch(Exception e) {
+				System.out.println(e.getStackTrace());
+			}
+			if(territoryIndex == null) {
+				// automatically pick a territory
+				return -1;
+			}
+		}
+		else {
+			//territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place at least one army (" + getArmies() + " remaining)");
+			String inputMessage = getName() + ", input a territory index to place at least one army (" + getArmies() + " remaining)";
+			try {
+				territoryIndex = b.timedPrompt(inputMessage);
+			} catch(Exception e) {
+				System.out.println(e.getStackTrace());
+			}
+			if(territoryIndex == null) {
+				// automatically pick a territory
+				return -1;
+			}
+		}
+
 		ti = numberInputParser(territoryIndex);
 		if(ti < 0) {
-			ti = pickTerritory(initialTurns);
+			ti = pickTerritory(initialTurns, b);
 		}
 		return ti;
 	}
@@ -130,11 +152,22 @@ public class Player {
 	 * Prompts user to choose how many armies to place on a territory.
 	 * @return number of armies to be placed
 	 */
-	public int chooseArmiesQty() {
+	public int chooseArmiesQty(Board b) {
 		boolean undo = true;
 		int armies = 0;
 		while(undo){
-			String armyQty = JOptionPane.showInputDialog(getName() + ", how many of your " + getArmies() + " remaining armies?");
+			//String armyQty = JOptionPane.showInputDialog(getName() + ", how many of your " + getArmies() + " remaining armies?");
+			String inputMessage = getName() + ", how many of your " + getArmies() + " remaining armies?";
+			String armyQty = null;
+			try {
+				armyQty = b.timedPrompt(inputMessage);
+			} catch(Exception e) {
+				System.out.println(e.getStackTrace());
+			}
+			if(armyQty == null) {
+				System.out.println("Null input received, placing all of remaining armies on this territory.");
+				return this.armies;
+			}
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to place " + Integer.parseInt(armyQty) + " armies", 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
@@ -154,11 +187,11 @@ public class Player {
 
 			if(armies > getArmies()) {
 				System.out.println("You don't have that many armies.");
-				armies = chooseArmiesQty();
+				armies = chooseArmiesQty(b);
 				undo = true;
 			} else if(armies < 0) {
 				System.out.println("Choose a number between 0 and " + getArmies());
-				armies = chooseArmiesQty();
+				armies = chooseArmiesQty(b);
 				undo = true;
 			}
 		}
@@ -181,7 +214,7 @@ public class Player {
 		}
 		return attackTerritories;
 	}
-	public Territory chooseAttackingTerritory(ArrayList<Territory> playerTerritories, ArrayList<Territory> allTerritories) {
+	public Territory chooseAttackingTerritory(ArrayList<Territory> playerTerritories, ArrayList<Territory> allTerritories, Board b) {
 		// The territory must have at least 2 troops, and needs to be
 		//	 adjacent to a territory occupied by an opponent. (i.e., if 
 		//	 a player's territory is completely surrounded by his own, other territories)
@@ -206,11 +239,22 @@ public class Player {
 		}
 		*/
 		
-		String attackingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose a territory to attack from.");
+		//String attackingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose a territory to attack from.");
+		String attackingTerritoryInput = null;
+		try {
+			String inputMessage = getName() + ", choose a territory to attack from.";
+			attackingTerritoryInput = b.timedPrompt(inputMessage);
+		} catch(Exception e) {
+			
+		}
+		if(attackingTerritoryInput == null) {
+			System.out.println("Null input received, default action.");
+			return null;
+		}
 		int attackingTerritoryIndex = numberInputParser(attackingTerritoryInput);
 		Territory tempTerritory = new Territory();
 		if(attackingTerritoryIndex < 0)
-			tempTerritory = chooseAttackingTerritory(playerTerritories, allTerritories);
+			tempTerritory = chooseAttackingTerritory(playerTerritories, allTerritories, b);
 		else
 			tempTerritory = allTerritories.get(attackingTerritoryIndex);
 		return tempTerritory;
@@ -222,7 +266,7 @@ public class Player {
 	 * @param attackingTerritory Territory chosen prior to attack from
 	 * @return Territory selected to be attacked
 	 */
-	public Territory chooseTerritoryToAttack(Territory attackingTerritory, ArrayList<Territory> territories) {
+	public Territory chooseTerritoryToAttack(Territory attackingTerritory, ArrayList<Territory> territories, Board b) {
 		// Display adjacent territories occupied by another player
 		// and prompt the user to select one
 		Territory tempTerritory = new Territory();
@@ -231,21 +275,32 @@ public class Player {
 			int tempIndex = territories.indexOf(opposingAdjacents.get(i));
 			System.out.println("[" + tempIndex + "]" + opposingAdjacents.get(i).getTerritoryName() + " (" + opposingAdjacents.get(i).getPlayer().getName()  + "): " + opposingAdjacents.get(i).getArmyCount() + " armies.");
 		}
-		String defendingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose an opponent's territory to attack.");
+		//String defendingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose an opponent's territory to attack.");
+		String defendingTerritoryInput = null;
+		try {
+			String inputMessage = getName() + ", choose an opponent's territory to attack.";
+			defendingTerritoryInput = b.timedPrompt(inputMessage);
+		} catch(Exception e) {
+			System.out.println(e.getStackTrace());
+		}
+		if(defendingTerritoryInput == null) {
+			return null;
+		}
+		
 		int defendingTerritoryIndex = numberInputParser(defendingTerritoryInput);
 		if(defendingTerritoryIndex < 0) {
 			System.out.println("Try again.");
-			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories, b);
 		}
 		tempTerritory = territories.get(defendingTerritoryIndex);
 		if(tempTerritory.getPlayer() == this) {
 			System.out.println("You cannot attack your own territory. Try again");
-			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories, b);
 		}
 		// search opposingAdjacents for territories.get(defendingTerritoryIndex); ensure it is adjacent
 		if(!opposingAdjacents.contains(tempTerritory)) {
 			System.out.println("That territory is not adjacent to the attacking territory you selected.\nTry again");
-			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories);
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories, b);
 		}
 		// add option to cancel and go back to step before (choosing attacking territory).
 		return tempTerritory;

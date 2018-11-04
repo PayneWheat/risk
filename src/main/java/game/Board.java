@@ -21,14 +21,15 @@ public class Board implements Observer{
 	public int currentPlayerIndex;
 	public int initialArmies;
 	public S3 s3 = null;
-	private boolean useAWS;
+	private boolean useAPIs;
 	public String attackMessage; 
 	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
-	private static String userInput;
-	private static String inputMessage;
-	private boolean timeUp;
-    TimerTask task = new TimerTask() {
-        public void run(){
+	//private static String userInput;
+	//private static String inputMessage;
+	//private boolean timeUp;
+    //TimerTask task = new TimerTask() {
+    /*
+	public void run(){
             if(userInput.equals("") ){
             	JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning",
             	        JOptionPane.WARNING_MESSAGE);
@@ -36,20 +37,32 @@ public class Board implements Observer{
             }
         }    
     };
-    
-    public void getInput() throws Exception{
+    */
+    class TaskTimerStep extends TimerTask {
+   		public void run() {
+   			JOptionPane.getRootFrame().dispose();
+			//JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning", JOptionPane.WARNING_MESSAGE);
+   			System.out.println("Timer expired! Default action taken.");
+		}
+    }
+    public String timedPrompt(String inputMessage) throws Exception{
         Timer timer = new Timer();
-        timer.schedule( task, 30*1000 );
-        userInput = JOptionPane.showInputDialog(null, inputMessage);
+        timer.schedule( new TaskTimerStep(), 30*1000 );
+        String userInput = JOptionPane.showInputDialog(null, inputMessage);
         timer.cancel();
+        return userInput;
+    }
+    public String timedSelectionPrompt() throws Exception {
+    	String userInput = "";
+    	return userInput;
     }
 	
-	public Board(boolean useAWS) {
+	public Board(boolean useAPIs) {
 		generateGraph();
 		this.cards = createCardDeck();
 		this.cardSetsTurnedIn = 0;
-		this.useAWS = useAWS;
-		if(this.useAWS == true)
+		this.useAPIs = useAPIs;
+		if(this.useAPIs == true)
 			s3 = new S3();
 	}
 	public String getBoardAttackMessage(){
@@ -189,33 +202,13 @@ public class Board implements Observer{
 		// Determine the number of initial armies to place by the number of players
 		this.initialArmies = initalArmyDispursement(numOfPlayers);
 		
-		/*
-		if(sortByInitRoll == true) {
-			Player temp;
-			for(int i = 0; i < numOfPlayers; i++) {
-				for (int j = i; j > 0; j--) {
-					// changed the conditional statement below to work with the initRolls array
-					// how to tiebreak?
-					if (initRolls[j] >  initRolls[j - 1]) {
-						temp = players[j];
-						players[j] = players[j - 1];
-						players[j - 1] = temp;
-					}
-				}
-			}
-			currentPlayerIndex = 0;
-		} else {
-			// return max from dice rolls
-			currentPlayerIndex = maxIndex;
-		}
-		*/
 		currentPlayerIndex = maxIndex;
 		// Converting array parameter Players into an ArrayList
 		this.players = new ArrayList<Player>(Arrays.asList(players));
 		for(int i = 0; i < numOfPlayers; i++) {
 			System.out.println(" The order of players to play is " + players[i].getName());
 		}
-		if(this.useAWS == true) {
+		if(this.useAPIs == true) {
 			s3.pa.startGame(this.players);
 			s3.logPlayerActivity();
 		}
@@ -243,7 +236,7 @@ public class Board implements Observer{
 		// Disperse initial troops
 		for(int i = 0; i < players.size(); i++) {
 			players.get(i).increaseArmies(initialArmies);
-			if(this.useAWS == true) {
+			if(this.useAPIs == true) {
 				s3.pa.receiveArmies(players.get(i), initialArmies);
 				s3.logPlayerActivity();
 			}
@@ -263,6 +256,7 @@ public class Board implements Observer{
 					printTerritories(false, true);
 				ti = pickTerritory(true, players.get(currentPlayerIndex));
 			} else {
+				// Automatically select a territory for the player, done in a way that keeps the players territories grouped together
 				ti = currentPlayerIndex * (territories.size() / players.size()) + (i / players.size());
 				if(ti == 42) {
 					i = 0;
@@ -274,7 +268,7 @@ public class Board implements Observer{
 			tempTerritory.setOccupant(players.get(currentPlayerIndex));
 			tempTerritory.incrementArmy(1);
 			players.get(currentPlayerIndex).decreaseArmies(1);
-			if(this.useAWS == true) {
+			if(this.useAPIs == true) {
 				s3.pa.placeArmies(players.get(currentPlayerIndex), tempTerritory, 1);
 				s3.logPlayerActivity();
 			}
@@ -292,11 +286,12 @@ public class Board implements Observer{
 	 * @return index of territory picked
 	 */
 	private int pickTerritory(boolean initialTurns, Player player) {
-		
+		// timedPrompt gets called within the player pickTerritory method
 		boolean undo = true;
+		boolean checkInput = true;
 		int ti = -1;
 		while(undo) {
-			ti = player.pickTerritory(initialTurns);
+			ti = player.pickTerritory(initialTurns, this);
 			// TODO: change these to a try/catch block. Throw proper exceptions
 			if(ti > territories.size() - 1) {
 				System.out.println("Out of range. Try again");
@@ -307,26 +302,54 @@ public class Board implements Observer{
 					System.out.println("Territory already occupied. Try again");
 					ti = pickTerritory(initialTurns, player);
 				}
-			} else {
+			} else if(ti > -1) {
 				if(territories.get(ti).getPlayer() != player) {
 					System.out.println("You do not control this territory. Try again");
 					ti = pickTerritory(initialTurns, player);
 				}
 			}
-			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen " + territories.get(ti).getTerritoryName(), 
-			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
-			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-			if (n == JOptionPane.NO_OPTION) {
-				if(player.getCredits() > 0){
-					player.useCredits(player.getCredits()-1);
-				}
-				else{
-					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+			if(ti < 0) {
+				System.out.println("Null input received, picking territory at random...");
+				// null input received, automatically pick a territory
+				if(unoccupiedTerritoriesCount() > 0) {
+					System.out.println("Picking first unoccupied territory.");
+					// pick the first unoccupied territory
+					for(int i = 0; i < territories.size(); i++) {
+						if(!territories.get(i).isOccupied()) {
+							ti = i;
+							break;
+						}
+					}
+				} else {
+					// pick one of the player's territories randomly
+					System.out.println("Picking one of the player's territories randomly.");
+					Random random = new Random();
+					int randIndex = random.nextInt(playerTerritoriesCount(player));
+					Territory randTerritory = getPlayersTerritories(player).get(randIndex);
+					System.out.println(randTerritory.getTerritoryName() + " (" + randTerritory.getPlayer() + ") chosen.");
+					ti = territories.indexOf(randTerritory);
+					//System.out.println("ti=" + ti);
+					checkInput = false;
 					undo = false;
 				}
-	        } else if (n == JOptionPane.YES_OPTION) {
-	            undo = false;
-	        }
+				
+			}
+			if(checkInput == true) {
+				int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen " + territories.get(ti).getTerritoryName(), 
+				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
+				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+				if (n == JOptionPane.NO_OPTION) {
+					if(player.getCredits() > 0){
+						player.useCredits(player.getCredits()-1);
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						undo = false;
+					}
+		        } else if (n == JOptionPane.YES_OPTION) {
+		            undo = false;
+		        }
+			}
 		}
 		return ti;
 	}
@@ -425,7 +448,10 @@ public class Board implements Observer{
 		Territory tempTerritory = new Territory();
 		while(undo) {
 			Player currentPlayer = players.get(currentPlayerIndex);
-			tempTerritory = currentPlayer.chooseAttackingTerritory(getPlayersTerritories(currentPlayer), territories);
+			tempTerritory = currentPlayer.chooseAttackingTerritory(getPlayersTerritories(currentPlayer), territories, this);
+			if(tempTerritory == null) {
+				return null;
+			}
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack from " + tempTerritory.getTerritoryName(), 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
@@ -455,7 +481,10 @@ public class Board implements Observer{
 		boolean undo = true;
 		Territory tempTerritory = new Territory();
 		while(undo) {
-			tempTerritory = players.get(currentPlayerIndex).chooseTerritoryToAttack(attackingTerritory, territories);
+			tempTerritory = players.get(currentPlayerIndex).chooseTerritoryToAttack(attackingTerritory, territories, this);
+			if(tempTerritory == null) {
+				return null;
+			}
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack " + tempTerritory.getTerritoryName(), 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
@@ -678,13 +707,14 @@ public class Board implements Observer{
 				System.out.print(defendingDice.get(i).getCurrentValue() + " ");
 			}
 			System.out.println();
-			if(this.useAWS == true) {
+			if(this.useAPIs == true) {
 				s3.pa.diceRoll(attackingTerritory, defendingTerritory, attackingDice, defendingDice);
 				s3.logPlayerActivity();	
 			}
 			// Find the minimum of number of dice rolled between the two players
 			// (it must either be 1 or 2), then compare each of the 1 or 2 dice
 			// to the opposing player's dice.
+			*/
 			armyAdjustment(attackingTerritory, dice.get(0), defendingTerritory, dice.get(1));
 			/*
 			int attackingDiceTotal = dice.get(0).size();
@@ -705,7 +735,7 @@ public class Board implements Observer{
 					// the defender loses an army
 					System.out.println(defendingTerritory.getPlayer().getName() + " loses 1 army from " + defendingTerritory.getTerritoryName());
 					defendingTerritory.decrementArmy(1);
-					if(this.useAWS == true) {
+					if(this.useAPIs == true) {
 						s3.pa.loseArmy(defendingTerritory.getPlayer());
 						s3.logPlayerActivity();
 					}
@@ -714,7 +744,7 @@ public class Board implements Observer{
 					// the attacker loses an army
 					System.out.println(attackingTerritory.getPlayer().getName() + " loses 1 army from " + attackingTerritory.getTerritoryName());
 					attackingTerritory.decrementArmy(1);
-					if(this.useAWS == true) {
+					if(this.useAPIs == true) {
 						s3.pa.loseArmy(attackingTerritory.getPlayer());
 						s3.logPlayerActivity();
 					}
@@ -737,7 +767,7 @@ public class Board implements Observer{
 				// If not, remove player from players ArrayList
 				if(playerTerritoriesCount(tempPlayer) < 1) {
 					players.remove(tempPlayer);
-					if(this.useAWS == true) {
+					if(this.useAPIs == true) {
 						s3.pa.playerDefeated(tempPlayer);
 						s3.logPlayerActivity();
 					}
@@ -745,7 +775,7 @@ public class Board implements Observer{
 					//			If not, the game is over.
 					if(players.size() < 2) {
 						// game should end somehow
-						if(this.useAWS == true) {
+						if(this.useAPIs == true) {
 							s3.pa.playerWins(players.get(currentPlayerIndex));
 							s3.logPlayerActivity();
 						}
@@ -757,20 +787,24 @@ public class Board implements Observer{
 				boolean tryAgain = true;
 				while(tryAgain) {
 					try {
-						userInput = "";
-						timeUp = false;
-						inputMessage = players.get(currentPlayerIndex).getName() + ", select between 1 and " + (attackingTerritory.getArmyCount() - 1) + " armies to move from " + attackingTerritory.getTerritoryName() + " to " + defendingTerritory.getTerritoryName();
+						//userInput = "";
+						//timeUp = false;
+						String inputMessage = players.get(currentPlayerIndex).getName() + ", select between 1 and " + (attackingTerritory.getArmyCount() - 1) + " armies to move from " + attackingTerritory.getTerritoryName() + " to " + defendingTerritory.getTerritoryName();
 						try{
-					         (new Board(true)).getInput();
+					         //new Board(true)).timedPrompt();
+							String userInput = this.timedPrompt(inputMessage);
+							if(userInput == null) {
+								System.out.println("Null input received, defaulting to 1 army.");
+								armiesToMove = 1;
+							} else {
+								armiesToMove = Integer.parseInt(userInput);
+							}
+							tryAgain = false;
 					    }
-					    catch(Exception e ){
-					            
+					    catch(Exception e){
+					    	
 					    }
-						if(timeUp){
-							// Move to the next player
-						}
-						armiesToMove = Integer.parseInt(userInput);
-						tryAgain = false;
+						
 					} catch(NumberFormatException e) {
 						// not an int
 						System.out.println("Could not parse number. Try again");
@@ -785,7 +819,7 @@ public class Board implements Observer{
 					}
 				}
 				moveArmies(attackingTerritory, defendingTerritory, armiesToMove);
-				if(this.useAWS == true) {
+				if(this.useAPIs == true) {
 					s3.pa.fortify(players.get(currentPlayerIndex), attackingTerritory, defendingTerritory, armiesToMove);
 					s3.logPlayerActivity();
 				}
@@ -863,24 +897,29 @@ public class Board implements Observer{
 			boolean undo = true;
 			while(undo) {
 				try {
-					userInput = "";
-					timeUp = false;
-					inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.";
+					//userInput = "";
+					//timeUp = false;
+					String inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.";
 					try{
-				         (new Board(true)).getInput();
+				         //(new Board(true)).timedPrompt();
+						String userInput = this.timedPrompt(inputMessage);
+						if(userInput == null) {
+							System.out.println("Null input received, skipping fortify step.");
+							return;
+						}
+						fromTerritoryIndex = Integer.parseInt(userInput);
+						fromTerritory = territories.get(fromTerritoryIndex);
+						tryAgain = false;
 				     }
 				    catch(Exception e){
 				            System.out.println( e );
 				    }
+					/*
 					if(timeUp){
 						// Move to the next player
 					}
-					if(userInput == null) {
-						return;
-					}
-					fromTerritoryIndex = Integer.parseInt(userInput);
-					fromTerritory = territories.get(fromTerritoryIndex);
-					tryAgain = false;
+					*/
+
 				} catch(NumberFormatException e) {
 					// not an int
 					System.out.println("Could not parse number. Try again");
@@ -917,25 +956,30 @@ public class Board implements Observer{
 			boolean undo = true;
 			while(undo) {
 				try {
-					userInput = "";
-					timeUp = false;
-					inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.";
+					//userInput = "";
+					//timeUp = false;
+					String inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies TO.";
 					try{
-				         (new Board(true)).getInput();
+				         //(new Board(true)).timedPrompt();
+						String userInput = this.timedPrompt(inputMessage);
+						if(userInput == null) {
+							System.out.println("Null input received, skipping fortify step.");
+							return;
+						}
+						toTerritoryIndex = Integer.parseInt(userInput);
+						toTerritory = territories.get(toTerritoryIndex);
+						System.out.println("toTerritoryIndex: " + toTerritoryIndex + ", " + toTerritory.getTerritoryName());
+						tryAgain = false;
 				    }
 				    catch(Exception e ){
 				            
 				    }
+					/*
 					if(timeUp){
 						// Move to the next player
 					}
-					if(userInput == null) {
-						return;
-					}
-					toTerritoryIndex = Integer.parseInt(userInput);
-					toTerritory = territories.get(toTerritoryIndex);
-					System.out.println("toTerritoryIndex: " + toTerritoryIndex + ", " + toTerritory.getTerritoryName());
-					tryAgain = false;
+					*/
+
 				} catch(NumberFormatException e) {
 					// not an int
 					System.out.println("Could not parse number. Try again");
@@ -969,23 +1013,28 @@ public class Board implements Observer{
 		tryAgain = true;
 		while(tryAgain) {
 			try {
-				userInput = "";
-				timeUp = false;
-				inputMessage = players.get(currentPlayerIndex).getName() + ", select between 1 and " + (fromTerritory.getArmyCount() - 1) + " armies to move from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName();
+				//userInput = "";
+				//timeUp = false;
+				String inputMessage = players.get(currentPlayerIndex).getName() + ", select between 1 and " + (fromTerritory.getArmyCount() - 1) + " armies to move from " + fromTerritory.getTerritoryName() + " to " + toTerritory.getTerritoryName();
 				try{
-			         (new Board(true)).getInput();
+			         //(new Board(true)).timedPrompt();
+					String userInput = this.timedPrompt(inputMessage);
+					if(userInput == null) {
+						System.out.println("Null input received, skipping fortify step.");
+						return;
+					}
+					armiesToMove = Integer.parseInt(userInput);
+					tryAgain = false;
 			    }
 			    catch(Exception e ){
 			            
 			    }
+				/*
 				if(timeUp){
 					// Move to the next player
 				}
-				if(userInput == null) {
-					return;
-				}
-				armiesToMove = Integer.parseInt(userInput);
-				tryAgain = false;
+				*/
+
 			} catch(NumberFormatException e) {
 				// not an int
 				System.out.println("Could not parse number. Try again");
@@ -999,7 +1048,7 @@ public class Board implements Observer{
 			}
 		}
 		moveArmies(fromTerritory, toTerritory, armiesToMove);
-		if(this.useAWS == true) {
+		if(this.useAPIs == true) {
 			s3.pa.fortify(players.get(currentPlayerIndex), fromTerritory, toTerritory, armiesToMove);
 			s3.logPlayerActivity();
 		}
@@ -1078,7 +1127,7 @@ public class Board implements Observer{
 					invalidCredits = false;
 					currentPlayer.useCurrency(credits);
 					currentPlayer.buyCredits(credits);
-					if(this.useAWS == true) {
+					if(this.useAPIs == true) {
 						s3.pa.buyCredits(currentPlayer, credits);
 						s3.logPlayerActivity();
 					}
@@ -1101,7 +1150,7 @@ public class Board implements Observer{
 				currentPlayer.addCard(wild);
 				currentPlayer.useCredits(5);
 				JOptionPane.showMessageDialog(null, "You have successfully purchases a wild card!");
-				if(this.useAWS == true) {
+				if(this.useAPIs == true) {
 					s3.pa.buyCards(currentPlayer);
 					s3.logPlayerActivity();
 				}
@@ -1148,7 +1197,7 @@ public class Board implements Observer{
 					JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
 				}
 			}
-			if(this.useAWS == true) {
+			if(this.useAPIs == true) {
 				s3.pa.transferCredits(currentPlayer, reciever, transferCredits);
 				s3.logPlayerActivity();
 			}
@@ -1169,7 +1218,7 @@ public class Board implements Observer{
 		// Determine total armies received by board
 		int armiesRecd = armyReplenishment(currentPlayer);
 		currentPlayer.increaseArmies(armiesRecd);
-		if(this.useAWS == true) {
+		if(this.useAPIs == true) {
 			s3.pa.receiveArmies(currentPlayer, armiesRecd);
 			s3.logPlayerActivity();
 		}
@@ -1180,10 +1229,10 @@ public class Board implements Observer{
 			int ti = pickTerritory(false, currentPlayer);
 			Territory tempTerritory = territories.get(ti);
 			// Prompt player to place at least 1 army on selected territory
-			int armies = currentPlayer.chooseArmiesQty();
+			int armies = currentPlayer.chooseArmiesQty(this);
 			tempTerritory.incrementArmy(armies);
 			currentPlayer.decreaseArmies(armies);
-			if(this.useAWS == true) {
+			if(this.useAPIs == true) {
 				s3.pa.placeArmies(currentPlayer, tempTerritory, armies);
 				s3.logPlayerActivity();
 			}
@@ -1196,12 +1245,24 @@ public class Board implements Observer{
 		while(currentAttack.continueAttack) {
 			// Prompt player to choose a territory to attack from
 			Territory attackingTerritory = chooseAttackingTerritory();
+			if(attackingTerritory == null) {
+				System.out.println("No attacking territory selected, ending attack step.");
+				currentAttack.continueAttack = false;
+				break;
+			}
 			System.out.println("Attacking from " + attackingTerritory.getTerritoryName());
 			// Prompt player to choose a territory to attack
 			Territory defendingTerritory = chooseTerritoryToAttack(attackingTerritory);
+			if(defendingTerritory == null) {
+				System.out.println("No defending territory selected, ending attack step.");
+				currentAttack.continueAttack = false;
+				break;
+			}
 			System.out.println("Defending from " + defendingTerritory.getTerritoryName());
+			
+			
 			// Continue until player decides to end attack phase
-			if(this.useAWS == true) {
+			if(this.useAPIs == true) {
 				s3.pa.attack(attackingTerritory, defendingTerritory);
 				s3.logPlayerActivity();
 			}
@@ -1211,7 +1272,7 @@ public class Board implements Observer{
 			Card tempCard = drawCard();
 			currentAttack.attackingPlayer.addCard(tempCard);
 			System.out.println(currentAttack.attackingPlayer.getName() + " has received one Risk card");
-			if(this.useAWS == true) {
+			if(this.useAPIs == true) {
 				s3.pa.receiveRiskCard(currentPlayer, tempCard);
 				s3.logPlayerActivity();
 			}
@@ -1225,15 +1286,16 @@ public class Board implements Observer{
 		
 		//post the number of territories conquered by each player on Twitter 
 		//after each turn and at the end of the game
-		try {
-			Twitter twitter = new TwitterFactory().getInstance();
-			twitter.updateStatus(" Player " + currentPlayer.getName() + " have  conquered " + playerTerritoriesCount(currentPlayer) + " territories");
-			System.out.println("Successfully updated the status in Twitter.");
-		} catch (TwitterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(this.useAPIs) {
+			try {
+				Twitter twitter = new TwitterFactory().getInstance();
+				twitter.updateStatus(" Player " + currentPlayer.getName() + " have  conquered " + playerTerritoriesCount(currentPlayer) + " territories");
+				System.out.println("Successfully updated the status in Twitter.");
+			} catch (TwitterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
 		// Check if one player controls all the territories
 		// if so, continueGame = false
 		return continueGame;
