@@ -165,7 +165,7 @@ public class Player {
 				System.out.println(e.getStackTrace());
 			}
 			if(armyQty == null) {
-				System.out.println("Null input received, placing all of remaining armies on this territory.");
+				System.out.println("Null input received, placing all remaining armies on this territory.");
 				return this.armies;
 			}
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to place " + Integer.parseInt(armyQty) + " armies", 
@@ -218,26 +218,7 @@ public class Player {
 		// The territory must have at least 2 troops, and needs to be
 		//	 adjacent to a territory occupied by an opponent. (i.e., if 
 		//	 a player's territory is completely surrounded by his own, other territories)
-		//ArrayList<Territory> playerTerritories = getPlayersTerritories();
 		ArrayList<Territory> attackTerritories = territoriesThatCanAttack(playerTerritories, allTerritories);
-		//ArrayList<Territory> attackTerritories = new ArrayList<Territory>();
-		/*
-		System.out.println("\nChoose one of your territories to attack from:\nNote: This list only contains territories you occupy with at least 2 armies");
-		for(int i = 0; i < playerTerritories.size(); i++) {
-			if(playerTerritories.get(i).getArmyCount() > 1) {
-				// TODO: check if territory is completely surrounded by current player's
-				//			territories (i.e., nowhere to attack)
-				ArrayList<Territory> tempAdjacencies = playerTerritories.get(i).getAdjacentTerritories(true, false, false);
-				attackTerritories.add(playerTerritories.get(i));
-				int tempIndex = territories.indexOf(playerTerritories.get(i));
-				System.out.print("[" + tempIndex + "]" + playerTerritories.get(i).getTerritoryName() + ": " + playerTerritories.get(i).getArmyCount() + " armies; -> { ");
-				for(int j = 0; j < tempAdjacencies.size(); j++) {
-					System.out.print(tempAdjacencies.get(j).getTerritoryName() + " (" + tempAdjacencies.get(j).getPlayer().getName() + "): " + tempAdjacencies.get(j).getArmyCount() + "; ");
-				}
-				System.out.println("}");
-			}
-		}
-		*/
 		
 		//String attackingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose a territory to attack from.");
 		String attackingTerritoryInput = null;

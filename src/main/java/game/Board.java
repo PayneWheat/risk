@@ -45,6 +45,12 @@ public class Board implements Observer{
    			System.out.println("Timer expired! Default action taken.");
 		}
     }
+    public void timedAcknowledgement(String inputMessage) {
+    	Timer timer = new Timer();
+    	timer.schedule(new TaskTimerStep(), 30 * 1000);
+    	JOptionPane.showMessageDialog(null, inputMessage);
+    	timer.cancel();
+    }
     public String timedPrompt(String inputMessage) throws Exception{
         Timer timer = new Timer();
         timer.schedule( new TaskTimerStep(), 30*1000 );
@@ -52,11 +58,29 @@ public class Board implements Observer{
         timer.cancel();
         return userInput;
     }
-    public String timedSelectionPrompt() throws Exception {
-    	String userInput = "";
-    	return userInput;
+    public Object timedSelectionPrompt(String inputMessage, String[] values) throws Exception {
+    	Timer timer = new Timer();
+    	timer.schedule(new TaskTimerStep(), 30 * 1000);
+		Object selected = JOptionPane.showInputDialog(null, inputMessage, "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");  
+		timer.cancel();
+    	return selected;
     }
-	
+	public int timedButtonPrompt(String inputMessage, String instruction, String[] values) throws Exception {
+		Timer timer = new Timer();
+		timer.schedule(new TaskTimerStep(), 30 * 1000);
+		int option = JOptionPane.showOptionDialog(null, inputMessage, 
+		        instruction, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, 
+		        null, values, JOptionPane.NO_OPTION);
+		timer.cancel();
+		return option;
+	}
+	public int timedConfirmPrompt(String confirmationMessage) {
+		Timer timer = new Timer();
+		timer.schedule(new TaskTimerStep(), 30 * 1000);
+		int option = JOptionPane.showConfirmDialog(null, confirmationMessage);
+		timer.cancel();
+		return option;
+	}
 	public Board(boolean useAPIs) {
 		generateGraph();
 		this.cards = createCardDeck();
@@ -335,20 +359,31 @@ public class Board implements Observer{
 				
 			}
 			if(checkInput == true) {
+				/*
 				int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen " + territories.get(ti).getTerritoryName(), 
 				        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 				        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-				if (n == JOptionPane.NO_OPTION) {
-					if(player.getCredits() > 0){
-						player.useCredits(player.getCredits()-1);
-					}
-					else{
-						JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
-						undo = false;
-					}
-		        } else if (n == JOptionPane.YES_OPTION) {
-		            undo = false;
-		        }
+				*/
+				String values[] = {"Continue", "Undo"};
+				String confirmationMessage = "You have chosen " + territories.get(ti).getTerritoryName();
+				try {
+					int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
+					if (n == JOptionPane.NO_OPTION) {
+						if(player.getCredits() > 0){
+							player.useCredits(player.getCredits()-1);
+						}
+						else{
+							//JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+							String inputMessage = "You do not have enough credits to undo your action.";
+							timedAcknowledgement(inputMessage);
+							undo = false;
+						}
+			        } else if (n == JOptionPane.YES_OPTION) {
+			            undo = false;
+			        }
+				} catch(Exception e) {
+					System.out.println(e.getStackTrace());
+				}
 			}
 		}
 		return ti;
@@ -368,7 +403,7 @@ public class Board implements Observer{
 	/**
 	 * Returns the number of unoccupied territories remaining on the board
 	 * For use during the initial army placements.
-	 * @return the number of unoccupied territories remaining
+	 * @return the number of unoccupied territories remaining on the board
 	 */
 	public int unoccupiedTerritoriesCount() {
 		int count = 0;
@@ -452,20 +487,31 @@ public class Board implements Observer{
 			if(tempTerritory == null) {
 				return null;
 			}
+			/*
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack from " + tempTerritory.getTerritoryName(), 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-			if (n == JOptionPane.NO_OPTION) {
-				if(currentPlayer.getCredits() > 0){
-					currentPlayer.useCredits(currentPlayer.getCredits()-1);
-				}
-				else{
-					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
-					undo = false;
-				}
-	        } else if (n == JOptionPane.YES_OPTION) {
-	            undo = false;
-	        }
+			*/
+			String confirmationMessage = "You have chosen to attack from " + tempTerritory.getTerritoryName();
+			String values[] = {"Continue", "Undo"};
+			try {
+				int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
+				if (n == JOptionPane.NO_OPTION) {
+					if(currentPlayer.getCredits() > 0){
+						currentPlayer.useCredits(currentPlayer.getCredits()-1);
+					}
+					else{
+						//JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						String inputMessage = "You do not have enough credits to undo your action.";
+						timedAcknowledgement(inputMessage);
+						undo = false;
+					}
+		        } else if (n == JOptionPane.YES_OPTION) {
+		            undo = false;
+		        }
+			} catch(Exception e) {
+				System.out.println(e.getStackTrace());
+			}
 		}
 		return tempTerritory;
 	}
@@ -485,19 +531,30 @@ public class Board implements Observer{
 			if(tempTerritory == null) {
 				return null;
 			}
+			/*
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to attack " + tempTerritory.getTerritoryName(), 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
-			if (n == JOptionPane.NO_OPTION) {
-				if(players.get(currentPlayerIndex).getCredits() > 0){
-					players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
+			*/
+			String confirmationMessage = "You have chosen to attack " + tempTerritory.getTerritoryName();
+			String[] values = {"Continue", "Undo"};
+			try {
+				int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
+				if (n == JOptionPane.NO_OPTION) {
+					if(players.get(currentPlayerIndex).getCredits() > 0){
+						players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
+					}
+					else{
+						//JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						String inputMessage = "You do not have enough credits to undo your action.";
+						timedAcknowledgement(inputMessage);
+						undo = true;
+					}
+				} else if (n == JOptionPane.YES_OPTION) {
+				    undo = false;
 				}
-				else{
-					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
-					undo = true;
-				}
-			} else if (n == JOptionPane.YES_OPTION) {
-			    undo = false;
+			} catch(Exception e) {
+				System.out.println(e.getStackTrace());
 			}
 		}
 		return tempTerritory;
@@ -834,32 +891,47 @@ public class Board implements Observer{
 				// if attacking player has more armies, 
 				// ask if they want to attack again from current territory
 				String[] values = {"Yes", "No"};
-				Object selected = JOptionPane.showInputDialog(null, "Continue attacking from " + attackingTerritory.getTerritoryName() + "?", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
-				if ( selected != null ) {//null if the user cancels. 
-				    String selectedString = selected.toString();
-					if(selectedString == "No") {
-						continueAttacking = false;
+				//Object selected = JOptionPane.showInputDialog(null, "Continue attacking from " + attackingTerritory.getTerritoryName() + "?", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
+				String inputMessage = "Continue attacking from " + attackingTerritory.getTerritoryName() + "?";
+				try {
+					Object selected = timedSelectionPrompt(inputMessage, values);
+					if ( selected != null ) {
+						//null if the user cancels. 
+					    String selectedString = selected.toString();
+						if(selectedString == "No") {
+							continueAttacking = false;
+						}
+					} else {
+					    System.out.println("User cancelled");
+					    continueAttacking = false;
 					}
-				} else {
-				    System.out.println("User cancelled");
-				    continueAttacking = false;
+				} catch(Exception e) {
+					System.out.println(e.getStackTrace());
 				}
+
 			}
 			// C) the attacking player retreats
 
 		}
 		String[] values = {"Yes", "No"};
-		Object selected = JOptionPane.showInputDialog(null, "Choose a different territory to attack from?", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
-		if ( selected != null ) {
-			//null if the user cancels. 
-		    String selectedString = selected.toString();
-			if(selectedString == "No") {
-				curAttack.continueAttack = false;
+		//Object selected = JOptionPane.showInputDialog(null, "Choose a different territory to attack from?", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
+		String inputMessage = "Choose a different territory to attack from?";
+		try {
+			Object selected = timedSelectionPrompt(inputMessage, values);
+			if ( selected != null ) {
+				//null if the user cancels. 
+			    String selectedString = selected.toString();
+				if(selectedString == "No") {
+					curAttack.continueAttack = false;
+				}
+			} else {
+			    System.out.println("User cancelled");
+			    curAttack.continueAttack = false;
 			}
-		} else {
-		    System.out.println("User cancelled");
-		    curAttack.continueAttack = false;
+		} catch(Exception e) {
+			
 		}
+
 		// Prompt the player either attack another territory
 		// or end the attack phase of their turn
 		return curAttack;
@@ -940,7 +1012,9 @@ public class Board implements Observer{
 						players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
 					}
 					else{
-						JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						//JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						String inputMessage = "You do not have enough credits to undo your action.";
+						timedAcknowledgement(inputMessage);
 					}
 		            undo = false;
 		        } else if (n == JOptionPane.NO_OPTION) {
@@ -1000,7 +1074,9 @@ public class Board implements Observer{
 						players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
 					}
 					else{
-						JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						//JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+						String inputMessage = "You do not have enough credits to undo your action.";
+						timedAcknowledgement(inputMessage);
 						undo = true;
 					}
 		        } else if (n == JOptionPane.YES_OPTION) {
@@ -1117,90 +1193,145 @@ public class Board implements Observer{
 		// Purchasing in-game credit
 		boolean invalidCredits = true;
 		int credits = 0;
+		/*
 		int c = JOptionPane.showOptionDialog(new JFrame(),currentPlayer.getName() + ", would you like to purchase in-game credits?", 
 		        "In-Game Credits", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
-		if (c == JOptionPane.YES_OPTION) {
-			while(invalidCredits){
-				credits = Integer.parseInt(JOptionPane.showInputDialog(null, "How many credits would you like to purchase? You currently have " + currentPlayer.getCurrency() + " units of currency"));
-				if(currentPlayer.getCurrency() >= credits && credits >= 0){
-					invalidCredits = false;
-					currentPlayer.useCurrency(credits);
-					currentPlayer.buyCredits(credits);
-					if(this.useAPIs == true) {
-						s3.pa.buyCredits(currentPlayer, credits);
-						s3.logPlayerActivity();
+		*/
+		String inputMessage = currentPlayer.getName() + ", would you like to purchase in-game credits?";
+		String instruction = "In-Game Credits";
+		String[] values = {"Yes", "No"};
+		try {
+			int c = timedButtonPrompt(inputMessage, instruction, values);
+			if (c == JOptionPane.YES_OPTION) {
+				while(invalidCredits){
+					credits = Integer.parseInt(JOptionPane.showInputDialog(null, "How many credits would you like to purchase? You currently have " + currentPlayer.getCurrency() + " units of currency"));
+					if(currentPlayer.getCurrency() >= credits && credits >= 0){
+						invalidCredits = false;
+						currentPlayer.useCurrency(credits);
+						currentPlayer.buyCredits(credits);
+						if(this.useAPIs == true) {
+							s3.pa.buyCredits(currentPlayer, credits);
+							s3.logPlayerActivity();
+						}
+					}
+					else if (currentPlayer.getCurrency() < currentPlayer.getCredits()){
+						//JOptionPane.showMessageDialog(null, "You don't have enough currency. Please try again.");
+						inputMessage = "You don't have enough currency. Please try again.";
+						timedAcknowledgement(inputMessage);
+					}
+					else{
+						//JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
+						inputMessage = "You have entered an invalid number. Please try again.";
+						timedAcknowledgement(inputMessage);
 					}
 				}
-				else if (currentPlayer.getCurrency() < currentPlayer.getCredits()){
-					JOptionPane.showMessageDialog(null, "You don't have enough currency. Please try again.");
-				}
-				else{
-					JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
-				}
+	        }
+			if(c == JOptionPane.CLOSED_OPTION) {
+				System.out.println("Closed option");
 			}
-        }
+			if(c == JOptionPane.CANCEL_OPTION) {
+				System.out.println("Cancel option");
+			}
+			if(c == JOptionPane.DEFAULT_OPTION) {
+				System.out.println("Default option");
+			}
+		} catch(Exception e) {
+			System.out.println(e.getStackTrace());
+		}
+
 		// Buy wild cards
+		/*
 		int card = JOptionPane.showOptionDialog(new JFrame(),currentPlayer.getName() + ", would you like to purchase a wild card (each one costs 5 units of currency)?", 
 		        "Cards", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
-		if (card == JOptionPane.YES_OPTION){
-			if(currentPlayer.getCredits() >= 5){
-				Card wild = new Card("Wild", (byte)4);
-				currentPlayer.addCard(wild);
-				currentPlayer.useCredits(5);
-				JOptionPane.showMessageDialog(null, "You have successfully purchases a wild card!");
-				if(this.useAPIs == true) {
-					s3.pa.buyCards(currentPlayer);
-					s3.logPlayerActivity();
+		 */
+		inputMessage = currentPlayer.getName() + ", would you like to purchase a wild card (each one costs 5 units of currency)?";
+		// values variable unchanged
+		try {
+			int card = timedButtonPrompt(inputMessage, "Purchase?", values);
+			if (card == JOptionPane.YES_OPTION){
+				if(currentPlayer.getCredits() >= 5){
+					Card wild = new Card("Wild", (byte)4);
+					currentPlayer.addCard(wild);
+					currentPlayer.useCredits(5);
+					//JOptionPane.showMessageDialog(null, "You have successfully purchased a wild card!");
+					inputMessage = "You have successfully purchased a wild card!";
+					timedAcknowledgement(inputMessage);
+					if(this.useAPIs == true) {
+						s3.pa.buyCards(currentPlayer);
+						s3.logPlayerActivity();
+					}
+				}
+				else{
+					//JOptionPane.showMessageDialog(null, "Sorry, you don't have enough currency.");
+					inputMessage = "Sorry, you don't have enough currency.";
+					timedAcknowledgement(inputMessage);
 				}
 			}
-			else{
-				JOptionPane.showMessageDialog(null, "Sorry, you don't have enough currency.");
-			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 		
 		// Transfer credits
-		String reciever = "";
+		String receiver = "";
 		boolean playerNotFound = true;
 		boolean invalidTransferCredits = true;
 		int playerIndex = 0;
 		String transferCredits = "";
+		/*
 		int transfer = JOptionPane.showOptionDialog(new JFrame(), currentPlayer.getName() + ", would you like to transfer credits to another player?", 
 		        "Transfer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
-		if (transfer == JOptionPane.YES_OPTION){
-			while(playerNotFound){
-				reciever = JOptionPane.showInputDialog(null, "Enter the name of the player you wish to transfer credits to.");
-				for(int i = 0; i < players.size(); i++){
-					if(reciever.equals(players.get(i).getName())){
-						playerIndex = i;
-						playerNotFound = false;
+		*/
+		inputMessage = currentPlayer.getName() + ", would you like to transfer credits to another player?";
+		try {
+			int transfer = timedButtonPrompt(inputMessage, "Transfer?", values);
+			if (transfer == JOptionPane.YES_OPTION){
+				// TODO: change this to a dropdown box
+				inputMessage = "Enter the name of the player you wish to transfer credits to.";
+				while(playerNotFound){
+					//reciever = JOptionPane.showInputDialog(null, "Enter the name of the player you wish to transfer credits to.");
+					receiver = timedPrompt(inputMessage);
+					for(int i = 0; i < players.size(); i++){
+						if(receiver.equals(players.get(i).getName())){
+							playerIndex = i;
+							playerNotFound = false;
+						}
+					}
+					if(playerNotFound){
+						//JOptionPane.showMessageDialog(null, "The player you requested is not found. Please try again.");
+						inputMessage = "The player you requested is not found. Please try again.";
+						timedAcknowledgement(inputMessage);
 					}
 				}
-				if(playerNotFound){
-					JOptionPane.showMessageDialog(null, "The player you requested is not found. Please try again.");
+				while(invalidTransferCredits){
+					transferCredits = JOptionPane.showInputDialog(null, "How many credits would you like to transfer to " + players.get(playerIndex).getName());
+					int transferNum = Integer.parseInt(transferCredits);
+					if(transferNum <= currentPlayer.getCredits()){
+						players.get(playerIndex).buyCredits(transferNum);
+						currentPlayer.useCredits(transferNum);
+						invalidTransferCredits = false;
+					}
+					else if(transferNum > currentPlayer.getCredits()){
+						//JOptionPane.showMessageDialog(null, "You don't have enough currency. Please try again.");
+						inputMessage = "You don't have enough currency. Please try again.";
+						timedAcknowledgement(inputMessage);
+					}
+					else{
+						//JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
+						inputMessage = "You have entered an invalid number. Please try again.";
+						timedAcknowledgement(inputMessage);
+					}
+				}
+				if(this.useAPIs == true) {
+					s3.pa.transferCredits(currentPlayer, receiver, transferCredits);
+					s3.logPlayerActivity();
 				}
 			}
-			while(invalidTransferCredits){
-				transferCredits = JOptionPane.showInputDialog(null, "How many credits would you like to transfer to " + players.get(playerIndex).getName());
-				int transferNum = Integer.parseInt(transferCredits);
-				if(transferNum <= currentPlayer.getCredits()){
-					players.get(playerIndex).buyCredits(transferNum);
-					currentPlayer.useCredits(transferNum);
-					invalidTransferCredits = false;
-				}
-				else if(transferNum > currentPlayer.getCredits()){
-					JOptionPane.showMessageDialog(null, "You don't have enough currency. Please try again.");
-				}
-				else{
-					JOptionPane.showMessageDialog(null, "You have entered an invalid number. Please try again.");
-				}
-			}
-			if(this.useAPIs == true) {
-				s3.pa.transferCredits(currentPlayer, reciever, transferCredits);
-				s3.logPlayerActivity();
-			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		// 1. Placing new troops
 		
