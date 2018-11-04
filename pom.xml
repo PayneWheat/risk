@@ -69,6 +69,17 @@
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.11.431</version>
         </dependency>
+	    
+	<dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pengrad</groupId>
+            <artifactId>java-telegram-bot-api</artifactId>
+            <version>4.1.0</version>
+        </dependency>
 
     </dependencies>
     <build>
