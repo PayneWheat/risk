@@ -36,7 +36,9 @@ public class TerritoryTest extends TestCase {
 		index0.setOccupant(one);
 		assertEquals(index0.getPlayer(), one);
 		assertNotNull(index0.getAdjacentTerritories(false, true, true));
+		assertNotNull(index0.getAdjacentTerritories(false, false, true));
 		assertNotNull(index0.getAdjacentTerritories(true, false, false));
+		assertNotNull(index0.getAdjacentTerritories(true, false, true));
 		assertTrue(index0.isOccupied());
 		index0.setArmyCount(1);
 		assertTrue(index0.getArmyCount() == 1);
