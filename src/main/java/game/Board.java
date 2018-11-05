@@ -74,13 +74,6 @@ public class Board implements Observer{
 		timer.cancel();
 		return option;
 	}
-	public int timedConfirmPrompt(String confirmationMessage) {
-		Timer timer = new Timer();
-		timer.schedule(new TaskTimerStep(), 30 * 1000);
-		int option = JOptionPane.showConfirmDialog(null, confirmationMessage);
-		timer.cancel();
-		return option;
-	}
 	public Board(boolean useAPIs) {
 		generateGraph();
 		this.cards = createCardDeck();
@@ -171,7 +164,12 @@ public class Board implements Observer{
 			}
 		}
 	}
-	
+	/**
+	 * Returns the initial armies to be received by the players. 
+	 * See Risk rules for details.
+	 * @param numOfPlayers
+	 * @return initial army count
+	 */
 	public int initalArmyDispursement(int numOfPlayers) {
 		int armies = 0;
 		switch(numOfPlayers)
