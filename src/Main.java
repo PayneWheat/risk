@@ -3,12 +3,9 @@
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.java.game.*;
-/*
+
 public class Main {
 	public static void main(String[] args) {
-		// Testing properties
-		//S3 s3 = new S3();
-		
 		// Risk
 		Board board = new Board(false);
 		Map map = new Map();
@@ -151,13 +148,12 @@ public class Main {
 				}
 				
 			}
-			*/
+			
 			/* Each player is given 25 units of currency at the start of the game.
 			 At the beginning of each turn, players can use their currency to purchase in-game credits.
 			 It costs 1 credit to undo a move.
 			 It costs 5 credits to purchase a card.
 			 They can also transfer credits to another player for no additional fee.*/
-			/*
 			players[i] = new Player(name, color, 25, 0);
 		}
 		
@@ -180,6 +176,4 @@ public class Main {
 		}
 		
 	}
-	
 }
-*/
