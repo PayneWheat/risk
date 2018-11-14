@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import main.java.game.*;
 
 public class CardDeckTest extends TestCase {
-	Board b = new Board(false);
+	Board b = new Board(false, false);
 	public void testDeckSize() throws Exception {
 		assertEquals(b.remainingCards(), 44);
 	}

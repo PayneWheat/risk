@@ -4,12 +4,16 @@ import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.sun.corba.se.impl.orbutil.threadpool.TimeoutException;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+
+import java.io.*;
 
 public class Board implements Observer{
 	//TODO: Make class a singleton
@@ -21,67 +25,189 @@ public class Board implements Observer{
 	public int currentPlayerIndex;
 	public int initialArmies;
 	public S3 s3 = null;
+	private BufferedReader br = null;
 	private boolean useAPIs;
-	public String attackMessage; 
-	/*A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.*/
-	//private static String userInput;
-	//private static String inputMessage;
-	//private boolean timeUp;
-    //TimerTask task = new TimerTask() {
-    /*
-	public void run(){
-            if(userInput.equals("") ){
-            	JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning",
-            	        JOptionPane.WARNING_MESSAGE);
-                timeUp = true; 
-            }
-        }    
-    };
-    */
-    class TaskTimerStep extends TimerTask {
-   		public void run() {
-   			JOptionPane.getRootFrame().dispose();
-			//JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning", JOptionPane.WARNING_MESSAGE);
-   			System.out.println("Timer expired! Default action taken.");
-		}
-    }
-    public void timedAcknowledgement(String inputMessage) {
-    	Timer timer = new Timer();
-    	timer.schedule(new TaskTimerStep(), 30 * 1000);
-    	JOptionPane.showMessageDialog(null, inputMessage);
-    	timer.cancel();
-    }
-    public String timedPrompt(String inputMessage) throws Exception{
-        Timer timer = new Timer();
-        timer.schedule( new TaskTimerStep(), 30*1000 );
-        String userInput = JOptionPane.showInputDialog(null, inputMessage);
-        timer.cancel();
-        return userInput;
-    }
-    public Object timedSelectionPrompt(String inputMessage, String[] values) throws Exception {
-    	Timer timer = new Timer();
-    	timer.schedule(new TaskTimerStep(), 30 * 1000);
-		Object selected = JOptionPane.showInputDialog(null, inputMessage, "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");  
-		timer.cancel();
-    	return selected;
-    }
-	public int timedButtonPrompt(String inputMessage, String instruction, String[] values) throws Exception {
-		Timer timer = new Timer();
-		timer.schedule(new TaskTimerStep(), 30 * 1000);
-		int option = JOptionPane.showOptionDialog(null, inputMessage, 
-		        instruction, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, 
-		        null, values, JOptionPane.NO_OPTION);
-		timer.cancel();
-		return option;
-	}
-	public Board(boolean useAPIs) {
+	private boolean consoleOnly;
+	public String attackMessage;
+	
+	public Board(boolean useAPIs, boolean consoleOnly) {
 		generateGraph();
 		this.cards = createCardDeck();
 		this.cardSetsTurnedIn = 0;
 		this.useAPIs = useAPIs;
-		if(this.useAPIs == true)
+		this.consoleOnly = consoleOnly;
+		if(this.useAPIs == true) {
 			s3 = new S3();
+		}
+		if(this.consoleOnly == true) {
+    		InputStreamReader isr = new InputStreamReader(System.in);
+    		this.br = new BufferedReader(isr);
+    		
+		}
 	}
+	/**
+	 * A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.
+	 * 
+	 */
+    class TaskTimerStep extends TimerTask {
+    	public boolean hasStarted = false;
+   		public void run() {
+   			this.hasStarted = true;
+   			if(consoleOnly) {
+   				// Cancel br
+   				/*
+   				try {
+   					//br.reset();
+   					//br = new BufferedReader(new InputStreamReader(System.in));
+   					//br.readLine();
+   					//br.close();
+   					
+   				} catch(Exception e) {
+   					e.printStackTrace();
+   				}
+   				*/
+   			} else {
+   				JOptionPane.getRootFrame().dispose();
+   			}
+			//JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning", JOptionPane.WARNING_MESSAGE);
+   			System.out.println("Timer expired! Default action taken.");
+		}
+    }
+    /**
+     * 
+     * @param inputMessage
+     */
+    public void timedAcknowledgement(String inputMessage) {
+    	/*
+    	Timer timer = new Timer();
+    	TaskTimerStep tts = new TaskTimerStep();
+    	//timer.schedule(new TaskTimerStep(), 30 * 1000);
+    	timer.schedule(tts, 30 * 1000);
+    	if(consoleOnly) {
+    		System.out.print(inputMessage + "\nPress any key to continue.");
+    		try {
+    			
+    			System.in.read();
+    		} catch(Exception e) {
+    			e.printStackTrace();
+    		}
+    	} else {
+    		JOptionPane.showMessageDialog(null, inputMessage);
+    	}
+    	timer.cancel();
+    	*/
+    	System.out.println(inputMessage);
+    }
+    /**
+     * 
+     * @param inputMessage
+     * @return response
+     * @throws Exception
+     */
+    public String timedPrompt(String inputMessage) throws Exception{
+    	String userInput = null;
+        Timer timer = new Timer();
+        TaskTimerStep tts = new TaskTimerStep();
+        timer.schedule( tts, 30*1000 );
+    	if(consoleOnly) {
+    		System.out.print(inputMessage + ": ");
+    		try {
+    			while(!br.ready()) {
+    				if(tts.hasStarted) {
+    					throw new Exception("Timer ended");
+    				}
+    			}
+    			userInput = br.readLine();
+    			System.out.println("Selected: " + userInput);
+    		} catch(Exception e) {
+    			//e.printStackTrace();
+    		}
+    	} else {
+    		userInput = JOptionPane.showInputDialog(null, inputMessage);
+    	}
+        timer.cancel();
+        return userInput;
+    }
+    /**
+     * 
+     * @param inputMessage
+     * @param values
+     * @return selected value
+     * @throws Exception
+     */
+    public Object timedSelectionPrompt(String inputMessage, String[] values) throws Exception {
+    	Timer timer = new Timer();
+    	Object selected = null;
+    	TaskTimerStep tts = new TaskTimerStep();
+    	timer.schedule(tts, 30 * 1000);
+    	if(consoleOnly) {
+    		System.out.println(inputMessage);
+    		for(int i = 0; i < values.length; i++) {
+    			System.out.println("[" + i + "]" + values[i]);
+    		}
+    		System.out.print("Select 0 - " + (values.length + 1) + ": ");
+    		try {
+    			while(!br.ready()) {
+    				if(tts.hasStarted) {
+    					throw new Exception("Timer ended");
+    				}
+    			}
+    			int valIndex = Integer.parseInt(br.readLine());
+    			selected = values[valIndex];
+    		} catch(Exception e) {
+    			//e.printStackTrace();
+    		}
+    	} else {
+    		selected = JOptionPane.showInputDialog(null, inputMessage, "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");  
+    	}
+		timer.cancel();
+    	return selected;
+    }
+    /**
+     * 
+     * @param inputMessage
+     * @param instruction
+     * @param values
+     * @return selected option
+     * @throws Exception
+     */
+	public int timedButtonPrompt(String inputMessage, String instruction, String[] values) throws Exception {
+		Timer timer = new Timer();
+		int option = -1;
+		TaskTimerStep tts = new TaskTimerStep();
+		timer.schedule(tts, 30 * 1000);
+		if(consoleOnly) {
+			//InputStreamReader isr = new InputStreamReader(System.in);
+			//br = new BufferedReader(isr);
+			System.out.println(inputMessage);
+			System.out.println("[0]" + values[0]);
+			System.out.println("[1]" + values[1]);
+			System.out.print("Select 0 or 1: ");
+			try {
+				while(!br.ready()) {
+					if(tts.hasStarted) {
+						throw new Exception("Timer ended");
+					}
+				}
+				String selection = br.readLine();
+				option = Integer.parseInt(selection);
+				System.out.println("Inputted: " + option);
+			} catch(Exception e) {
+				//e.printStackTrace();
+			}
+		}
+		else {
+			option = JOptionPane.showOptionDialog(null, inputMessage, 
+		        instruction, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, 
+		        null, values, JOptionPane.NO_OPTION);
+		}
+		timer.cancel();
+		return option;
+	}
+	/**
+	 * 
+	 * @return attack message
+	 */
 	public String getBoardAttackMessage(){
 		return attackMessage;
 	}
@@ -212,6 +338,7 @@ public class Board implements Observer{
 		
 		// Sorting and displaying results
 		// TODO: tiebreaker? increase sides of die so there is less of a chance of a tie?
+		// TODO: Refactor this to a comparator class for the dice.
 		System.out.println(players[0].getName() + " rolled a " + initRolls[0]);
 		for(int i = 1; i < numOfPlayers; i++) {
 			initRolls[i] = d.getDiceValue();
@@ -558,6 +685,7 @@ public class Board implements Observer{
 		return tempTerritory;
 	}
 	
+	//TODO: Refactor this as a comparator class/interface
 	/**
 	 * Sorts an ArrayList of Dice in descending order
 	 * For use when comparing the dice during an attack
@@ -694,9 +822,10 @@ public class Board implements Observer{
 	private Attack attack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
 		System.out.println(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
-		
+
 		attackMessage = defendingTerritory.getPlayer().getName() + ", " + attackingTerritory.getPlayer().getName() + " is attacking your territory (" + defendingTerritory.getTerritoryName() + ")!"; 		
-		JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
+		//JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
+		timedAcknowledgement(attackMessage);
 		update(defendingTerritory.getPlayer(), attackMessage);
 		
 		// Prompt player to roll dice, with the number of dice determined
@@ -969,7 +1098,7 @@ public class Board implements Observer{
 				try {
 					//userInput = "";
 					//timeUp = false;
-					String inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM.";
+					String inputMessage = players.get(currentPlayerIndex).getName() + ", choose a territory to send armies FROM";
 					try{
 				         //(new Board(true)).timedPrompt();
 						String userInput = this.timedPrompt(inputMessage);

@@ -12,7 +12,7 @@ public class PlayerTest extends TestCase {
 	
 	protected Player one = new Player("Test1", "Blue", 25, 0);
 	protected Player two = new Player("Test2", "Red", 25, 1);
-	protected Board b = new Board(false);
+	protected Board b = new Board(false, false);
 	
 	@Test
 	public void testArmies() {

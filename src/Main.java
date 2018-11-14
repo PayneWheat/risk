@@ -3,11 +3,12 @@
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.java.game.*;
+import java.io.*;
 
 public class Main {
 	public static void main(String[] args) {
 		// Risk
-		Board board = new Board(false);
+		Board board = new Board(false, true);
 		Map map = new Map();
 		
 		board.printTerritories(false, true);

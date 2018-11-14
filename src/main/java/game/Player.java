@@ -168,15 +168,26 @@ public class Player {
 				System.out.println("Null input received, placing all remaining armies on this territory.");
 				return this.armies;
 			}
+			/*
 			int n = JOptionPane.showOptionDialog(new JFrame(), "You have chosen to place " + Integer.parseInt(armyQty) + " armies", 
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
+			*/
+			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies";
+			String values[] = {"Continue", "Undo"};
+			int n = -1;
+			try {
+				n = b.timedButtonPrompt(inputMessage, "Input", values);
+			} catch(Exception e) {
+				System.out.println(e.getStackTrace());
+			}
 			if (n == JOptionPane.NO_OPTION) {
 				if(getCredits() > 0){
 					--credits;
 				}
 				else{
-					JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					//JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					
 					undo = false;
 				}
 	        } 
@@ -223,7 +234,7 @@ public class Player {
 		//String attackingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose a territory to attack from.");
 		String attackingTerritoryInput = null;
 		try {
-			String inputMessage = getName() + ", choose a territory to attack from.";
+			String inputMessage = getName() + ", choose a territory to attack from";
 			attackingTerritoryInput = b.timedPrompt(inputMessage);
 		} catch(Exception e) {
 			
@@ -259,7 +270,7 @@ public class Player {
 		//String defendingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose an opponent's territory to attack.");
 		String defendingTerritoryInput = null;
 		try {
-			String inputMessage = getName() + ", choose an opponent's territory to attack.";
+			String inputMessage = getName() + ", choose an opponent's territory to attack";
 			defendingTerritoryInput = b.timedPrompt(inputMessage);
 		} catch(Exception e) {
 			System.out.println(e.getStackTrace());
