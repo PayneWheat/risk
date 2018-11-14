@@ -29,6 +29,7 @@ public class Board implements Observer{
 	private boolean useAPIs;
 	private boolean consoleOnly;
 	public String attackMessage;
+	public boolean playwithbot = false;
 	
 	public Board(boolean useAPIs, boolean consoleOnly) {
 		generateGraph();
@@ -210,6 +211,17 @@ public class Board implements Observer{
 	 */
 	public String getBoardAttackMessage(){
 		return attackMessage;
+	}
+	
+	public void askplaywithbot() {
+		int n = JOptionPane.showConfirmDialog(null, "Do you want to use telegram bot?", "Please select", JOptionPane.YES_NO_OPTION);
+		if(n==0) {
+			playwithbot = true;
+		}
+	}
+	
+	public boolean getplaywithbot() {
+		return playwithbot;
 	}
 	
 	/**
@@ -1545,15 +1557,10 @@ public class Board implements Observer{
 		//post the number of territories conquered by each player on Twitter 
 		//after each turn and at the end of the game
 		if(this.useAPIs) {
-			try {
-				Twitter twitter = new TwitterFactory().getInstance();
-				twitter.updateStatus(" Player " + currentPlayer.getName() + " have  conquered " + playerTerritoriesCount(currentPlayer) + " territories");
-				System.out.println("Successfully updated the status in Twitter.");
-			} catch (TwitterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Twitter4j newTwitter = new Twitter4j();
+			newTwitter.PostTwitter(" Player " + currentPlayer.getName() + " have  conquered " + playerTerritoriesCount(currentPlayer) + " territories");
 		}
+		
 		// Check if one player controls all the territories
 		// if so, continueGame = false
 		return continueGame;
