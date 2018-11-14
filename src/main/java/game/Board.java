@@ -26,10 +26,18 @@ public class Board implements Observer{
 	public int initialArmies;
 	public S3 s3 = null;
 	private BufferedReader br = null;
-	private boolean useAPIs;
-	private boolean consoleOnly;
+	private boolean useAPIs = false;
+	private boolean consoleOnly = false;
 	public String attackMessage;
 	public boolean playwithbot = false;
+	
+	private static final Board instance = new Board();
+	
+	public Board() {
+		generateGraph();
+		this.cards = createCardDeck();
+		this.cardSetsTurnedIn = 0;
+	}
 	
 	public Board(boolean useAPIs, boolean consoleOnly) {
 		generateGraph();
@@ -46,6 +54,19 @@ public class Board implements Observer{
     		
 		}
 	}
+	
+	public static Board getInstance() {
+		return instance;
+	}
+	
+	public void setAPITrue() {
+		this.useAPIs = true;
+	}
+	
+	public void setConsoleOnlyTrue() {
+		this.consoleOnly = true;
+	}
+	
 	/**
 	 * A player has 30 seconds to decide their next action. If they fail to decide, they game will move to the next player.
 	 * 
@@ -214,6 +235,7 @@ public class Board implements Observer{
 	}
 	
 	public void askplaywithbot() {
+		
 		int n = JOptionPane.showConfirmDialog(null, "Do you want to use telegram bot?", "Please select", JOptionPane.YES_NO_OPTION);
 		if(n==0) {
 			playwithbot = true;
@@ -331,6 +353,13 @@ public class Board implements Observer{
 		return armies;
 	}
 	
+	public boolean addPlayer(String name, String color) {
+		Player tempPlayer = new Player(name, color, 25, 0);
+		players.add(tempPlayer);
+		System.out.println("Player added!");
+		return true;
+	}
+	
 	/**
 	 * Accepts an array of Player objects, rolls the first die to determine who goes first,
 	 * and converts the array into an ArrayList for the attribute players.
@@ -382,7 +411,37 @@ public class Board implements Observer{
 		}
 		*/
 	}
-	
+	public void startGame() {
+		System.out.println("Number of players: " + this.players.size());
+		int numOfPlayers = this.players.size();
+		// Roll dice for each player to determine who goes first
+		Dice d = new Dice();
+		int initRolls[] = new int[numOfPlayers];
+		int maxIndex = 0;
+		initRolls[0] = d.getDiceValue();
+		// Sorting and displaying results
+		// TODO: tiebreaker? increase sides of die so there is less of a chance of a tie?
+		// TODO: Refactor this to a comparator class for the dice.
+		System.out.println(players.get(0).getName() + " rolled a " + initRolls[0]);
+		for(int i = 1; i < numOfPlayers; i++) {
+			initRolls[i] = d.getDiceValue();
+			System.out.println(players.get(i).getName() + " rolled a " + initRolls[i]);
+			if(initRolls[maxIndex] < initRolls[i])
+				maxIndex = i;
+		}
+		this.initialArmies = initalArmyDispursement(numOfPlayers);
+		
+		currentPlayerIndex = maxIndex;
+		System.out.println(players.get(maxIndex).getName() + " goes first.");
+		
+		for(int i = 0; i < numOfPlayers; i++) {
+			System.out.println(" The order of players to play is " + this.players.get(i).getName());
+		}
+		if(this.useAPIs == true) {
+			s3.pa.startGame(this.players);
+			s3.logPlayerActivity();
+		}
+	}
 	/**
 	 * Prompts each player to place one army until all initial armies have been placed
 	 * Until all territories are occupied, the current player must choose an unoccupied territory

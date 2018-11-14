@@ -12,6 +12,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 	public static ArrayList<String> username = new ArrayList<String>();
 	private ArrayList<Long> userID = new ArrayList<Long>();
 	public static Update TempUpdate;
+	private String[] color = {"Red","Blue","Yellow"};
 	
 	
 	@Override
@@ -27,6 +28,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 		System.out.println(update.getMessage().getFrom().getFirstName()+": "+update.getMessage().getText());
 		
 		String command = update.getMessage().getText();
+		Board b = Board.getInstance();
 		if(command.equals("/joinuser") && username.size()<3) {
 			username.add(update.getMessage().getFrom().getFirstName());
 			userID.add(update.getMessage().getChatId());
@@ -34,12 +36,17 @@ public class TelegramBot extends TelegramLongPollingBot {
 			System.out.println(userID);
 			sendallplayer(update.getMessage().getFrom().getFirstName() + " had join the game");
 			sendallplayer("Now the room have " + username.size() + " player. They are: " + username);
+			// Add user to board instance
+			b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1]);
 		}
 		if(command.equals("/joinuser") && username.size()==3) {
 			sendplayer("The room is full now.");
+			// Add user to board instance
+			b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1]);
 		}
 		if(command.equals("/startgame")) {
 			sendallplayer(update.getMessage().getFrom().getFirstName() + " had start the game");
+			//b.startGame();
 		}
 	}
 
