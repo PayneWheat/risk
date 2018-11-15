@@ -13,6 +13,8 @@ public class Player {
 	int credits;
 	String attackMessage;
 	ArrayList<Observer> observers;
+	long chatId;
+	
 	public Player() {
 		this.name = "";
 		this.color = "";
@@ -32,6 +34,17 @@ public class Player {
 		this.credits = credits;
 		this.attackMessage = "";
 		this.observers = new ArrayList<Observer>();
+	}
+	public Player(String name, String color, int currency, int credits, long chatId) {
+		this.name = name;
+		this.color = color;
+		this.armies = 0;
+		this.cards = new ArrayList<Card>();
+		this.currency = currency;
+		this.credits = credits;
+		this.attackMessage = "";
+		this.observers = new ArrayList<Observer>();
+		this.chatId = chatId;
 	}
 
 	public String getName() {
@@ -81,10 +94,10 @@ public class Player {
 	public void setAttackMessage(Player p, String attackMessage){
 		this.attackMessage = attackMessage;
 		//JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
-		System.out.println(attackMessage);
+		//System.out.println(attackMessage);
 		for (Observer observer : observers) {
            	observer.update(p, this.attackMessage);
-        	}
+        }
 	}
 	
 	/**
@@ -177,7 +190,7 @@ public class Player {
 			String values[] = {"Continue", "Undo"};
 			int n = -1;
 			try {
-				n = b.timedButtonPrompt(inputMessage, "Input", values);
+				n = b.timedButtonPrompt(this, inputMessage, "Input", values);
 			} catch(Exception e) {
 				System.out.println(e.getStackTrace());
 			}

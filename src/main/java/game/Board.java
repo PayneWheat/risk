@@ -31,12 +31,15 @@ public class Board implements Observer{
 	public String attackMessage;
 	public boolean playwithbot = false;
 	
-	private static final Board instance = new Board();
+	public TelegramBotHandle RunBot = null;
+	
+	private static Board instance = new Board();
 	
 	public Board() {
 		generateGraph();
 		this.cards = createCardDeck();
 		this.cardSetsTurnedIn = 0;
+		instance = this;
 	}
 	
 	public Board(boolean useAPIs, boolean consoleOnly) {
@@ -53,6 +56,7 @@ public class Board implements Observer{
     		this.br = new BufferedReader(isr);
     		
 		}
+		instance = this;
 	}
 	
 	public static Board getInstance() {
@@ -95,6 +99,7 @@ public class Board implements Observer{
    			System.out.println("Timer expired! Default action taken.");
 		}
     }
+    
     /**
      * 
      * @param inputMessage
@@ -193,12 +198,20 @@ public class Board implements Observer{
      * @return selected option
      * @throws Exception
      */
-	public int timedButtonPrompt(String inputMessage, String instruction, String[] values) throws Exception {
+	public int timedButtonPrompt(Player p, String inputMessage, String instruction, String[] values) throws Exception {
 		Timer timer = new Timer();
 		int option = -1;
 		TaskTimerStep tts = new TaskTimerStep();
 		timer.schedule(tts, 30 * 1000);
-		if(consoleOnly) {
+		if(playwithbot) {
+			String str = instruction + "\n";
+			for(int i = 0; i < values.length; i++) {
+				str += ("[" + i + "]" + values[i] + "\n");
+			}
+			//RunBot.sendPlayerMessage(str, p);
+			RunBot.promptPlayerIndex(str, p);
+		}
+		else if(consoleOnly) {
 			//InputStreamReader isr = new InputStreamReader(System.in);
 			//br = new BufferedReader(isr);
 			System.out.println(inputMessage);
@@ -352,11 +365,35 @@ public class Board implements Observer{
 		}
 		return armies;
 	}
-	
 	public boolean addPlayer(String name, String color) {
 		Player tempPlayer = new Player(name, color, 25, 0);
 		players.add(tempPlayer);
 		System.out.println("Player added!");
+		String[] values = {"Value 1", "Value 2"};
+
+		System.out.println("Trying to send message");
+		try {
+			RunBot.sendPlayerMessage("Welcome " + tempPlayer.getName(), tempPlayer);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
+	
+	public boolean addPlayer(String name, String color, long chatID) {
+		Player tempPlayer = new Player(name, color, 25, 0, chatID);
+		players.add(tempPlayer);
+		System.out.println("Player added!");
+		String[] values = {"Value 1", "Value 2"};
+
+		System.out.println("Trying to send message");
+		try {
+			RunBot.sendPlayerMessage("Welcome " + tempPlayer.getName(), tempPlayer);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		return true;
 	}
 	
@@ -411,6 +448,13 @@ public class Board implements Observer{
 		}
 		*/
 	}
+	
+	public void startBot() {
+		this.RunBot = new TelegramBotHandle();
+		this.playwithbot = true;
+		RunBot.StartBot();
+	}
+	
 	public void startGame() {
 		System.out.println("Number of players: " + this.players.size());
 		int numOfPlayers = this.players.size();
@@ -563,7 +607,7 @@ public class Board implements Observer{
 				String values[] = {"Continue", "Undo"};
 				String confirmationMessage = "You have chosen " + territories.get(ti).getTerritoryName();
 				try {
-					int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
+					int n = timedButtonPrompt(player, confirmationMessage, "Undo?", values);
 					if (n == JOptionPane.NO_OPTION) {
 						if(player.getCredits() > 0){
 							player.useCredits(player.getCredits()-1);
@@ -691,7 +735,7 @@ public class Board implements Observer{
 			String confirmationMessage = "You have chosen to attack from " + tempTerritory.getTerritoryName();
 			String values[] = {"Continue", "Undo"};
 			try {
-				int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
+				int n = timedButtonPrompt(currentPlayer, confirmationMessage, "Undo?", values);
 				if (n == JOptionPane.NO_OPTION) {
 					if(currentPlayer.getCredits() > 0){
 						currentPlayer.useCredits(currentPlayer.getCredits()-1);
@@ -721,9 +765,10 @@ public class Board implements Observer{
 	 */
 	private Territory chooseTerritoryToAttack(Territory attackingTerritory) {
 		boolean undo = true;
+		Player currentPlayer = players.get(currentPlayerIndex);
 		Territory tempTerritory = new Territory();
 		while(undo) {
-			tempTerritory = players.get(currentPlayerIndex).chooseTerritoryToAttack(attackingTerritory, territories, this);
+			tempTerritory = currentPlayer.chooseTerritoryToAttack(attackingTerritory, territories, this);
 			if(tempTerritory == null) {
 				return null;
 			}
@@ -735,7 +780,7 @@ public class Board implements Observer{
 			String confirmationMessage = "You have chosen to attack " + tempTerritory.getTerritoryName();
 			String[] values = {"Continue", "Undo"};
 			try {
-				int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
+				int n = timedButtonPrompt(currentPlayer, confirmationMessage, "Undo?", values);
 				if (n == JOptionPane.NO_OPTION) {
 					if(players.get(currentPlayerIndex).getCredits() > 0){
 						players.get(currentPlayerIndex).useCredits(players.get(currentPlayerIndex).getCredits()-1);
@@ -1139,6 +1184,14 @@ public class Board implements Observer{
 	public void update(Player p, String o){
 		attackMessage = o;
 		p.setAttackMessage(p, o);
+		if(playwithbot) {
+			RunBot.sendPlayerMessage(attackMessage, p);
+		}
+		else if(consoleOnly) {
+			System.out.println(attackMessage);
+		} else {
+			JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	/**
@@ -1400,7 +1453,7 @@ public class Board implements Observer{
 		String instruction = "In-Game Credits";
 		String[] values = {"Yes", "No"};
 		try {
-			int c = timedButtonPrompt(inputMessage, instruction, values);
+			int c = timedButtonPrompt(currentPlayer, inputMessage, instruction, values);
 			if (c == JOptionPane.YES_OPTION) {
 				while(invalidCredits){
 					credits = Integer.parseInt(JOptionPane.showInputDialog(null, "How many credits would you like to purchase? You currently have " + currentPlayer.getCurrency() + " units of currency"));
@@ -1447,7 +1500,7 @@ public class Board implements Observer{
 		inputMessage = currentPlayer.getName() + ", would you like to purchase a wild card (each one costs 5 units of currency)?";
 		// values variable unchanged
 		try {
-			int card = timedButtonPrompt(inputMessage, "Purchase?", values);
+			int card = timedButtonPrompt(currentPlayer, inputMessage, "Purchase?", values);
 			if (card == JOptionPane.YES_OPTION){
 				if(currentPlayer.getCredits() >= 5){
 					Card wild = new Card("Wild", (byte)4);
@@ -1485,7 +1538,7 @@ public class Board implements Observer{
 		*/
 		inputMessage = currentPlayer.getName() + ", would you like to transfer credits to another player?";
 		try {
-			int transfer = timedButtonPrompt(inputMessage, "Transfer?", values);
+			int transfer = timedButtonPrompt(currentPlayer, inputMessage, "Transfer?", values);
 			if (transfer == JOptionPane.YES_OPTION){
 				// TODO: change this to a dropdown box
 				inputMessage = "Enter the name of the player you wish to transfer credits to.";

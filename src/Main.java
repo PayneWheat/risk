@@ -252,10 +252,14 @@ public class Main {
 			while(continueGame) {
 				continueGame = board.currentPlayerTurn();
 			}
+			
 		} else {
 			System.out.println("Starting Telegram Bot server...");
+			/*
 			TelegramBotHandle RunBot = new TelegramBotHandle();
 			RunBot.StartBot();
+			*/
+			board.startBot();
 			System.out.println("Waiting for players to join.");
 			/*
 			String[] color = {"Red","Blue","Yellow"};
