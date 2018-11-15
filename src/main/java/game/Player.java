@@ -91,6 +91,10 @@ public class Player {
 	public String getAttackMessage(){
 		return attackMessage;
 	}
+	public long getChatId() {
+		return chatId;
+	}
+	
 	public void setAttackMessage(Player p, String attackMessage){
 		this.attackMessage = attackMessage;
 		//JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);

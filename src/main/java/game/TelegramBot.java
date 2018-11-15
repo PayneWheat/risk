@@ -52,7 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 		}
 		//System.out.println("Substring:" + command.substring(0, 9));
 		// Enables a user to add additional players for debugging purposes.
-		if(command.substring(0, 9).equals("/adduser ") && command.substring(9).length() > 0 && b.players.size() < 3) {
+		if(command.length() > 10 && command.substring(0, 9).equals("/adduser ") && command.substring(9).length() > 0 && b.players.size() < 3) {
 			System.out.println("Adding player " + command.substring(9));
 			b.addPlayer(command.substring(9), color[b.players.size() - 1], update.getMessage().getChatId());
 		}
@@ -87,7 +87,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 		System.out.println("Sending message to player " + player.getName());
 		Board b = Board.getInstance();
 		int usernameIndex = -1;
-		usernameIndex = userID.indexOf(player.chatId);
+		usernameIndex = userID.indexOf(player.getChatId());
 		System.out.println("usernameIndex = " + usernameIndex);
 		/*
 		for(int i = 0; i < b.players.size(); i++) {
