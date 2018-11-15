@@ -13,7 +13,7 @@ public class Player {
 	int credits;
 	String attackMessage;
 	ArrayList<Observer> observers;
-	long chatId;
+	public long chatId;
 	
 	public Player() {
 		this.name = "";
