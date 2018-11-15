@@ -305,7 +305,6 @@ public class Board implements Observer{
 	}
 
 	
-	//TODO: refactor this code before testing
 	public void printTerritories(boolean onlyUnoccupied, boolean showAdjacent) {
 		
 		if(onlyUnoccupied == true) {
@@ -378,6 +377,17 @@ public class Board implements Observer{
 			e.printStackTrace();
 		}
 		
+		System.out.println("Trying to prompt");
+		String str = "Some Instruction here\n";
+		for(int i = 0; i < values.length; i++) {
+			str += ("[" + i + "]" + values[i] + "\n");
+		}
+		try {
+			RunBot.promptPlayerIndex(str, tempPlayer);
+		} catch(Exception e) {
+			
+		}
+		
 		return true;
 	}
 	
@@ -390,6 +400,17 @@ public class Board implements Observer{
 		System.out.println("Trying to send message");
 		try {
 			RunBot.sendPlayerMessage("Welcome " + tempPlayer.getName(), tempPlayer);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Trying to send prompt");
+		String str = "Some instructions\n";
+		for(int i = 0; i < values.length; i++) {
+			str += ("[" + i + "]" + values[i] + "\n");
+		}
+		try {
+			RunBot.promptPlayerIndex(str, tempPlayer);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

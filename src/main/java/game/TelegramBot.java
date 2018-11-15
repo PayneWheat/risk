@@ -47,6 +47,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 		if(command.equals("/startgame") && b.players.size() >= 2) {
 			sendallplayer(update.getMessage().getFrom().getFirstName() + " had start the game");
 			b.startGame();
+			
 		} else if (command.equals("/startgame") && b.players.size() < 2) {
 			sendallplayer("Not enough players to start the game.");
 		}

@@ -46,7 +46,7 @@ public class Player {
 		this.observers = new ArrayList<Observer>();
 		this.chatId = chatId;
 	}
-
+	
 	public String getName() {
 		return name;
 	}

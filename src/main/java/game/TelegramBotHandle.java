@@ -40,6 +40,7 @@ public class TelegramBotHandle {
 		Update tempUp = tb.TempUpdate;
 		sendPlayerMessage(str, p);
 		// wait for response
+		/*
 		while(tb.TempUpdate.equals(tempUp)) {
 			// do nothing
 		}
@@ -48,6 +49,8 @@ public class TelegramBotHandle {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		*/
+		System.out.println("inputValue: " + inputValue);
 		return inputValue;
 	}
 	public String promptPlayerSelection(String str, Player p) {
