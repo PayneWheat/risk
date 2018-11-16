@@ -1,9 +1,0 @@
-<aspectj>
-   <aspects>
-      <aspect name="com.amazonaws.services.simpleworkflow.flow.aspectj.AsynchronousAspect"/>
-      <aspect name="com.amazonaws.services.simpleworkflow.flow.aspectj.ExponentialRetryAspect"/>
-   </aspects>
-   <weaver options="-verbose">
-     <include within="MySimpleWorkflow.*"/>
-   </weaver>
-</aspectj>

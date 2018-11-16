@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import main.java.game.*;
 
 public class BoardTest extends TestCase {
-	protected Board b = new Board(false);
+	protected Board b = new Board(false, false);
 	protected Player p = new Player("Test1", "Blue", 0, 0);
 	protected Player p2 = new Player("Test2", "Red", 0, 0);
 	@Test
@@ -208,5 +208,16 @@ public class BoardTest extends TestCase {
 		defendingDice.add(dD2);
 		b.armyAdjustment(t1, attackingDice, t2, defendingDice);
 		assertEquals(0, t2.getArmyCount());
+	}
+	@Test
+	public void testInitialArmyPlacement() {
+		System.out.println("------STARTING TESTINITIALARMYPLACEMENT------");
+		Board b2 = new Board(false, false);
+		Player tempP1 = new Player("Test1", "Blue", 0, 0);
+		Player tempP2 = new Player("Test2", "Red", 0, 0);
+		Player players[] = {tempP1, tempP2};
+		b2.setPlayers(players, false);
+		b2.initialPlacement(true);
+		assertEquals(21, b2.playerTerritoriesCount(tempP1));
 	}
 }

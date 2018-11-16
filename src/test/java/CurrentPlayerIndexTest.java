@@ -5,7 +5,7 @@ import main.java.game.*;
 
 public class CurrentPlayerIndexTest extends TestCase {
 	public void testIncrementPlayerIndex() throws Exception {
-		Board b = new Board(false);
+		Board b = new Board(false, false);
 		Player players[] = {
 				new Player("TestPlayer1", "Red", 0, 0),
 				new Player("TestPlayer2", "Yellow", 0, 0),

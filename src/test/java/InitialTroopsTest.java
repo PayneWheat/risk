@@ -5,7 +5,7 @@ import main.java.game.*;
 
 public class InitialTroopsTest extends TestCase {
 	public void testInitialTroopsCount() {
-		Board b = new Board(false);
+		Board b = new Board(false, false);
 		assertTrue(b.initalArmyDispursement(2) == 40);
 		assertTrue(b.initalArmyDispursement(3) == 35);
 		assertTrue(b.initalArmyDispursement(4) == 30);
