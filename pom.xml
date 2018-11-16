@@ -1,8 +1,8 @@
 <project>
-    <modelVersion>4.0.0</modelVersion>
+    <modelVersion>5.0.0</modelVersion>
     <groupId>game</groupId>
     <artifactId>risk</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
 
     <dependencyManagement>
         <dependencies>
