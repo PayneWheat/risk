@@ -64,7 +64,7 @@ public class Main {
 		
 		// Risk
 		Board board = new Board(useAPIs, consoleOnly);
-		Map map = new Map();
+		//Map map = new Map();
 		
 		board.printTerritories(false, true);
 		
@@ -252,15 +252,27 @@ public class Main {
 			while(continueGame) {
 				continueGame = board.currentPlayerTurn();
 			}
-			
 		} else {
 			System.out.println("Starting Telegram Bot server...");
-			/*
 			TelegramBotHandle RunBot = new TelegramBotHandle();
 			RunBot.StartBot();
-			*/
-			board.startBot();
 			System.out.println("Waiting for players to join.");
+			while(TelegramBot.gameon==false) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(TelegramBot.gameon==true) {
+				Board.getInstance().startGame();
+				Board.getInstance().initialPlacement(true);
+				boolean continueGame = true;
+				while(continueGame) {
+					continueGame = Board.getInstance().botcurrentPlayerTurn();
+				}
+			}
 			/*
 			String[] color = {"Red","Blue","Yellow"};
 			Player[] player = new Player[3];
