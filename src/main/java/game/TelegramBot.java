@@ -68,7 +68,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 	@Override
 	public String getBotToken() {
 		// TODO Auto-generated method stub
-		return "618055658:AAG_N7h09eTVd97tzDreToL1gj6_NDGLgaE";
+		return botToken;
 	}
 	
 	public String getmessage() {
