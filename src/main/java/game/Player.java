@@ -13,8 +13,7 @@ public class Player {
 	int credits;
 	String attackMessage;
 	ArrayList<Observer> observers;
-	public long chatId;
-	
+	long ChatID;
 	public Player() {
 		this.name = "";
 		this.color = "";
@@ -35,7 +34,7 @@ public class Player {
 		this.attackMessage = "";
 		this.observers = new ArrayList<Observer>();
 	}
-	public Player(String name, String color, int currency, int credits, long chatId) {
+	public Player(String name, String color, int currency, int credits, long chatID) {
 		this.name = name;
 		this.color = color;
 		this.armies = 0;
@@ -44,9 +43,9 @@ public class Player {
 		this.credits = credits;
 		this.attackMessage = "";
 		this.observers = new ArrayList<Observer>();
-		this.chatId = chatId;
+		this.ChatID = chatID;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -91,17 +90,16 @@ public class Player {
 	public String getAttackMessage(){
 		return attackMessage;
 	}
-	public long getChatId() {
-		return chatId;
+	public long getChatID() {
+		return ChatID;
 	}
-	
 	public void setAttackMessage(Player p, String attackMessage){
 		this.attackMessage = attackMessage;
 		//JOptionPane.showMessageDialog(null, attackMessage, "warning", JOptionPane.WARNING_MESSAGE);
-		//System.out.println(attackMessage);
+		System.out.println(attackMessage);
 		for (Observer observer : observers) {
            	observer.update(p, this.attackMessage);
-        }
+        	}
 	}
 	
 	/**
@@ -134,6 +132,67 @@ public class Player {
 				territoryIndex = b.timedPrompt(inputMessage);
 			} catch(Exception e) {
 				System.out.println(e.getStackTrace());
+			}
+			if(territoryIndex == null) {
+				// automatically pick a territory
+				return -1;
+			}
+		}
+
+		ti = numberInputParser(territoryIndex);
+		if(ti < 0) {
+			ti = pickTerritory(initialTurns, b);
+		}
+		return ti;
+	}
+	
+	/**
+	 * 
+	 * @param initialTurns boolean flag indicating whether or not it's the initial placement step.
+	 * If true, player can only place one army at a time.
+	 * @return index of territory picked
+	 */
+	public int botpickTerritory(boolean initialTurns, Board b) {
+		TelegramBot bot = new TelegramBot();
+		int ti = -1;
+		String territoryIndex = "";
+		
+		if(initialTurns) {
+			//territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place one army (" + getArmies() + " remaining)");
+			String inputMessage = getName() + ", input a territory index to place one army (" + getArmies() + " remaining)";
+			bot.sendplayer(inputMessage);
+			bot.cleanmessage();
+			while(bot.getmessage()==null) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(bot.getmessage()!=null) {
+				territoryIndex = bot.getmessage();
+			}
+			if(territoryIndex == null) {
+				// automatically pick a territory
+				return -1;
+			}
+		}
+		else {
+			//territoryIndex = JOptionPane.showInputDialog(getName() + ", input a territory index to place at least one army (" + getArmies() + " remaining)");
+			String inputMessage = getName() + ", input a territory index to place at least one army (" + getArmies() + " remaining)";
+			bot.sendplayer(inputMessage);
+			bot.cleanmessage();
+			while(bot.getmessage()==null) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(bot.getmessage()!=null) {
+				territoryIndex = bot.getmessage();
 			}
 			if(territoryIndex == null) {
 				// automatically pick a territory
@@ -194,7 +253,7 @@ public class Player {
 			String values[] = {"Continue", "Undo"};
 			int n = -1;
 			try {
-				n = b.timedButtonPrompt(this, inputMessage, "Input", values);
+				n = b.timedButtonPrompt(inputMessage, "Input", values);
 			} catch(Exception e) {
 				System.out.println(e.getStackTrace());
 			}
@@ -211,6 +270,78 @@ public class Player {
 			else if(n == JOptionPane.YES_OPTION){
 				undo = false;
 			}
+			armies = numberInputParser(armyQty);
+
+			if(armies > getArmies()) {
+				System.out.println("You don't have that many armies.");
+				armies = chooseArmiesQty(b);
+				undo = true;
+			} else if(armies < 0) {
+				System.out.println("Choose a number between 0 and " + getArmies());
+				armies = chooseArmiesQty(b);
+				undo = true;
+			}
+		}
+		return armies;
+	}
+	/**
+	 * Prompts user to choose how many armies to place on a territory.
+	 * @return number of armies to be placed
+	 */
+	public int botchooseArmiesQty(Board b) {
+		TelegramBot bot = new TelegramBot();
+		boolean undo = true;
+		int armies = 0;
+		while(undo){
+			//String armyQty = JOptionPane.showInputDialog(getName() + ", how many of your " + getArmies() + " remaining armies?");
+			String inputMessage = getName() + ", how many of your " + getArmies() + " remaining armies?";
+			bot.sendplayer(inputMessage);
+			String armyQty = null;
+			bot.cleanmessage();
+			while(bot.getmessage()==null) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(bot.getmessage()!=null) {
+				armyQty = bot.getmessage();
+			}
+			if(armyQty == null) {
+				System.out.println("Null input received, placing all remaining armies on this territory.");
+				return this.armies;
+			}
+
+			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies";
+			bot.sendplayer(inputMessage);
+			String n = null;
+			bot.cleanmessage();
+			while(bot.getmessage()==null) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(bot.getmessage()!=null) {
+				n = bot.getmessage();
+			}
+			if(n.equals("no")) {
+				if(getCredits() > 0){
+					--credits;
+				}
+				else{
+					//JOptionPane.showMessageDialog(null, "You do not have enough credits to undo your action.");
+					
+					undo = false;
+				}
+			}else if(n.equals("yes")) {
+				undo = false;
+			}
+			
 			armies = numberInputParser(armyQty);
 
 			if(armies > getArmies()) {
@@ -242,6 +373,7 @@ public class Player {
 		}
 		return attackTerritories;
 	}
+	
 	public Territory chooseAttackingTerritory(ArrayList<Territory> playerTerritories, ArrayList<Territory> allTerritories, Board b) {
 		// The territory must have at least 2 troops, and needs to be
 		//	 adjacent to a territory occupied by an opponent. (i.e., if 
@@ -257,6 +389,42 @@ public class Player {
 			
 		}
 		if(attackingTerritoryInput == null) {
+			System.out.println("Null input received, default action.");
+			return null;
+		}
+		int attackingTerritoryIndex = numberInputParser(attackingTerritoryInput);
+		Territory tempTerritory = new Territory();
+		if(attackingTerritoryIndex < 0)
+			tempTerritory = chooseAttackingTerritory(playerTerritories, allTerritories, b);
+		else
+			tempTerritory = allTerritories.get(attackingTerritoryIndex);
+		return tempTerritory;
+	}
+	
+	public Territory botchooseAttackingTerritory(ArrayList<Territory> playerTerritories, ArrayList<Territory> allTerritories, Board b) {
+		// The territory must have at least 2 troops, and needs to be
+		//	 adjacent to a territory occupied by an opponent. (i.e., if 
+		//	 a player's territory is completely surrounded by his own, other territories)
+		ArrayList<Territory> attackTerritories = territoriesThatCanAttack(playerTerritories, allTerritories);
+		TelegramBot bot = new TelegramBot();
+		
+		String attackingTerritoryInput = null;
+		String inputMessage = getName() + ", choose a territory to attack from";
+		bot.sendplayer(inputMessage);
+		bot.cleanmessage();
+		while(bot.getmessage()==null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(bot.getmessage()!=null) {
+			attackingTerritoryInput = bot.getmessage();
+		}
+		if(attackingTerritoryInput == null) {
+			bot.sendplayer("Null input received, default action.");
 			System.out.println("Null input received, default action.");
 			return null;
 		}
@@ -308,6 +476,64 @@ public class Player {
 		}
 		// search opposingAdjacents for territories.get(defendingTerritoryIndex); ensure it is adjacent
 		if(!opposingAdjacents.contains(tempTerritory)) {
+			System.out.println("That territory is not adjacent to the attacking territory you selected.\nTry again");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories, b);
+		}
+		// add option to cancel and go back to step before (choosing attacking territory).
+		return tempTerritory;
+	}
+	
+	/**
+	 * Prompts player to choose a territory to attack.
+	 * For use when the player is in the attack step of their turn.
+	 * @param attackingTerritory Territory chosen prior to attack from
+	 * @return Territory selected to be attacked
+	 */
+	public Territory botchooseTerritoryToAttack(Territory attackingTerritory, ArrayList<Territory> territories, Board b) {
+		// Display adjacent territories occupied by another player
+		// and prompt the user to select one
+		TelegramBot bot = new TelegramBot();
+		Territory tempTerritory = new Territory();
+		ArrayList<Territory> opposingAdjacents = attackingTerritory.getAdjacentTerritories(true, false, false);
+		for(int i = 0; i < opposingAdjacents.size(); i++) {
+			int tempIndex = territories.indexOf(opposingAdjacents.get(i));
+			System.out.println("[" + tempIndex + "]" + opposingAdjacents.get(i).getTerritoryName() + " (" + opposingAdjacents.get(i).getPlayer().getName()  + "): " + opposingAdjacents.get(i).getArmyCount() + " armies.");
+		}
+		//String defendingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose an opponent's territory to attack.");
+		String defendingTerritoryInput = null;
+		String inputMessage = getName() + ", choose an opponent's territory to attack";
+		bot.sendplayer(inputMessage);
+		bot.cleanmessage();
+		while(bot.getmessage()==null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(bot.getmessage()!=null) {
+			defendingTerritoryInput = bot.getmessage();
+		}
+		if(defendingTerritoryInput == null) {
+			return null;
+		}
+		
+		int defendingTerritoryIndex = numberInputParser(defendingTerritoryInput);
+		if(defendingTerritoryIndex < 0) {
+			bot.sendplayer("Try again.");
+			System.out.println("Try again.");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories, b);
+		}
+		tempTerritory = territories.get(defendingTerritoryIndex);
+		if(tempTerritory.getPlayer() == this) {
+			bot.sendplayer("You cannot attack your own territory. Try again");
+			System.out.println("You cannot attack your own territory. Try again");
+			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories, b);
+		}
+		// search opposingAdjacents for territories.get(defendingTerritoryIndex); ensure it is adjacent
+		if(!opposingAdjacents.contains(tempTerritory)) {
+			bot.sendplayer("That territory is not adjacent to the attacking territory you selected.\nTry again");
 			System.out.println("That territory is not adjacent to the attacking territory you selected.\nTry again");
 			tempTerritory = chooseTerritoryToAttack(attackingTerritory, territories, b);
 		}
