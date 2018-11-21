@@ -11,9 +11,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 	private String botToken = "743293931:AAGPE--EyWkDE7fQtXXnkSgb18ScYLkjG-U";
 	public static ArrayList<String> username = new ArrayList<String>();
 	private ArrayList<Long> userID = new ArrayList<Long>();
-	public Update TempUpdate = null;
+	public static Update TempUpdate;
 	private String[] color = {"Red","Blue","Yellow"};
-	//boolean msgRcvd = false;
+	public static String message;
+	public static boolean gameon = false;
 	
 	@Override
 	public String getBotUsername() {
@@ -26,10 +27,13 @@ public class TelegramBot extends TelegramLongPollingBot {
 		// TODO Auto-generated method stub
 		TempUpdate = update;
 		System.out.println(update.getMessage().getFrom().getFirstName()+": "+update.getMessage().getText());
-		sendcurrentplayer("Echoing: " + update.getMessage().getText());
+		if (update.hasMessage() && update.getMessage().hasText()) {
+		message = update.getMessage().getText();
+		}
+		
 		String command = update.getMessage().getText();
 		Board b = Board.getInstance();
-		if(command.equals("/joinuser") && b.players.size() < 3) {
+		if(command.equals("/joinuser") && username.size()<3) {
 			username.add(update.getMessage().getFrom().getFirstName());
 			userID.add(update.getMessage().getChatId());
 			System.out.println(username);
@@ -39,30 +43,49 @@ public class TelegramBot extends TelegramLongPollingBot {
 			// Add user to board instance
 			b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1], update.getMessage().getChatId());
 		}
-		if(command.equals("/joinuser") && b.players.size()==3) {
-			sendcurrentplayer("The room is full now.");
+		if(command.equals("/joinuser") && username.size()==3) {
+			sendmessage("The room is full now.");
 			// Add user to board instance
-			//b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1]);
+			//b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1], update.getMessage().getChatId());
 		}
-		if(command.equals("/startgame") && b.players.size() >= 2) {
+		if(command.equals("/startgame")) {
 			sendallplayer(update.getMessage().getFrom().getFirstName() + " had start the game");
-			b.startGame();
-			
-		} else if (command.equals("/startgame") && b.players.size() < 2) {
-			sendallplayer("Not enough players to start the game.");
-		}
-		//System.out.println("Substring:" + command.substring(0, 9));
-		// Enables a user to add additional players for debugging purposes.
-		if(command.length() > 10 && command.substring(0, 9).equals("/adduser ") && command.substring(9).length() > 0 && b.players.size() < 3) {
-			System.out.println("Adding player " + command.substring(9));
-			b.addPlayer(command.substring(9), color[b.players.size() - 1], update.getMessage().getChatId());
+			gameon=true;
+			//b.startGame();
+			//if(gameon==true) {
+				//b.startGame();
+				//b.initialPlacement(true);
+				//b.botcurrentPlayerTurn();
+				/*boolean continueGame = true;
+				continueGame = b.currentPlayerTurn();
+				while(continueGame) {
+					continueGame = b.currentPlayerTurn();
+				}*/
+				//}
 		}
 	}
 
 	@Override
 	public String getBotToken() {
 		// TODO Auto-generated method stub
-		return botToken;
+		return "618055658:AAG_N7h09eTVd97tzDreToL1gj6_NDGLgaE";
+	}
+	
+	public String getmessage() {
+		return message;
+	}
+	
+	public void cleanmessage() {
+		message = null;
+	}
+	
+	public void sendplayer(String str) {
+		SendMessage MSG = new SendMessage().setChatId(Board.currentplayerID).setText(str);
+		try {
+			execute(MSG);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void sendallplayer(String str) {
@@ -75,30 +98,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 			}
 		}
 	}
-	public void sendcurrentplayer(String str) {
+	
+	public void sendmessage(String str) {
 		SendMessage MSG = new SendMessage().setChatId(TempUpdate.getMessage().getChatId()).setText(str);
-		try {
-			execute(MSG);
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
-		}
-	}
-	public void sendplayer(String str, Player player) {
-		//SendMessage MSG = new SendMessage().setChatId(TempUpdate.getMessage().getChatId()).setText(str);
-		System.out.println("Sending message to player " + player.getName());
-		Board b = Board.getInstance();
-		int usernameIndex = -1;
-		usernameIndex = userID.indexOf(player.getChatId());
-		System.out.println("usernameIndex = " + usernameIndex);
-		/*
-		for(int i = 0; i < b.players.size(); i++) {
-			if(player.getName() == username.get(i)) {
-				usernameIndex = i;
-				break;
-			}
-		}
-		*/
-		SendMessage MSG = new SendMessage().setChatId(userID.get(usernameIndex)).setText(str);
 		try {
 			execute(MSG);
 		} catch (TelegramApiException e) {
