@@ -2,7 +2,7 @@
     <modelVersion>5.0.0</modelVersion>
     <groupId>game</groupId>
     <artifactId>risk</artifactId>
-    <version>0.5</version>
+    <version>5.0</version>
 
     <dependencyManagement>
         <dependencies>
