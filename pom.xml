@@ -1,5 +1,5 @@
 <project>
-    <modelVersion>5.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
     <groupId>game</groupId>
     <artifactId>risk</artifactId>
     <version>5.0</version>
