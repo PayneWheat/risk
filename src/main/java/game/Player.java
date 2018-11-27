@@ -163,6 +163,7 @@ public class Player {
 			bot.sendplayer(inputMessage);
 			bot.cleanmessage();
 			while(bot.getmessage()==null) {
+				// TODO: add timer functionality here
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
