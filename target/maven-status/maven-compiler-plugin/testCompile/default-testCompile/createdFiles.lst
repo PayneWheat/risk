@@ -2,6 +2,7 @@ test\java\ActivitiesTest.class
 test\java\TerritoryTest.class
 test\java\CurrentPlayerIndexTest.class
 test\java\InitialTroopsTest.class
+test\java\TimerTest.class
 test\java\PlayerTest.class
 test\java\BoardTest.class
 test\java\DiceTest.class
