@@ -79,15 +79,24 @@ public class TelegramBot extends TelegramLongPollingBot {
 		message = null;
 	}
 	
-	public void sendplayer(String str) {
+	public void sendplayer(String str){
 		SendMessage MSG = new SendMessage().setChatId(Board.currentplayerID).setText(str);
+		//SendMessage MSG = new SendMessage().setChatId(p.getChatID()).setText(str);
 		try {
 			execute(MSG);
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
 	}
-	
+	public void sendplayer(String str, Player p){
+		//SendMessage MSG = new SendMessage().setChatId(Board.currentplayer).setText(str);
+		SendMessage MSG = new SendMessage().setChatId(p.getChatID()).setText(str);
+		try {
+			execute(MSG);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
+	}	
 	public void sendallplayer(String str) {
 		for (int i=0; i<userID.size();i++) {
 			SendMessage MSG = new SendMessage().setChatId(userID.get(i)).setText(str);
