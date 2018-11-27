@@ -1,6 +1,14 @@
 package main.java.game;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.List;
+
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -8,13 +16,25 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class TelegramBot extends TelegramLongPollingBot {
-	private String botToken = "743293931:AAGPE--EyWkDE7fQtXXnkSgb18ScYLkjG-U";
+	private String botToken = null;
 	public static ArrayList<String> username = new ArrayList<String>();
 	private ArrayList<Long> userID = new ArrayList<Long>();
 	public static Update TempUpdate;
 	private String[] color = {"Red","Blue","Yellow"};
 	public static String message;
 	public static boolean gameon = false;
+	
+	public TelegramBot() {
+		Properties prop = new Properties();
+		InputStream input = null;
+		try {
+			input = new FileInputStream("secrets_PHP.prop");
+			prop.load(input);
+			botToken = prop.getProperty("telegramtoken");
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	@Override
 	public String getBotUsername() {
