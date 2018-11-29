@@ -40,6 +40,7 @@ public class TimerTest extends TestCase {
 		System.out.println("Test time: " + time);
 		assertTrue(time >= 30000);
 	}
+	@Test
 	public void testTimedSelectionPrompt() {
 		long time = System.currentTimeMillis();
 		String values[] = {"one", "two", "three"};

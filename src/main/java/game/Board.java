@@ -22,8 +22,8 @@ public class Board implements Observer{
 	public int initialArmies;
 	public S3 s3 = null;
 	private BufferedReader br = null;
-	private boolean useAPIs = false;
-	private boolean consoleOnly = false;
+	public boolean useAPIs = false;
+	public boolean consoleOnly = false;
 	public String attackMessage;
 	public boolean playwithbot = false;
 	public static long currentplayerID;
@@ -222,6 +222,32 @@ public class Board implements Observer{
 		}
 		timer.cancel();
 		return option;
+	}
+	public int untimedIntPrompt(String inputMessage, String instruction, int min, int max) {
+		int option = -1;
+		if(consoleOnly) {
+			System.out.println(inputMessage);
+			System.out.print("Select between " + min + " and " + max + ": ");
+			try {
+				String selection = br.readLine();
+				option = Integer.parseInt(selection);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return option;
+	}
+	public String untimedStringPrompt(String inputMessage) {
+		String input = null;
+		if(consoleOnly) {
+			System.out.print(inputMessage);
+			try {
+				input = br.readLine();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return input;
 	}
 	/**
 	 * 
