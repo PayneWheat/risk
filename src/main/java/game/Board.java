@@ -43,7 +43,7 @@ public class Board implements Observer{
 		this.useAPIs = useAPIs;
 		this.consoleOnly = consoleOnly;
 		if(this.useAPIs == true) {
-			s3 = new S3();
+			s3 = new S3(true);
 		}
 		if(this.consoleOnly == true) {
     		InputStreamReader isr = new InputStreamReader(System.in);
@@ -72,21 +72,8 @@ public class Board implements Observer{
     	public boolean hasStarted = false;
    		public void run() {
    			this.hasStarted = true;
-   			if(consoleOnly) {
-   				// Cancel br
-   				/*
-   				try {
-   					//br.reset();
-   					//br = new BufferedReader(new InputStreamReader(System.in));
-   					//br.readLine();
-   					//br.close();
-   					
-   				} catch(Exception e) {
-   					e.printStackTrace();
-   				}
-   				*/
-   			} else {
-   				JOptionPane.getRootFrame().dispose();
+   			if(playwithbot == true) {
+   				// move on to next step?
    			}
 			//JOptionPane.showMessageDialog(null, "You have failed to enter anything. Your turn is forfeited.", "Warning", JOptionPane.WARNING_MESSAGE);
    			System.out.println("Timer expired! Default action taken.");
@@ -97,24 +84,6 @@ public class Board implements Observer{
      * @param inputMessage
      */
     public void timedAcknowledgement(String inputMessage) {
-    	/*
-    	Timer timer = new Timer();
-    	TaskTimerStep tts = new TaskTimerStep();
-    	//timer.schedule(new TaskTimerStep(), 30 * 1000);
-    	timer.schedule(tts, 30 * 1000);
-    	if(consoleOnly) {
-    		System.out.print(inputMessage + "\nPress any key to continue.");
-    		try {
-    			
-    			System.in.read();
-    		} catch(Exception e) {
-    			e.printStackTrace();
-    		}
-    	} else {
-    		JOptionPane.showMessageDialog(null, inputMessage);
-    	}
-    	timer.cancel();
-    	*/
     	System.out.println(inputMessage);
     }
     /**
@@ -141,8 +110,6 @@ public class Board implements Observer{
     		} catch(Exception e) {
     			//e.printStackTrace();
     		}
-    	} else {
-    		userInput = JOptionPane.showInputDialog(null, inputMessage);
     	}
         timer.cancel();
         return userInput;
@@ -159,26 +126,27 @@ public class Board implements Observer{
     	Object selected = null;
     	TaskTimerStep tts = new TaskTimerStep();
     	timer.schedule(tts, 30 * 1000);
-    	if(consoleOnly) {
-    		System.out.println(inputMessage);
-    		for(int i = 0; i < values.length; i++) {
-    			System.out.println("[" + i + "]" + values[i]);
-    		}
-    		System.out.print("Select 0 - " + (values.length + 1) + ": ");
-    		try {
-    			while(!br.ready()) {
-    				if(tts.hasStarted) {
-    					throw new Exception("Timer ended");
-    				}
-    			}
-    			int valIndex = Integer.parseInt(br.readLine());
-    			selected = values[valIndex];
-    		} catch(Exception e) {
-    			//e.printStackTrace();
-    		}
-    	} else {
-    		selected = JOptionPane.showInputDialog(null, inputMessage, "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");  
-    	}
+		System.out.println(inputMessage);
+		for(int i = 0; i < values.length; i++) {
+			System.out.println("[" + i + "]" + values[i]);
+		}
+		System.out.print("Select 0 - " + (values.length + 1) + ": ");
+		try {
+			if(playwithbot == true) {
+				
+			} else {
+			while(!br.ready()) {
+				if(tts.hasStarted) {
+					throw new Exception("Timer ended");
+				}
+			}
+			int valIndex = Integer.parseInt(br.readLine());
+			selected = values[valIndex];
+			}
+		} catch(Exception e) {
+			//e.printStackTrace();
+		}
+    	
 		timer.cancel();
     	return selected;
     }
@@ -215,14 +183,10 @@ public class Board implements Observer{
 				//e.printStackTrace();
 			}
 		}
-		else {
-			option = JOptionPane.showOptionDialog(null, inputMessage, 
-		        instruction, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, 
-		        null, values, JOptionPane.NO_OPTION);
-		}
 		timer.cancel();
 		return option;
 	}
+	
 	public int untimedIntPrompt(String inputMessage, String instruction, int min, int max) {
 		int option = -1;
 		if(consoleOnly) {
@@ -256,7 +220,7 @@ public class Board implements Observer{
 	public String getBoardAttackMessage(){
 		return attackMessage;
 	}
-	
+	/*
 	public void askplaywithbot() {
 		
 		int n = JOptionPane.showConfirmDialog(null, "Do you want to use telegram bot?", "Please select", JOptionPane.YES_NO_OPTION);
@@ -264,7 +228,7 @@ public class Board implements Observer{
 			playwithbot = true;
 		}
 	}
-	
+	*/
 	public boolean getplaywithbot() {
 		return playwithbot;
 	}
@@ -273,7 +237,7 @@ public class Board implements Observer{
 	 * Creates the initial card deck by taking each territory created
 	 * and applying it a value of 1-3 representing the card type {Infantry, Cavalry, Artillery}
 	 * Then two wild cards are added to the deck, and the deck is then shuffled 
-	 * @return
+	 * @return shuffled risk card deck
 	 */
 	private ArrayList<Card> createCardDeck() {
 		ArrayList<Card> deck = new ArrayList<Card>();
