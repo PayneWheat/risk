@@ -268,11 +268,7 @@ public class Main {
 					}
 				}
 			}
-			// Sort players by descending dice value
-			// OR -- I believe in the game, the players sit in a circle around the board. 
-			// So, the player order is determined randomly, and the highest roller plays first.
 			
-			//board.setPlayers(players, false);
 			board.startGame();
 			
 			// Players begin initial army placement and continue until all armies have been placed
