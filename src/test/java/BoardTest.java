@@ -219,6 +219,10 @@ public class BoardTest extends TestCase {
 		b2.setPlayers(players, false);
 		b2.initialPlacement(true);
 		assertEquals(21, b2.playerTerritoriesCount(tempP1));
+		b2.startGame();
+		b2.botprintTerritories(true, true);
+		b2.pickTerritory(false, tempP1);
+		b2.currentPlayerTurn();
 	}
 	@Test
 	public void testAPISetters() {

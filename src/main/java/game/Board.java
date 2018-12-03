@@ -550,7 +550,7 @@ public class Board implements Observer{
 	 * If true, player can only place one army at a time.
 	 * @return index of territory picked
 	 */
-	private int pickTerritory(boolean initialTurns, Player player) {
+	public int pickTerritory(boolean initialTurns, Player player) {
 		// timedPrompt gets called within the player pickTerritory method
 		boolean undo = true;
 		boolean checkInput = true;
@@ -636,7 +636,7 @@ public class Board implements Observer{
 	 * If true, player can only place one army at a time.
 	 * @return index of territory picked
 	 */
-	private int botpickTerritory(boolean initialTurns, Player player) {
+	public int botpickTerritory(boolean initialTurns, Player player) {
 		// timedPrompt gets called within the player pickTerritory method
 		//this.botprintTerritories(false, true);
 		TelegramBot bot = new TelegramBot();
@@ -816,7 +816,7 @@ public class Board implements Observer{
 	 * For use during the attack step of a player's turn
 	 * @return Territory selected
 	 */
-	private Territory chooseAttackingTerritory() {
+	public Territory chooseAttackingTerritory() {
 		boolean undo = true;
 		Territory tempTerritory = new Territory();
 		while(undo) {
@@ -909,7 +909,7 @@ public class Board implements Observer{
 	 * @param attackingTerritory Territory chosen prior to attack from
 	 * @return Territory selected to be attacked
 	 */
-	private Territory chooseTerritoryToAttack(Territory attackingTerritory) {
+	public Territory chooseTerritoryToAttack(Territory attackingTerritory) {
 		boolean undo = true;
 		Territory tempTerritory = new Territory();
 		while(undo) {
