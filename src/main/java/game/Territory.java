@@ -62,9 +62,6 @@ public class Territory {
 			case 5:
 				continent = "Australia";
 				break;
-			default:
-				continent = "NONE";
-				break;
 		}
 		return continent;
 	}
