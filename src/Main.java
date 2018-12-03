@@ -180,19 +180,6 @@ public class Main {
 					continueGame = Board.getInstance().botcurrentPlayerTurn();
 				}
 			}
-			/*
-			String[] color = {"Red","Blue","Yellow"};
-			Player[] player = new Player[3];
-			for(int i=0; i<player.length;i++) {
-				player[i] = new Player(TelegramBot.username.get(i),color[i],25,0);
-			}
-			board.setPlayers(player, false);
-			board.initialPlacement(true);
-			boolean continueGame = true;
-			while(continueGame) {
-				continueGame = board.currentPlayerTurn();
-			}
-			*/
 		}
 	}
 }
