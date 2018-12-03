@@ -15,8 +15,6 @@ public class TerritoryTest extends TestCase {
 		Territory index1 = new Territory("Test1", (byte)0);
 		index0.setAdjacentTerritory(Empty);
 		index0.setAdjacentTerritory(index1);
-		index0.setX(10);
-		index0.setY(20);
 		assertNotNull(index0.getAdjacentTerritories());
 		assertEquals("Alaska", index0.getTerritoryName());
 		assertEquals((byte)0, index0.getcontinentIndex());
@@ -47,7 +45,5 @@ public class TerritoryTest extends TestCase {
 		index0.decrementArmy(2);
 		assertTrue(index0.getArmyCount() == 3);
 		assertEquals(index0.getArmyCount(), 3);
-		assertEquals(index0.getX(), 10);
-		assertEquals(index0.getY(), 20);
 	}
 }
