@@ -8,8 +8,6 @@ public class Territory {
 	Player occupyingPlayer;
 	private boolean hasPlayer;
 	private int armyCount;
-	private int x;
-	private int y;
 	public Territory() {
 		this.name = "";
 		this.continentIndex = (byte)-1;
@@ -130,16 +128,5 @@ public class Territory {
 		}
 		return tempList;
 	}
-	public int getX() {
-		return x;
-	}
-	public int getY() {
-		return y;
-	}
-	public void setX(int X) {
-		this.x = X;
-	}
-	public void setY(int Y) {
-		this.y = Y;
-	}
+
 }
