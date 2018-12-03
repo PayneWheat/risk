@@ -97,7 +97,6 @@ public class Main {
 		*/
 		// Risk
 		Board board = new Board(useAPIs, true);
-		//Map map = new Map();
 		
 		//board.printTerritories(false, true);
 		
