@@ -48,17 +48,30 @@ public class TelegramBot extends TelegramLongPollingBot {
 		TempUpdate = update;
 		System.out.println(update.getMessage().getFrom().getFirstName()+": "+update.getMessage().getText());
 		if (update.hasMessage() && update.getMessage().hasText()) {
-		message = update.getMessage().getText();
+			message = update.getMessage().getText();
 		}
-		
 		String command = update.getMessage().getText();
 		Board b = Board.getInstance();
+		if(command.equals("/creategame")) {
+			// return a gameId
+			username.add(update.getMessage().getFrom().getFirstName());
+			userID.add(update.getMessage().getChatId());
+			String gameId = update.getMessage().getChatId().toString();
+			gameId += new java.util.Date().toString();
+			gameId = gameId.replaceAll("\\s","");
+			sendallplayer(update.getMessage().getFrom().getFirstName() + " has created the game");
+			sendallplayer("Game ID: " + gameId);
+			System.out.println("Game id: " + gameId);
+			b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1], update.getMessage().getChatId());
+			sendallplayer(update.getMessage().getFrom().getFirstName() + " has joined the game as the color " + color[username.size() - 1]);
+
+		}
 		if(command.equals("/joinuser") && username.size()<3) {
 			username.add(update.getMessage().getFrom().getFirstName());
 			userID.add(update.getMessage().getChatId());
 			System.out.println(username);
 			System.out.println(userID);
-			sendallplayer(update.getMessage().getFrom().getFirstName() + " had join the game");
+			sendallplayer(update.getMessage().getFrom().getFirstName() + " has joined the game as the color " + color[username.size() - 1]);
 			sendallplayer("Now the room have " + username.size() + " player. They are: " + username);
 			// Add user to board instance
 			b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1], update.getMessage().getChatId());
@@ -67,6 +80,16 @@ public class TelegramBot extends TelegramLongPollingBot {
 			sendmessage("The room is full now.");
 			// Add user to board instance
 			//b.addPlayer(update.getMessage().getFrom().getFirstName(), color[username.size() - 1], update.getMessage().getChatId());
+		}
+		if(command.length() > 9 && command.substring(0, 9).equals("/adduser ") && command.substring(9).length() > 0 && b.players.size() < 3) {
+			String un = command.substring(9);
+			System.out.println("Adding player " + un);
+			username.add(un);
+			userID.add(update.getMessage().getChatId());
+			//b.addPlayer(command.substring(9), color[b.players.size() - 1]);
+			b.addPlayer(un, color[username.size() - 1], update.getMessage().getChatId());
+			sendallplayer(un + " has joined the game as the color " + color[username.size() - 1]);
+			sendallplayer("Now the room have " + username.size() + " player. They are: " + username);
 		}
 		if(command.equals("/startgame")) {
 			sendallplayer(update.getMessage().getFrom().getFirstName() + " had start the game");

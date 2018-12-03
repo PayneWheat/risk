@@ -211,7 +211,7 @@ public class BoardTest extends TestCase {
 	}
 	@Test
 	public void testInitialArmyPlacement() {
-		System.out.println("------STARTING TESTINITIALARMYPLACEMENT------");
+		//System.out.println("------STARTING TESTINITIALARMYPLACEMENT------");
 		Board b2 = new Board(false, false);
 		Player tempP1 = new Player("Test1", "Blue", 0, 0);
 		Player tempP2 = new Player("Test2", "Red", 0, 0);
@@ -219,5 +219,42 @@ public class BoardTest extends TestCase {
 		b2.setPlayers(players, false);
 		b2.initialPlacement(true);
 		assertEquals(21, b2.playerTerritoriesCount(tempP1));
+		b2.startGame();
+		b2.botprintTerritories(true, true);
+		b2.botprintTerritories(false, true);
+		b2.pickTerritory(false, tempP1);
+		b2.currentPlayerTurn();
+		//b2.botcurrentPlayerTurn();
+		tempP1.chooseAttackingTerritory(b2.getPlayersTerritories(tempP1), b2.territories, b2);
+	}
+	@Test
+	public void testAPISetters() {
+		Board b3 = Board.getInstance();
+		b3.setAPITrue();
+		b3.setConsoleOnlyTrue();
+		//b3.getplaywithbot();
+		assertNotNull(b3);
+	}
+	@Test
+	public void testAcknowledgement() {
+		Board b3 = Board.getInstance();
+		b3.timedAcknowledgement("Test");
+		assertNotNull(b3);
+	}
+	@Test
+	public void testAddPlayer() {
+		assertTrue(b.addPlayer("Test", "Red"));
+		assertTrue(b.addPlayer("Test2", "Blue", 12345l));
+	}
+	@Test
+	public void testStartGame() {
+		Board b3 = new Board();
+		b3.addPlayer("Test1", "Red");
+		b3.addPlayer("Test2", "Blue");
+		b3.addPlayer("Test3", "Yellow");
+		//b3.startGame();
+		assertNotNull(b3);
+		//b3.currentPlayerTurn();
+		//assertNotNull(b3);
 	}
 }
