@@ -23,13 +23,14 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
+
 public class S3 {
 	public PlayerActivities pa = null;
     private static AWSCredentials awsCredentials = null;  
     private static AmazonS3 s3 = null; 
     private static Bucket rrBucket = null;
     private static String gameKey = null;
-	public S3() {
+	public S3(boolean createGame) {
 		Properties prop = new Properties();
 		pa = new PlayerActivities();
 		InputStream input = null;
@@ -40,8 +41,8 @@ public class S3 {
 			prop.load(input);
 			awsUser = prop.getProperty("awsuser");
 			awsPassword = prop.getProperty("awspassword");
-			System.out.println(awsUser);
-			System.out.println(awsPassword);
+			//System.out.println(awsUser);
+			//System.out.println(awsPassword);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -63,9 +64,13 @@ public class S3 {
 				System.err.println(e.getErrorMessage());
 			}
 		}
-		gameKey = createGame();
-		
+		if(createGame == true) {
+			gameKey = createGame();
+			System.out.println("Game created in AWS bucket. Game key: " + gameKey);
+			System.out.println("Store this key to replay the game later.");
+		}
 	}
+	
 	public static Bucket getBucket(String bucket_name) {
 		// https://github.com/awsdocs/aws-doc-sdk-examples/blob/master/java/example_code/s3/src/main/java/aws/example/s3/CreateBucket.java
         Bucket named_bucket = null;
@@ -87,6 +92,21 @@ public class S3 {
 		s3.putObject(rrBucket.getName(), objectKey, "Game Object created.\n");
 		return objectKey;
 	}
+	
+	public void replayGameData(String key) {
+		/*
+		s3.getObject(GetObjectRequest.builder().bucket(bucket).key(key).build(),
+				ResponseTransformer.toFile(Paths.get("multiPartKey")));
+		*/
+		S3Object replayData = s3.getObject(rrBucket.getName(), key);
+		System.out.println("Replay data for gamekey " + key);
+		try {
+			System.out.println(s3ObjectConverter(replayData));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public String s3ObjectConverter(S3Object obj) throws IOException {
 		String fullObj = "";
 		InputStream input = obj.getObjectContent();
@@ -101,6 +121,7 @@ public class S3 {
         //System.out.println();
 		return fullObj;
 	}
+	
 	public void logPlayerActivity() {
 		pa.print();
 		String str = null;

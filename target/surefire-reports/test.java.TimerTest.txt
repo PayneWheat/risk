@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: test.java.TimerTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 89.908 sec
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 90.004 sec

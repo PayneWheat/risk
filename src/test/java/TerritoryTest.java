@@ -46,4 +46,9 @@ public class TerritoryTest extends TestCase {
 		assertTrue(index0.getArmyCount() == 3);
 		assertEquals(index0.getArmyCount(), 3);
 	}
+	@Test
+	public void testTerritory() {
+		Territory t = new Territory();
+		assertEquals("NONE", t.getContinent());
+	}
 }

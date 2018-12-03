@@ -250,7 +250,7 @@ public class Player {
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
 			*/
-			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies";
+			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies -- yes/no";
 			String values[] = {"Continue", "Undo"};
 			int n = -1;
 			try {
@@ -315,7 +315,7 @@ public class Player {
 				return this.armies;
 			}
 
-			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies";
+			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies --yes/no";
 			bot.sendplayer(inputMessage);
 			String n = null;
 			bot.cleanmessage();
@@ -411,6 +411,7 @@ public class Player {
 		
 		String attackingTerritoryInput = null;
 		String inputMessage = getName() + ", choose a territory to attack from";
+		b.botprintTerritories(false, true);
 		bot.sendplayer(inputMessage);
 		bot.cleanmessage();
 		while(bot.getmessage()==null) {
@@ -451,7 +452,9 @@ public class Player {
 		ArrayList<Territory> opposingAdjacents = attackingTerritory.getAdjacentTerritories(true, false, false);
 		for(int i = 0; i < opposingAdjacents.size(); i++) {
 			int tempIndex = territories.indexOf(opposingAdjacents.get(i));
-			System.out.println("[" + tempIndex + "]" + opposingAdjacents.get(i).getTerritoryName() + " (" + opposingAdjacents.get(i).getPlayer().getName()  + "): " + opposingAdjacents.get(i).getArmyCount() + " armies.");
+			if(opposingAdjacents.get(i).getTerritoryName() != null) {
+				System.out.println("[" + tempIndex + "]" + opposingAdjacents.get(i).getTerritoryName() + " (" + opposingAdjacents.get(i).getPlayer().getName()  + "): " + opposingAdjacents.get(i).getArmyCount() + " armies.");
+			}
 		}
 		//String defendingTerritoryInput = JOptionPane.showInputDialog(getName() + ", choose an opponent's territory to attack.");
 		String defendingTerritoryInput = null;
@@ -613,10 +616,15 @@ public class Player {
 			boolean trySetAgain = true;
 			int cardSetIndex = -1;
 			String cardSetInput = "";
+			String[] values = new String[CardSets.size()];
+			for(int i = 0; i < CardSets.size(); i++) {
+				values[i] = CardSets.get(i).toString();
+			}
 			while(tryAgain) {
 				try {
 					if(mustTurnIn) {
 						while(trySetAgain){
+							/*
 							cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. (You must select a set)");
 							if(cardSetInput.equals("0") || cardSetInput.equals("1") || cardSetInput.equals("2") || cardSetInput.equals("3") || cardSetInput.equals("4")|| cardSetInput.equals("5") || cardSetInput.equals("6") || cardSetInput.equals("7")){
 									trySetAgain = false;
@@ -624,12 +632,24 @@ public class Player {
 							else{
 									JOptionPane.showMessageDialog(null, "You have entered an invalid set. Please try again", "Inane error", JOptionPane.ERROR_MESSAGE);
 							}
+							*/
+							try {
+								cardSetInput = (String)Board.getInstance().timedSelectionPrompt(getName() + ", select a set of cards to turn in.",  values);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
 						}
 						if(cardSetInput != null) {
 							cardSetIndex = Integer.parseInt(cardSetInput);
 						}
 					} else {
-						cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. Click cancel to wait.");
+						//cardSetInput = JOptionPane.showInputDialog(getName() + ", select a set of cards to turn in. Click cancel to wait.");
+						try {
+							cardSetInput = (String)Board.getInstance().timedSelectionPrompt(getName() + ", select a set of cards to turn in. Click cancel to wait.", values);
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 						if(cardSetInput == null) {
 							tryAgain = false;
 							break;
@@ -642,6 +662,9 @@ public class Player {
 					// not an int
 					System.out.println("Could not parse number. Try again");
 				}	
+			}
+			if(cardSetIndex == -1) {
+				return null;
 			}
 			return CardSets.get(cardSetIndex);
 		}
