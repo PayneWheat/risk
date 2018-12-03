@@ -250,7 +250,7 @@ public class Player {
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
 			*/
-			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies";
+			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies -- yes/no";
 			String values[] = {"Continue", "Undo"};
 			int n = -1;
 			try {
@@ -315,7 +315,7 @@ public class Player {
 				return this.armies;
 			}
 
-			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies";
+			inputMessage = "You have chosen to place " + Integer.parseInt(armyQty) + " armies --yes/no";
 			bot.sendplayer(inputMessage);
 			String n = null;
 			bot.cleanmessage();
@@ -411,6 +411,7 @@ public class Player {
 		
 		String attackingTerritoryInput = null;
 		String inputMessage = getName() + ", choose a territory to attack from";
+		b.botprintTerritories(false, true);
 		bot.sendplayer(inputMessage);
 		bot.cleanmessage();
 		while(bot.getmessage()==null) {

@@ -121,6 +121,7 @@ public class S3 {
         //System.out.println();
 		return fullObj;
 	}
+	
 	public void logPlayerActivity() {
 		pa.print();
 		String str = null;

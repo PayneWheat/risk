@@ -27,6 +27,7 @@ public class Board implements Observer{
 	public String attackMessage;
 	public boolean playwithbot = false;
 	public static long currentplayerID;
+	public TelegramBot bot;
 	
 	private static final Board instance = new Board();
 	
@@ -316,15 +317,20 @@ public class Board implements Observer{
 		TelegramBot bot = new TelegramBot();
 		if(onlyUnoccupied == true) {
 			System.out.println("Available territories:");
-			bot.sendplayer("Available territories:");
+			String message = "Available territories: \n";
+			//bot.sendplayer("Available territories:");
 			for(int i = 0; i < this.territories.size(); i++) {
 				if(!this.territories.get(i).isOccupied()) {
 					System.out.print("[" + i + "]" + this.territories.get(i).name + ", ");
-					bot.sendplayer("[" + i + "]" + this.territories.get(i).name + ", ");
+					//bot.sendplayer("[" + i + "]" + this.territories.get(i).name + ", ");
+					message += "[" + i + "]" + this.territories.get(i).name + ", ";
 				}
 			}
 			System.out.println("");
+			message += "\n";
+			bot.sendplayer(message);
 		} else {
+			String message = "";
 			for(int i = 0; i < this.territories.size(); i++) {
 				String playerName = ""; 
 				if(territories.get(i).isOccupied()) {
@@ -332,21 +338,26 @@ public class Board implements Observer{
 				} else {
 					playerName = "UNOCCUPIED";
 				}
-				bot.sendplayer("[" + i + "]" + territories.get(i).getContinent() + ", " + territories.get(i).name + "(" + playerName +  ", " + territories.get(i).getArmyCount() + " armies)");
+				//bot.sendplayer("[" + i + "]" + territories.get(i).getContinent() + ", " + territories.get(i).name + "(" + playerName +  ", " + territories.get(i).getArmyCount() + " armies)");
 				System.out.print("[" + i + "]" + territories.get(i).getContinent() + ", " + territories.get(i).name + "(" + playerName +  ", " + territories.get(i).getArmyCount() + " armies)");
+				message += "[" + i + "]" + territories.get(i).name + "(" + playerName +  ", " + territories.get(i).getArmyCount() + " armies)";
 				if(showAdjacent) {
-					bot.sendplayer("->{ ");
+					//bot.sendplayer("->{ ");
+					message += "->{ ";
 					System.out.print("->{ ");
 					ArrayList<Territory> adjs = territories.get(i).getAdjacentTerritories();
 					for(int j = 0; j < adjs.size(); j++) {
-						bot.sendplayer(adjs.get(j).name + ", ");
+						//bot.sendplayer(adjs.get(j).name + ", ");
+						message += adjs.get(j).name + ", ";
 						System.out.print(adjs.get(j).name + ", ");
 					}
-					bot.sendplayer("}");
+					//bot.sendplayer("}");
+					message += "}\n";
 					System.out.print("}");
 				}
 				System.out.println("");		
 			}
+			bot.sendplayer(message);
 		}
 	}
 	
@@ -412,8 +423,6 @@ public class Board implements Observer{
 		initRolls[0] = d.getDiceValue();
 		
 		// Sorting and displaying results
-		// TODO: tiebreaker? increase sides of die so there is less of a chance of a tie?
-		// TODO: Refactor this to a comparator class for the dice.
 		System.out.println(players[0].getName() + " rolled a " + initRolls[0]);
 		for(int i = 1; i < numOfPlayers; i++) {
 			initRolls[i] = d.getDiceValue();
@@ -553,7 +562,7 @@ public class Board implements Observer{
 				System.out.println("Out of range. Try again");
 				ti = pickTerritory(initialTurns, player);
 			}
-			if(unoccupiedTerritoriesCount() > 0) {
+			if(unoccupiedTerritoriesCount() > 0 && ti != -1) {
 				if(territories.get(ti).isOccupied()) {
 					System.out.println("Territory already occupied. Try again");
 					ti = pickTerritory(initialTurns, player);
@@ -629,11 +638,13 @@ public class Board implements Observer{
 	 */
 	private int botpickTerritory(boolean initialTurns, Player player) {
 		// timedPrompt gets called within the player pickTerritory method
+		//this.botprintTerritories(false, true);
 		TelegramBot bot = new TelegramBot();
 		boolean undo = true;
 		boolean checkInput = true;
 		int ti = -1;
 		while(undo) {
+			this.botprintTerritories(false, true);
 			ti = player.botpickTerritory(initialTurns, this);
 			// TODO: change these to a try/catch block. Throw proper exceptions
 			if(ti > territories.size() - 1) {
@@ -664,6 +675,7 @@ public class Board implements Observer{
 					for(int i = 0; i < territories.size(); i++) {
 						if(!territories.get(i).isOccupied()) {
 							ti = i;
+							undo = false;
 							break;
 						}
 					}
@@ -681,9 +693,10 @@ public class Board implements Observer{
 				}
 				
 			}
+			
 			if(checkInput == true) {
 				String input = null;
-				String confirmationMessage = "You have chosen " + territories.get(ti).getTerritoryName();
+				String confirmationMessage = "You have chosen " + territories.get(ti).getTerritoryName() + "-- yes/no";
 				bot.sendplayer(confirmationMessage);
 				bot.cleanmessage();
 				while(bot.getmessage()==null) {
@@ -817,7 +830,7 @@ public class Board implements Observer{
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
 			*/
-			String confirmationMessage = "You have chosen to attack from " + tempTerritory.getTerritoryName();
+			String confirmationMessage = "You have chosen to attack from " + tempTerritory.getTerritoryName() + " --yes/no";
 			String values[] = {"Continue", "Undo"};
 			try {
 				int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
@@ -857,7 +870,7 @@ public class Board implements Observer{
 				return null;
 			}
 
-			String confirmationMessage = "You have chosen to attack from " + tempTerritory.getTerritoryName();
+			String confirmationMessage = "You have chosen to attack from " + tempTerritory.getTerritoryName() + " --yes/no";
 			String n = null;
 			bot.sendplayer(confirmationMessage);
 			bot.cleanmessage();
@@ -909,7 +922,7 @@ public class Board implements Observer{
 			        "Input", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 			        null, new Object[] {"Continue", "Undo"}, JOptionPane.YES_OPTION);
 			*/
-			String confirmationMessage = "You have chosen to attack " + tempTerritory.getTerritoryName();
+			String confirmationMessage = "You have chosen to attack " + tempTerritory.getTerritoryName() + " --yes/no";
 			String[] values = {"Continue", "Undo"};
 			try {
 				int n = timedButtonPrompt(confirmationMessage, "Undo?", values);
@@ -950,7 +963,7 @@ public class Board implements Observer{
 					return null;
 				}
 				
-				String confirmationMessage = "You have chosen to attack " + tempTerritory.getTerritoryName();
+				String confirmationMessage = "You have chosen to attack " + tempTerritory.getTerritoryName() + " --yes/no";
 				String n = null;
 				bot.sendplayer(confirmationMessage);
 				bot.cleanmessage();
@@ -1042,13 +1055,18 @@ public class Board implements Observer{
 		}
 		System.out.println(attackingTerritory.getPlayer().getName() + " has " + attackingTerritory.getArmyCount() + " armies on " + attackingTerritory.getTerritoryName() + ", rolls " + attackingDiceTotal + " die/dice.");
 		System.out.println(defendingTerritory.getPlayer().getName() + " has " + defendingTerritory.getArmyCount() + " armies on " + defendingTerritory.getTerritoryName() + ", rolls " + defendingDiceTotal + " die/dice.");
-		
+		if(playwithbot == true) {
+			String message = attackingTerritory.getPlayer().getName() + " has " + attackingTerritory.getArmyCount() + " armies on " + attackingTerritory.getTerritoryName() + ", rolls " + attackingDiceTotal + " die/dice.\n";
+			message += defendingTerritory.getPlayer().getName() + " has " + defendingTerritory.getArmyCount() + " armies on " + defendingTerritory.getTerritoryName() + ", rolls " + defendingDiceTotal + " die/dice.\n";
+			this.bot.sendallplayer(message);
+		}
 		ArrayList<Dice> attackingDice = new ArrayList<Dice>();
 		for(int i = 0; i < attackingDiceTotal; i++) {
 			attackingDice.add(new Dice());
 			attackingDice.get(i).roll();
 		}
 		System.out.print(attackingTerritory.getPlayer().getName() + " rolled ");
+
 		for(int i = 0; i < attackingDiceTotal; i++) {
 			System.out.print(attackingDice.get(i).getCurrentValue() + " ");
 		}
@@ -1063,20 +1081,26 @@ public class Board implements Observer{
 			System.out.print(defendingDice.get(i).getCurrentValue() + " ");
 		}
 		System.out.println();
-		
 		// Sort dice descending by value for both players. 
 		// E.g., if attacking player A rolls a 3, 6, and 2 
 		// the dice should be sorted 6, 3, 2
 		sortDice(attackingDice);
+		String message = attackingTerritory.getPlayer().getName() + " rolled ";
 		for(int i = 0; i < attackingDiceTotal; i++) {
 			System.out.print(attackingDice.get(i).getCurrentValue() + " ");
+			message += attackingDice.get(i).getCurrentValue() + " ";
 		}
 		System.out.println();
+		message += '\n';
 		sortDice(defendingDice);
+		message += defendingTerritory.getPlayer().getName() + " rolled ";
 		for(int i = 0; i < defendingDiceTotal; i++) {
 			System.out.print(defendingDice.get(i).getCurrentValue() + " ");
+			message += defendingDice.get(i).getCurrentValue() + " ";
 		}
 		System.out.println();
+		if(playwithbot == true)
+			this.bot.sendallplayer(message);
 		ArrayList<ArrayList<Dice>> returnLists = new ArrayList<ArrayList<Dice>>();
 		returnLists.add(attackingDice);
 		returnLists.add(defendingDice);		
@@ -1136,108 +1160,12 @@ public class Board implements Observer{
 		// OR allow player to "retreat" -- or stop attack
 		boolean continueAttacking = true;
 		while(continueAttacking) {
+			
 			ArrayList<ArrayList<Dice>> dice = diceHelper(attackingTerritory, defendingTerritory);
-			/*
-			// If attacker has 2 armies, they roll one die.
-			// If attacker has 3 armies, they roll two dice.
-			// If attacker has 4 or more armies, they roll three dice.
-			int attackingDiceTotal = 0;
-			if(attackingTerritory.getArmyCount() > 3) {
-				attackingDiceTotal = 3;
-			} else if (attackingTerritory.getArmyCount() == 3) {
-				attackingDiceTotal = 2;
-			} else if (attackingTerritory.getArmyCount() == 2) {
-				attackingDiceTotal = 1;
-			}
-			// If defender has 1 army, they roll one die.
-			// If defender has 2 or more armies, they roll two dice.
-			int defendingDiceTotal = 0;
-			if(defendingTerritory.getArmyCount() > 1) {
-				defendingDiceTotal = 2;
-			} else if(defendingTerritory.getArmyCount() == 1) {
-				defendingDiceTotal = 1;
-			}
-			System.out.println(attackingTerritory.getPlayer().getName() + " has " + attackingTerritory.getArmyCount() + " armies on " + attackingTerritory.getTerritoryName() + ", rolls " + attackingDiceTotal + " die/dice.");
-			System.out.println(defendingTerritory.getPlayer().getName() + " has " + defendingTerritory.getArmyCount() + " armies on " + defendingTerritory.getTerritoryName() + ", rolls " + defendingDiceTotal + " die/dice.");
-			
-			ArrayList<Dice> attackingDice = new ArrayList<Dice>();
-			for(int i = 0; i < attackingDiceTotal; i++) {
-				attackingDice.add(new Dice());
-				attackingDice.get(i).roll();
-			}
-			System.out.print(attackingTerritory.getPlayer().getName() + " rolled ");
-			for(int i = 0; i < attackingDiceTotal; i++) {
-				System.out.print(attackingDice.get(i).getCurrentValue() + " ");
-			}
-			System.out.println();
-			ArrayList<Dice> defendingDice = new ArrayList<Dice>();
-			for(int i = 0; i < defendingDiceTotal; i++) {
-				defendingDice.add(new Dice());
-				defendingDice.get(i).roll();
-			}
-			System.out.print(defendingTerritory.getPlayer().getName() + " rolled ");
-			for(int i = 0; i < defendingDiceTotal; i++) {
-				System.out.print(defendingDice.get(i).getCurrentValue() + " ");
-			}
-			System.out.println();
-			
-			// Sort dice descending by value for both players. 
-			// E.g., if attacking player A rolls a 3, 6, and 2 
-			// the dice should be sorted 6, 3, 2
-			sortDice(attackingDice);
-			for(int i = 0; i < attackingDiceTotal; i++) {
-				System.out.print(attackingDice.get(i).getCurrentValue() + " ");
-			}
-			System.out.println();
-			sortDice(defendingDice);
-			for(int i = 0; i < defendingDiceTotal; i++) {
-				System.out.print(defendingDice.get(i).getCurrentValue() + " ");
-			}
-			System.out.println();
-			if(this.useAPIs == true) {
-				s3.pa.diceRoll(attackingTerritory, defendingTerritory, attackingDice, defendingDice);
-				s3.logPlayerActivity();	
-			}
 			// Find the minimum of number of dice rolled between the two players
 			// (it must either be 1 or 2), then compare each of the 1 or 2 dice
 			// to the opposing player's dice.
-			*/
 			armyAdjustment(attackingTerritory, dice.get(0), defendingTerritory, dice.get(1));
-			/*
-			int attackingDiceTotal = dice.get(0).size();
-			ArrayList<Dice> attackingDice = dice.get(0);
-			int defendingDiceTotal = dice.get(1).size();
-			ArrayList<Dice> defendingDice = dice.get(1);
-			int minDiceTotal = 0;
-			if(defendingDiceTotal <= attackingDiceTotal) {
-				minDiceTotal = defendingDiceTotal;
-			} else {
-				minDiceTotal = attackingDiceTotal;
-			}
-			
-			// Compare the dice rolls
-			for(int i = 0; i < minDiceTotal; i++) {
-				if(defendingDice.get(i).getCurrentValue() < attackingDice.get(i).getCurrentValue()) {
-					// If the defender's die is less than the attacker's, 
-					// the defender loses an army
-					System.out.println(defendingTerritory.getPlayer().getName() + " loses 1 army from " + defendingTerritory.getTerritoryName());
-					defendingTerritory.decrementArmy(1);
-					if(this.useAPIs == true) {
-						s3.pa.loseArmy(defendingTerritory.getPlayer());
-						s3.logPlayerActivity();
-					}
-				} else {
-					// Else If the defender's die is greater than or equal to the attacker's,
-					// the attacker loses an army
-					System.out.println(attackingTerritory.getPlayer().getName() + " loses 1 army from " + attackingTerritory.getTerritoryName());
-					attackingTerritory.decrementArmy(1);
-					if(this.useAPIs == true) {
-						s3.pa.loseArmy(attackingTerritory.getPlayer());
-						s3.logPlayerActivity();
-					}
-				}
-			}
-			*/
 			
 			// Repeat until:
 			// A) The attacking player has wiped out the defending players armies on their territory.
@@ -1376,7 +1304,7 @@ public class Board implements Observer{
 	 * @return current Attack object
 	 */
 	private Attack botattack(Attack curAttack, Territory attackingTerritory, Territory defendingTerritory) {
-		TelegramBot bot = new TelegramBot();
+		bot = new TelegramBot();
 		bot.sendallplayer("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
 		bot.sendallplayer(attackingTerritory.getTerritoryName() + " ("  + attackingTerritory.getArmyCount() + ") vs "+ defendingTerritory.getTerritoryName() + " ("  + defendingTerritory.getArmyCount() + ")");
 		System.out.println("\n" + attackingTerritory.getPlayer().getName() + " is attacking " + defendingTerritory.getPlayer().getName());
@@ -2061,7 +1989,7 @@ public class Board implements Observer{
 		        "In-Game Credits", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, 
 		        null, new Object[] {"Yes", "No"}, JOptionPane.YES_OPTION);
 		*/
-		String inputMessage = currentPlayer.getName() + ", would you like to purchase in-game credits?";
+		String inputMessage = currentPlayer.getName() + ", would you like to purchase in-game credits??";
 		String instruction = "In-Game Credits";
 		String[] values = {"Yes", "No"};
 		try {
@@ -2221,7 +2149,15 @@ public class Board implements Observer{
 		while(currentPlayer.armies > 0) {
 			printTerritories(false, true);
 			int ti = pickTerritory(false, currentPlayer);
-			Territory tempTerritory = territories.get(ti);
+			Territory tempTerritory = null;
+			if(ti == -1) {
+				// pick first territory
+				ArrayList<Territory> playerTerritories = getPlayersTerritories(currentPlayer);
+				Random rand = new Random();
+				tempTerritory = playerTerritories.get(rand.nextInt(playerTerritories.size()));
+			} else {
+				tempTerritory = territories.get(ti);
+			}
 			// Prompt player to place at least 1 army on selected territory
 			int armies = currentPlayer.chooseArmiesQty(this);
 			tempTerritory.incrementArmy(armies);
@@ -2311,8 +2247,10 @@ public class Board implements Observer{
 		String answer = null;
 		try {
 			bot.cleanmessage();
-			while(bot.getmessage()==null) {
+			int counter = 0;
+			while(bot.getmessage()==null && counter < 30) {
 				try {
+					counter++;
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -2504,7 +2442,6 @@ public class Board implements Observer{
 		
 		// 1. Placing new troops
 		
-		//TODO: Create a method for this in the Player class
 		// Check if a set of Risk cards can be turned in
 		System.out.println(currentPlayer.getName() + "'s Risk Cards:");
 		ArrayList<Card> cardsTurnedIn = currentPlayer.cardCheck();
@@ -2528,6 +2465,7 @@ public class Board implements Observer{
 			printTerritories(false, true);
 			int ti = botpickTerritory(false, currentPlayer);
 			Territory tempTerritory = territories.get(ti);
+			System.out.print(currentPlayer.getName() + " has entered " + ti + ", " + tempTerritory.getTerritoryName());
 			// Prompt player to place at least 1 army on selected territory
 			int armies = currentPlayer.botchooseArmiesQty(this);
 			tempTerritory.incrementArmy(armies);
