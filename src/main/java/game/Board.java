@@ -97,24 +97,6 @@ public class Board implements Observer{
      * @param inputMessage
      */
     public void timedAcknowledgement(String inputMessage) {
-    	/*
-    	Timer timer = new Timer();
-    	TaskTimerStep tts = new TaskTimerStep();
-    	//timer.schedule(new TaskTimerStep(), 30 * 1000);
-    	timer.schedule(tts, 30 * 1000);
-    	if(consoleOnly) {
-    		System.out.print(inputMessage + "\nPress any key to continue.");
-    		try {
-    			
-    			System.in.read();
-    		} catch(Exception e) {
-    			e.printStackTrace();
-    		}
-    	} else {
-    		JOptionPane.showMessageDialog(null, inputMessage);
-    	}
-    	timer.cancel();
-    	*/
     	System.out.println(inputMessage);
     }
     /**
