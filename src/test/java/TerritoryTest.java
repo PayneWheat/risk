@@ -50,4 +50,9 @@ public class TerritoryTest extends TestCase {
 		assertEquals(index0.getX(), 10);
 		assertEquals(index0.getY(), 20);
 	}
+	@Test
+	public void testTerritory() {
+		Territory t = new Territory();
+		assertEquals("NONE", t.getContinent());
+	}
 }

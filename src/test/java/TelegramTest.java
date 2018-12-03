@@ -8,5 +8,16 @@ public class TelegramTest extends TestCase {
 	public void testTelegram() {
 		TelegramBot tb = new TelegramBot();
 		assertEquals("RiskChatbot", tb.getBotUsername());
+		assertNotNull(tb.getBotToken());
+		tb.cleanmessage();
+		tb.getmessage();
+		assertNotNull(tb.getBotToken());
 	}
+	/*
+	public void testTelegramHandler() {
+		TelegramBotHandle tb = new TelegramBotHandle();
+		tb.sendAllMessage("Test");
+		
+	}
+	*/
 }
