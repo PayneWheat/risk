@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.junit.Test;
 import junit.framework.TestCase;
 import main.java.game.*;
-/*
+
 public class TimerTest extends TestCase {
 	
 	protected Player one = new Player("Test1", "Blue", 25, 0);
@@ -54,4 +54,3 @@ public class TimerTest extends TestCase {
 	}
 	
 }
-*/
