@@ -232,7 +232,7 @@ public class BoardTest extends TestCase {
 		Board b3 = Board.getInstance();
 		b3.setAPITrue();
 		b3.setConsoleOnlyTrue();
-		b3.getplaywithbot();
+		//b3.getplaywithbot();
 		assertNotNull(b3);
 	}
 	@Test

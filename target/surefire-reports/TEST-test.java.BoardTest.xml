@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="12" failures="0" name="test.java.BoardTest" time="5.432" errors="0" skipped="0">
+<testsuite tests="12" failures="0" name="test.java.BoardTest" time="3.902" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_191\jre\bin"/>
@@ -63,16 +63,16 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="test.java.BoardTest" name="testArmyAdjustment" time="0"/>
-  <testcase classname="test.java.BoardTest" name="testInitialArmyPlacement" time="5.408"/>
-  <testcase classname="test.java.BoardTest" name="testAcknowledgement" time="0"/>
-  <testcase classname="test.java.BoardTest" name="testTurnInCardSetMethod" time="0"/>
-  <testcase classname="test.java.BoardTest" name="testArmyReplenishment" time="0.001"/>
-  <testcase classname="test.java.BoardTest" name="testPrintTerritories" time="0.016"/>
-  <testcase classname="test.java.BoardTest" name="testAPISetters" time="0"/>
-  <testcase classname="test.java.BoardTest" name="testAddPlayer" time="0.001"/>
-  <testcase classname="test.java.BoardTest" name="testMoveArmies" time="0"/>
   <testcase classname="test.java.BoardTest" name="testSortDice" time="0"/>
-  <testcase classname="test.java.BoardTest" name="testDiceHelper" time="0.004"/>
-  <testcase classname="test.java.BoardTest" name="testStartGame" time="0.002"/>
+  <testcase classname="test.java.BoardTest" name="testMoveArmies" time="0"/>
+  <testcase classname="test.java.BoardTest" name="testAPISetters" time="0"/>
+  <testcase classname="test.java.BoardTest" name="testAddPlayer" time="0"/>
+  <testcase classname="test.java.BoardTest" name="testDiceHelper" time="0.001"/>
+  <testcase classname="test.java.BoardTest" name="testStartGame" time="0"/>
+  <testcase classname="test.java.BoardTest" name="testTurnInCardSetMethod" time="0"/>
+  <testcase classname="test.java.BoardTest" name="testPrintTerritories" time="0.008"/>
+  <testcase classname="test.java.BoardTest" name="testArmyAdjustment" time="0"/>
+  <testcase classname="test.java.BoardTest" name="testInitialArmyPlacement" time="3.893"/>
+  <testcase classname="test.java.BoardTest" name="testArmyReplenishment" time="0"/>
+  <testcase classname="test.java.BoardTest" name="testAcknowledgement" time="0"/>
 </testsuite>
