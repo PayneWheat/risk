@@ -12,8 +12,7 @@ public class PlayerTest extends TestCase {
 	
 	protected Player one = new Player("Test1", "Blue", 25, 0);
 	protected Player two = new Player("Test2", "Red", 25, 1);
-	protected Board b = new Board(false, false);
-	
+	protected Board b = new Board(false, true);
 	@Test
 	public void testArmies() {
 		one.increaseArmies(5);
@@ -41,6 +40,7 @@ public class PlayerTest extends TestCase {
 		one.addCard(card2);
 		one.addCard(card3);
 		one.addCard(card4);
+		one.cardCheck();
 		assertNotNull(one.oneOfEachExtractor(cardset, 1, 1, 1));
 		assertNotNull(one.wildSetsExtractor(cardset, 1));
 		assertNotNull(one.threeOfAKindExtractor(cardset, 3, 3, 3));
@@ -76,6 +76,9 @@ public class PlayerTest extends TestCase {
 		
 		ArrayList<Territory> at = one.territoriesThatCanAttack(b.getPlayersTerritories(one), b.territories);
 		
+		
 		assertEquals(3, at.size());
+		one.pickTerritory(true, b);
+		//one.chooseTerritoryToAttack(b.territories.get(31), b.territories, b);
 	}
 }
