@@ -76,16 +76,15 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		/*
-		boolean consoleOnly = false;
+		boolean autoPlaceInitialArmies = false;
 		while(true) {
-			System.out.print("Use GUI? Y/N: ");
+			System.out.print("Automatically place initial armies? Y/N: ");
 			try {
 				String input = br.readLine();
 				if(input.equals("Y") || input.equals("y")) {
 					break;
 				} else if (input.equals("N") || input.equals("n")) {
-					consoleOnly = true;
+					autoPlaceInitialArmies = true;
 					break;
 				} else {
 					System.out.println("Could not parse input. Try again.");
@@ -94,7 +93,6 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		*/
 		// Risk
 		Board board = new Board(useAPIs, true);
 		
@@ -151,7 +149,7 @@ public class Main {
 			board.startGame();
 		
 			// Players begin initial army placement and continue until all armies have been placed
-			board.initialPlacement(true);
+			board.initialPlacement(autoPlaceInitialArmies);
 
 			// Players take turns until one player controls the whole board
 			// Should start with player that went first in the initial stage.
@@ -174,7 +172,7 @@ public class Main {
 			}
 			if(TelegramBot.gameon==true) {
 				Board.getInstance().startGame();
-				Board.getInstance().initialPlacement(true);
+				Board.getInstance().initialPlacement(autoPlaceInitialArmies);
 				boolean continueGame = true;
 				while(continueGame) {
 					continueGame = Board.getInstance().botcurrentPlayerTurn();

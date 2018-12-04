@@ -2168,7 +2168,6 @@ public class Board implements Observer{
 		}
 		// 1. Placing new troops
 		
-		//TODO: Create a method for this in the Player class
 		// Check if a set of Risk cards can be turned in
 		System.out.println(currentPlayer.getName() + "'s Risk Cards:");
 		ArrayList<Card> cardsTurnedIn = currentPlayer.cardCheck();
@@ -2265,7 +2264,12 @@ public class Board implements Observer{
 		
 		// Check if one player controls all the territories
 		// if so, continueGame = false
-		return continueGame;
+		if(players.size() < 2) {
+			continueGame = false;
+			return continueGame;
+		} else {
+			return continueGame;
+		}
 	}
 	
 	public boolean botcurrentPlayerTurn() {
